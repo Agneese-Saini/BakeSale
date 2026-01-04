@@ -174,12 +174,10 @@ export class CartItemList {
 @Component({
   imports: [FormsModule, FontAwesomeModule, CartItemList, MatDialogModule],
   template: `
-<div class="bg-base-200 p-4">
-  <div mat-dialog-title>
-    <h1 class="label">Your shopping cart ({{ data.name }}):</h1>
-  </div>
-
+<div class="bg-base-200">
   <div mat-dialog-content>
+    <h1>Your shopping cart ({{ data.name }}):</h1>
+
     <div class="bg-base-100 rounded-box h-94 overflow-y-auto p-2">
       <cart-item-list [items]="items" />    
     </div>
@@ -187,9 +185,7 @@ export class CartItemList {
   <br />
 
   <div mat-dialog-actions>    
-    <div class="grid gap-2">
-      <button class="btn btn-neutral" (click)="closeDialog()">Close</button>
-    </div>
+    <button class="btn btn-neutral w-full" (click)="closeDialog()">Close</button>
   </div>
 </div>
 `

@@ -8,7 +8,7 @@ import { ItemList } from './itemList';
 import { Logo, Header } from "../header/header";
 import { SocialPost } from "./socialPost";
 import { IUser, UserRole, UserService, UserCard } from '../user/user';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef, MatDialogContent, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
 import { CartItemsDialog } from '../checkout/cartItemDialog';
 
 @Component({
@@ -124,12 +124,12 @@ export class Content {
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule],
+  imports: [FormsModule, FontAwesomeModule, MatDialogModule],
   template: `
-<div class="bg-base-300 min-w-84 p-4">
+<div class="bg-base-300">
   <h2 mat-dialog-title class="text-4xl font-bold">{{ data.name }}</h2>
 
-  <div class="flex overflow-x-auto">
+  <div mat-dialog-content>
     <table class="table table-zebra">
       <tbody>
         @for (category of data.subcats; track category) {
@@ -148,7 +148,9 @@ export class Content {
     </table>
   </div>
 
-  <button class="btn btn-neutral mt-4 w-full" (click)="closeDialog()">Close</button>
+  <div mat-dialog-actions>
+    <button class="btn btn-neutral w-full" (click)="closeDialog()">Close</button>
+  </div>
 </div>
 `
 })

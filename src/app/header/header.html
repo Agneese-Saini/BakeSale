@@ -146,9 +146,9 @@
 </div>
 
 <div class="bg-base-100 px-4 lg:hidden">
-  <div class="flex justify-between items-center gap-2 mb-2">
-    <a tabindex="0" role="button" class="link" style="text-decoration: none;" (click)="openDialog()">
-      <div class="flex items-center justify-between">
+  <div class="flex justify-between items-center pb-2">
+    <div class="flex-1">
+      <a class="link flex items-center justify-between w-fit" style="text-decoration: none;" (click)="openDialog()">
         @if (deliverySettings.address) {
         <div class="flex text-left items-center">
           <fa-icon class="text-xl rounded-full mr-4" icon="location-dot"></fa-icon>
@@ -162,7 +162,7 @@
           </div>
         </div>
 
-        <fa-icon icon="angle-down" class="pl-5"></fa-icon>
+        <fa-icon icon="angle-down" class="pl-2"></fa-icon>
         }
         @else {
         <div class="flex text-left">
@@ -170,12 +170,12 @@
           <p class="text-lg font-medium">Enter Address</p>
         </div>
 
-        <fa-icon icon="angle-down" class="pl-5"></fa-icon>
+        <fa-icon icon="angle-down" class="pl-2"></fa-icon>
         }
-      </div>
-    </a>
+      </a>
+    </div>
 
-    <delivery-switch />
+    <delivery-switch  />
   </div>
 
   <search-bar />

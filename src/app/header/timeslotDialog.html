@@ -1,6 +1,5 @@
-<div class="bg-base-200 min-w-84 p-4">
+<div class="bg-base-200">
   <h2 mat-dialog-title class="text-4xl font-bold">Schedule {{ deliveryMode?.label }}</h2>
-  <br />
 
   <div mat-dialog-content>
     @if (timeSlots) {
@@ -26,7 +25,7 @@
 
     <fieldset class="fieldset bg-base-300 rounded-box overflow-x-auto p-2">
       <legend class="fieldset-legend px-1 font-medium">
-        Select <b class="text-lg">timeslot</b> you want to place the order:
+        Select a timeslot for your order:
       </legend>
 
       <div class="flex overflow-x-auto h-64">

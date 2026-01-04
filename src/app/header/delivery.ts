@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ITime, ITimeSlot, TimeslotsDialog } from './timeslots';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { AddressBookAction, AddressDialog, IAddress } from './addressDialog';
 import { ICategory } from './category';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -165,7 +165,7 @@ export class DeliveryService {
   selector: 'delivery-switch',
   imports: [FormsModule, FontAwesomeModule],
   template: `
-<div class="tabs tabs-sm tabs-box">
+<div class="tabs tabs-sm tabs-box w-fit">
   @for (entry of deliveryModes; track entry[0]) {
   <input type="radio" class="tab" [name]="name" [checked]="selectedDeliveryMode == entry[0]"
     [ariaLabel]="entry[1].label" [value]="entry[0]" [(ngModel)]="selectedDeliveryMode"
@@ -353,16 +353,19 @@ export class AddressBook {
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, AddressBook],
+  imports: [FormsModule, FontAwesomeModule, AddressBook, MatDialogContent, MatDialogActions],
   template: `
-<div class="bg-base-200 min-w-84 p-4">
-  <address-book [timeslot]="true" />
-  <br />
+<div class="bg-base-200">
+  <div mat-dialog-content>
+    <address-book [timeslot]="true" />
+  </div>
 
-  <div class="grid items-stretch pt-4">
-    <button class="btn bg-base-100 m-1" (click)="onClose()">
-      Done
-    </button>
+  <div mat-dialog-actions>
+    <div class="grid w-full">
+      <button class="btn bg-base-100" (click)="onClose()">
+        Done
+      </button>
+    </div>
   </div>
 </div>
 `
