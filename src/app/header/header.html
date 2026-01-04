@@ -44,7 +44,7 @@
             </div>
           </div>
 
-          <ul tabindex="0" class="dropdown-content menu bg-base-200 rounded-box z-1 w-100 p-2 shadow-2xl">
+          <ul tabindex="0" class="dropdown-content menu bg-base-300 rounded-box z-1 w-100 p-2 shadow-2xl">
             <address-book [timeslot]="true" />
           </ul>
         </div>
@@ -55,11 +55,11 @@
       <div class="flex gap-2 items-center">
         @if (user.userRole != userRole.Guest) {
         <div class="dropdown dropdown-end">
-          <button class="link font-bold" tabindex="0" role="button" style="text-decoration: none;">
-            <fa-icon class="text-warning" icon="coins"></fa-icon> {{ user.points ? user.points : 0 }}
+          <button class="link font-bold flex gap-1 items-center" tabindex="0" role="button" style="text-decoration: none;">
+            <fa-icon class="text-warning" icon="coins"></fa-icon><p class="text-lg">{{ user.points ? user.points : 0 }}</p>
           </button>
 
-          <div tabindex="0" class="card card-sm dropdown-content bg-base-100 z-1 w-64 shadow-xl">
+          <div tabindex="0" class="card card-sm dropdown-content z-1 w-64 shadow-xl">
             <div tabindex="0" class="card-body text-wrap bg-neutral text-white rounded-box">
               <div class="flex justify-between">
                 <h1 class="card-title">BakeSale Points</h1>
@@ -85,7 +85,7 @@
             </div>
           </div>
 
-          <div tabindex="0" class="dropdown-content menu bg-base-200 rounded-box z-1 w-104 p-4 shadow-2xl">
+          <div tabindex="0" class="dropdown-content menu bg-base-300 rounded-box z-1 w-104 p-4 shadow-2xl">
             @if (numItems > 0) {
             <div class="flex justify-between items-center w-full">
               <h1 class="label font-bold text-2xl"><fa-icon class="px-2" icon="shopping-cart"></fa-icon> Cart</h1>
@@ -93,7 +93,7 @@
             </div>
             <br />
 
-            <div class="rounded-box bg-base-100 h-84 overflow-x-auto">
+            <div class="rounded-box h-84 overflow-x-auto">
               @for (cartItem of shoppingCart | keyvalue; track cartItem.key) {
               <cart-item-list [items]="cartItem.value" />
               }
@@ -145,7 +145,7 @@
   </div>
 </div>
 
-<div class="bg-base-100 px-4 lg:hidden">
+<div class="px-4 lg:hidden">
   <div class="flex justify-between items-center pb-2">
     <div class="flex-1">
       <a class="link flex items-center justify-between w-fit" style="text-decoration: none;" (click)="openDialog()">

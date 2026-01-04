@@ -56,7 +56,7 @@
             @else {
             <tr>
               <th>
-                <label class="label cursor-pointer flex flex-col">
+                <label class="label cursor-pointer flex flex-col text-center text-wrap">
                   <fa-icon icon="face-frown" class="text-4xl"></fa-icon>
                   <span class="font-bold text-xl">No timeslots available!</span>
                   <p class="font-normal">Looks like we are fully booked for this day!</p>
@@ -94,16 +94,15 @@
       <button class="btn btn-neutral" (click)="schedule()">
         Schedule
       </button>
-      <button class="btn bg-base-100" (click)="placeNow()">
+      <button class="btn btn-soft" (click)="placeNow()">
         @if (isNow) {
         <b><fa-icon icon="check"></fa-icon> Place Now</b>
         } @else {
         Place Now
         }
       </button>
-      } @else {
-      <button class="btn btn-neutral" (click)="close()">Close</button>
       }
+      <button class="btn btn-base-100" (click)="close()">Close</button>
     </div>
   </div>
 </div>

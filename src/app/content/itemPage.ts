@@ -1,18 +1,19 @@
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from "@angular/router";
+import { ActivatedRoute, ParamMap, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { DecimalPipe } from '@angular/common';
 import { Recipe } from '../recipe/recipe';
 import { IUser, UserService } from '../user/user';
 import { IItem, Item } from './item';
-import { Category, CategoryService } from '../header/category';
+import { Category, CategoryService, ICategory } from '../header/category';
 import { ItemDetails, ItemDialog, PriceTag, TextReadMore } from "./itemDialog";
 import { ItemChoiceList } from './itemChoice';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CartService } from '../checkout/cart';
 import { Header } from "../header/header";
 import { cloneDeep } from 'lodash';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-item',
@@ -26,7 +27,10 @@ export class ItemPage {
 
   protected item?: IItem;
   protected user: IUser = UserService.DefaultUser;
+  protected categories: ICategory[] = [];
   protected displayImage?: string;
+  
+  private routeSubscription?: Subscription;
 
   protected get isCartItem(): boolean {
     return this.item ? (this.cartService.getCartItem(this.item) != undefined) : false;
@@ -52,12 +56,18 @@ export class ItemPage {
     private cdr: ChangeDetectorRef) { }
 
   protected ngOnInit() {
+
     this.categoryService.categories$.subscribe(data => {
-      const categoryName = this.route.snapshot.paramMap.get('category');
-      const itemName = this.route.snapshot.paramMap.get('item');
+      this.categories = data;
+      this.cdr.detectChanges();
+    });
+
+    this.routeSubscription = this.route.paramMap.subscribe((params: ParamMap) => {
+      const categoryName = params.get('category');
+      const itemName = params.get('item');
 
       if (categoryName && itemName) {
-        let category = Category.findCategory(categoryName, data);
+        let category = Category.findCategory(categoryName, this.categories);
         this.item = category ? Category.findItem(itemName, category) : undefined;
 
         if (this.item) {

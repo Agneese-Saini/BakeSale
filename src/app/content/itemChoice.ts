@@ -272,13 +272,11 @@ export class ItemChoiceSummary {
   template: `
 <div class="flex flex-col gap-2">
   @for (entry of choices | keyvalue; track entry.key) {
-  <div tabindex="0" [class]="'collapse collapse-arrow bg-base-100 rounded-box border ' + (entry.key.error ? 'border-error' : 'border-base-300')">
-    <input type="checkbox" [checked]="entry.key.required || numSelection(entry.value) > 0" />
-
-    <div class="collapse-title">
+  <div tabindex="0" [class]="'collapse collapse-open bg-base-100 rounded-box border ' + (entry.key.error ? 'border-error' : 'border-base-300')">
+     <div class="collapse-title">
       <div class="flex justify-between items-center text-xl">
         <div class="flex flex-col">
-          <div class="indicator ">
+          <div class="flex gap-2">
             <p>
               @if (entry.key.required == true) {
               Choose {{ entry.key.name }}
@@ -288,7 +286,7 @@ export class ItemChoiceSummary {
             </p>
 
             @if (entry.key.tooltip) {
-            <fa-icon class="indicator-item text-sm tooltip tooltip-right" style="--indicator-x: 1.25em; --indicator-y: 0.25em;" icon="info-circle" [attr.data-tip]="entry.key.tooltip"></fa-icon>
+            <fa-icon class="text-sm tooltip tooltip-right" icon="info-circle" [attr.data-tip]="entry.key.tooltip"></fa-icon>
             }
           </div>
 

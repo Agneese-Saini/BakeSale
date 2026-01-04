@@ -71,7 +71,7 @@ import { Recipe } from '../recipe/recipe';
             <fa-icon icon="info-circle"></fa-icon> How to earn points?
           </button>
 
-          <div tabindex="0" class="card card-sm dropdown-content bg-base-100 z-1 w-64 shadow-xl">
+          <div tabindex="0" class="card card-sm dropdown-content z-1 w-64 shadow-xl">
             <div tabindex="0" class="card-body text-wrap bg-neutral text-white rounded-box">
               <h1 class="card-title"><fa-icon class="text-warning" icon="coins"></fa-icon> BakeSale Points Program</h1>
               <p>Through BakeSale points program, you earn points on your purchases, recipes, and even social media!</p>

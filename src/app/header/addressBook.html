@@ -12,7 +12,7 @@
       @for (addy of addressBook; track addy) {
       <tr>
         <td>
-          <div class="flex justify-between">
+          <div class="flex justify-between gap-8">
             <label class="label cursor-pointer">
               <input type="radio" class="radio" [value]="addy" [(ngModel)]="selectedAddress"
                 (change)="onAddressChange()" />
@@ -91,7 +91,7 @@
 <h1 class="text-lg p-2">Time preference:</h1>
 <div class="bg-base-300 rounded-box p-2">
   <div class="flex justify-between items-center px-2">
-    <p class="text-lg">
+    <p>
       <fa-icon icon="clock"></fa-icon> {{ deliveryMode?.label }} {{ settings.timeslot?.label }}
     </p>
     <button class="btn btn-sm btn-neutral" (click)="openTimeslotsDialog()">Schedule</button>

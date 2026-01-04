@@ -35,7 +35,7 @@
 <div class="drawer lg:drawer-open">
   <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
 
-  <div class="drawer-content flex flex-col px-4 items-center">
+  <div class="drawer-content flex flex-col px-4 items-center min-h-screen">
     @if (deliverySettings.category) {
     <div class="flex justify-start items-center gap-2 overflow-x-auto w-full p-1">
       <button class="btn btn-sm btn-circle lg:hidden" (click)="openDialog()">
@@ -145,7 +145,7 @@
   @if (deliverySettings.category) {
   <div class="drawer-side">
     <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-    <ul class="menu min-h-full bg-base-100 w-86 text-base-content text-lg">
+    <ul class="menu min-h-full w-86 text-base-content text-lg">
       <!-- Sidebar content here -->
       <div class="menu-title">
         <div class="flex items-center gap-4">

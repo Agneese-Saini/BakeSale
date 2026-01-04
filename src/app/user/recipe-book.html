@@ -121,7 +121,7 @@
                         {{ recipe.buyHistory.size }}
                         <div class="dropdown dropdown-end">
                           <fa-icon class="link" tabindex="0" role="button" icon="info-circle"></fa-icon>
-                          <div tabindex="0" class="card card-sm dropdown-content bg-base-100 z-1 w-64 shadow-xl">
+                          <div tabindex="0" class="card card-sm dropdown-content z-1 w-64 shadow-xl">
                             <div tabindex="0" class="card-body text-wrap bg-neutral text-white rounded-box">
                               <div class="flex justify-between">
                                 <h1 class="card-title">Number of Buys</h1>
@@ -142,7 +142,7 @@
                         <fa-icon class="text-warning" icon="coins"></fa-icon> {{ getPoints(recipe) }}
                         <div class="dropdown dropdown-end">
                           <fa-icon class="link" tabindex="0" role="button" icon="info-circle"></fa-icon>
-                          <div tabindex="0" class="card card-sm dropdown-content bg-base-100 z-1 w-64 shadow-xl">
+                          <div tabindex="0" class="card card-sm dropdown-content z-1 w-64 shadow-xl">
                             <div tabindex="0" class="card-body text-wrap bg-neutral text-white rounded-box">
                               <div class="flex justify-between">
                                 <h1 class="card-title">Points Earned</h1>
@@ -181,7 +181,7 @@
 
   <div class="drawer-side">
     <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-    <ul class="menu min-h-full bg-base-100 w-86 text-base-content text-lg">
+    <ul class="menu min-h-full w-86 text-base-content text-lg">
       <!-- Sidebar content here -->
       <li>
         <a [class]="(currentFilter == undefined ? 'menu-active font-bold text-lg' : 'font-light text-lg')"
