@@ -1,0 +1,165 @@
+<app-header />
+
+<div class="divider px-4"></div>
+
+<div class="px-4">
+  <a class="link text-lg font-mono" style="text-decoration: none" routerLink="/">
+    <fa-icon icon="arrow-left"></fa-icon> Back to {{ item ? item.parent : 'Store' }}
+  </a>
+</div>
+<br />
+
+@if (item) {
+<div class="flex flex-col lg:flex-row gap-6 lg:gap-12 justify-center p-4">
+  <div class="flex flex-col gap-4 items-center min-w-full lg:min-w-128 lg:max-w-164">
+    <div class="rounded-box flex bg-base-300 justify-center w-full">
+      <img class="max-h-84 lg:max-h-128" [src]="displayImage" />
+    </div>
+    <div class="flex flex-wrap justify-center gap-2">
+      @for (img of item.image; track img) {
+      <img [class]="'link rounded-box h-12 w-12 ' + (displayImage == img ? 'ring ring-2' : '')" [src]="img"
+        (click)="selectImage(img)" />
+      }
+    </div>
+  </div>
+
+  <div class="flex flex-col min-w-full lg:min-w-128 lg:max-w-164">
+    <div class="flex justify-between items-start">
+      <div class="flex flex-col">
+        @if (item.company) {
+        <span class="label text-sm font-bold">
+          <fa-icon class="text-info" icon="check-circle"></fa-icon> <p class="tooltip" data-tip="Verified Seller">{{ item.company }}</p>
+        </span>
+        }
+
+        <h1 class="font-bold text-2xl">{{ item.name }}</h1>
+
+        <item-price-tag [value]="item" [likes]="false"></item-price-tag>
+
+        @if (item.price.buyOneGetOne) {
+        <span class="badge badge-error text-white">Buy 1, Get 1</span>
+        }
+        @else if (item.price.label) {
+        <span class="badge badge-warning text-white">{{ item.price.label }}</span>
+        }
+      </div>
+
+      @if (item.author) {
+      <div class="flex flex-row-reverse items-center text-right gap-2">
+        <img class="size-12 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp" />
+        <div class="grid">
+          <label class="text-xs uppercase opacity-60">Created by:</label>
+          <a class="link" style="text-decoration: none;">{{ item.author }}</a>
+        </div>
+      </div>
+      }
+    </div>
+    <br />
+
+    @if (item.about) {
+    <text-read-more [text]="item.about" [maxLength]="150"></text-read-more>
+    <br />
+    }
+
+    <item-details [item]="item"></item-details>
+
+    @if (item.ingredients) {
+    <b>Ingredients:</b>
+    <text-read-more class="px-2" [text]="item.ingredients" [maxLength]="150"></text-read-more>
+    <br />
+    }
+
+    <div class="bg-base-200 rounded-box p-4">
+      @if (item.choices) {
+      <div class="px-0.75">
+        <item-choice-list [choices]="item.choices"></item-choice-list>
+      </div>
+      }
+
+      <div class="flex justify-between items-center">
+        <h1 class="text-xl p-4">Order:</h1>
+        <div class="flex flex-col items-end p-4">
+          <select [class]="'select select-lg w-fit ' + ((this.item.amount > 1) ? 'outline outline-3 font-bold' : '')"
+            [(ngModel)]="item.amount">
+            @if (item.maxAmount) {
+            @for (num of list(item.maxAmount); track num) {
+            <option [value]="num">{{ num }}</option>
+            }
+            } @else {
+            @for (num of list(defaultMaxAmount); track num) {
+            <option [value]="num">{{ num }}</option>
+            }
+            }
+          </select>
+
+          @if (item.stockAmount != undefined) {
+          @if (item.stockAmount == 0) {
+          <span class="badge-xs badge-error badge text-white">out of stock</span>
+          } @else if (item.stockAmount < 5) { <span class="text-xs text-error">only {{ item.stockAmount }} left</span>
+            }
+            }
+            @if (item.price.buyOneGetOne) {
+            <p>Buy 1, Get 1</p>
+            }
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <button
+          [class]="'btn btn-warning ' + ((item.stockAmount != undefined && item.stockAmount == 0) ? 'btn-disabled' : '')"
+          (click)="addToCart(item)">
+          <div class="flex items-center gap-2">
+            @if (item.stockAmount != undefined && item.stockAmount == 0) {
+            <p>Out of stock</p>
+            }
+            @else {
+            <p>
+              @if (!isCartItem || hasChoices) {
+              Add to Cart
+              } @else {
+              <b>Update Cart</b>
+              }
+            </p>
+
+            @if (!item.price.buyOneGetOne && item.price.previousPrice) {
+            <p class="text-sm line-through">${{ getPrice(item, item.price.previousPrice) | number: '1.2-2' }}
+            </p>
+            }
+
+            <p>${{ getPrice(item, item.price.value) | number: '1.2-2' }}</p>
+
+            @if (item.price.buyOneGetOne) {
+            <p>({{ item.amount * 2 }})</p>
+            } @else if (item.amount > 1) {
+            <p>({{ item.amount }})</p>
+            }
+            }
+          </div>
+        </button>
+
+        @if (isCartItem && !hasChoices) {
+        <button class="btn bg-base-100" (click)="removeFromCart()">
+          <p class="text-error">Remove Item</p>
+        </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+}
+@else {
+<div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+  <div class="mx-auto max-w-screen-sm text-center">
+    <h1 class="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600">
+      404
+    </h1>
+    <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">
+      Sorry, we can't find the item you're looking for.
+    </p>
+    <br />
+    <a href="#" class="btn btn-soft">
+      Back to Homepage
+    </a>
+  </div>
+</div>
+}

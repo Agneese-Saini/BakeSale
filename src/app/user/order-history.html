@@ -1,0 +1,143 @@
+<div class="navbar">
+  <div class="navbar-start">
+    <div class="flex flex-col p-4 gap-2">
+      <a class="link text-lg font-mono px-2" style="text-decoration: none" routerLink="/">
+        <fa-icon icon="arrow-left"></fa-icon> Back to store
+      </a>
+      <label class="flex items-center gap-2 text-4xl font-mono lg:hidden">
+        <fa-icon icon="receipt"></fa-icon> Order History
+      </label>
+    </div>
+  </div>
+
+  <div class="navbar-center hidden lg:block">
+    <a class="link text-4xl font-serif p-2" style="text-decoration: none" routerLink="/">
+      <b>Bake</b>Sale
+    </a>
+  </div>
+</div>
+
+<div class="divider px-4"></div>
+
+@if (filters.length > 0) {
+<div class="flex justify-center px-4 lg:hidden">
+  <div class="overflow-x-auto">
+    <ul class="menu menu-horizontal min-w-max items-center gap-2">
+      <li>
+        <a [class]="(currentFilter == undefined ? 'menu-active text-lg' : 'bg-base-300')"
+          (click)="onSelectFilter(undefined)">
+          All (4)
+        </a>
+      </li>
+      @for (filter of filters; track filter) {
+      <li>
+        <a [class]="(filter == currentFilter ? 'menu-active text-lg' : 'bg-base-300')" (click)="onSelectFilter(filter)">
+          {{ filter }} (4)
+        </a>
+      </li>
+      }
+    </ul>
+  </div>
+</div>
+<br />
+}
+
+<div class="drawer lg:drawer-open">
+  <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+
+  <div class="drawer-content flex flex-col gap-2 p-4 items-center">
+    <div class="w-full">
+      <!-- Page content here -->
+      <div class="hidden lg:block">
+        <div class="flex items-center gap-4">
+          <fa-icon class="text-2xl" icon="receipt"></fa-icon>
+          <h1 class="font-bold text-5xl">Order History</h1>
+        </div>
+        <div class="divider"></div>
+      </div>
+
+      <label class="input w-full mb-6">
+        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </g>
+        </svg>
+        <input type="search" class="grow placeholder-gray-500 input-lg" placeholder="Search" />
+      </label>
+
+      @if (user.orders && user.orders.length > 0) {
+      <div class="flex flex-col gap-4 lg:flex-row lg:flex-wrap justify-center">
+        @for (order of user.orders; track order) {
+        <div
+          [class]="'card bg-base-200 border-base-300 border shadow lg:min-w-128 ' + (order.inProgress ? 'shadow-success' : '')">
+          <div class="card-body">
+            <div class="grid">
+              <div class="flex flex-col items-end w-full">
+                <span [class]="'badge badge-lg badge-soft ' + (order.inProgress ? 'badge-success' : '')">
+                  @if (order.inProgress) {
+                  IN PROGRESS
+                  } @else if (order.deliveryType != undefined) {
+                  DELIVERY
+                  } @else {
+                  PICKUP
+                  }
+                </span>
+                <span class="text-xs label">#5542</span>
+              </div>
+
+              <span class="text-lg font-bold">
+                {{ numItems(order.cart) }} Items for ${{ checkoutPrice(order) | number: '1.2-2' }}
+              </span>
+              <span class="font-thin text-lg"><b class="font-extrabold text-neutral-500">June 30</b> at {{ order.date
+                }}:00 pm</span>
+            </div>
+            <div class="overflow-y-auto max-h-56 lg:h-full">
+              <order-summary [order]="order" [hidePrice]="true"></order-summary>
+            </div>
+            <br />
+            <div class="card-actions justify-end">
+              @if (order.inProgress) {
+              <button class="btn btn-success text-white text-lg">Track Order</button>
+              } @else {
+              <button class="btn btn-neutral text-lg">Reorder</button>
+              }
+
+              <button class="btn btn-neutral text-lg" [routerLink]="['/view-receipt', {date: order.date}]">View
+                Receipt</button>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      }
+      @else {
+      <div class="flex flex-col w-full items-center justify-items-center pt-10">
+        <h1 class="font-thin text-xl">No orders found!</h1>
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="drawer-side">
+    <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+    <ul class="menu min-h-full bg-base-100 w-86 text-base-content text-lg">
+      <!-- Sidebar content here -->
+      <li>
+        <a [class]="(currentFilter == undefined ? 'menu-active font-bold text-lg' : 'font-light text-lg')"
+          (click)="onSelectFilter(undefined)">
+          All (4)
+        </a>
+      </li>
+
+      @for (filter of filters; track filter) {
+      <li>
+        <a [class]="(filter == currentFilter ? 'menu-active font-bold text-lg' : 'font-light text-lg')"
+          (click)="onSelectFilter(filter)">
+          {{ filter }} (4)
+        </a>
+      </li>
+      }
+    </ul>
+  </div>
+</div>

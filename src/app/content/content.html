@@ -1,0 +1,203 @@
+<app-header />
+
+<div class="divider px-4"></div>
+
+<div class="flex justify-center px-4">
+  <div class="overflow-x-auto">
+    <ul class="menu menu-horizontal min-w-max gap-2">
+      <li>
+        <a [class]="(deliverySettings.category == undefined ? 'menu-active' : '')"
+          (click)="onSelectCategory(undefined)">
+          <fa-icon icon="home" class="text-2xl"></fa-icon>
+        </a>
+      </li>
+
+      @for (type of categories; track type) {
+      <li>
+        <a [class]="(deliverySettings.category == type ? 'menu-active' : '')" (click)="onSelectCategory(type)">
+          @if (type.icon) {
+          <fa-icon [icon]="type.icon" class="text-2xl"></fa-icon>
+          } @else {
+          <fa-icon icon="circle-dot" class="text-2xl"></fa-icon>
+          }
+          <span>{{ type.name }}</span>
+          @if (isActive(type)) {
+          <span class="status status-warning animate-bounce"></span>
+          }
+        </a>
+      </li>
+      }
+    </ul>
+  </div>
+</div>
+<br />
+
+<div class="drawer lg:drawer-open">
+  <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+
+  <div class="drawer-content flex flex-col px-4 items-center">
+    @if (deliverySettings.category) {
+    <div class="flex justify-start items-center gap-2 overflow-x-auto w-full p-1">
+      <button class="btn btn-sm btn-circle lg:hidden" (click)="openDialog()">
+        <fa-icon icon="bars"></fa-icon>
+      </button>
+
+      <select class="select select-sm min-w-28">
+        <option selected class="font-bold">All Prices</option>
+        <option>Under $50</option>
+        <option>Under $75</option>
+        <option>Over $100</option>
+      </select>
+
+      <select class="select select-sm min-w-28">
+        <option selected class="font-bold">Show All Categories</option>
+        @for (category of deliverySettings.category.subcats; track category) {
+        <option [class]="category.items ? '' : 'label'">{{ category.name }} ({{ category.items ? category.items.length :
+          0 }})</option>
+        }
+      </select>
+
+      <button class="btn btn-sm btn-soft">Reset Filters</button>
+    </div>
+    <br />
+
+    <div class="w-full">
+      <!-- Page content here -->
+      @for (subcat of deliverySettings.category.subcats; track subcat) {
+      <item-list [category]="subcat"></item-list>
+      }
+    </div>
+    }
+    @else {
+    @if (canShowHomepage) {
+    <div class="hero"
+      style="background-image: url(https://assets.renderman.pixar.com/Tutorials/french-bakery/french-bakery-sky.jpg);">
+      <div class="hero-content text-neutral-content flex flex-col text-center h-full justify-start py-32">
+        <!-- Your content -->
+        <h1 class="text-2xl">Welcome to,</h1>
+        <p class="text-6xl font-serif">
+          <b>Bake</b>Sale
+        </p>
+        <p class="">
+          We bring fresh bread and pastry to your doorstep.<br />
+          We support local bakeries and independent bakers and chefs.<br />
+          Join us if you're a talented baker or a chef, If you want a job, or you just want some cake!
+        </p>
+
+        <div class="flex gap-3 text-3xl items-center">
+          <a class="link text-error tooltip tooltip-error tooltip-bottom" data-tip="Youtube"><fa-icon
+              [icon]="faYoutube"></fa-icon></a>
+          <a class="link text-error tooltip tooltip-error tooltip-bottom" data-tip="Instagram"><fa-icon
+              [icon]="faInstagram"></fa-icon></a>
+        </div>
+      </div>
+    </div>
+    <br />
+
+    <div class="flex gap-2 flex-wrap justify-center">
+      <button class="btn btn-outline shadow-xl px-4 w-fit" (click)="login()">Sign In</button>
+      <button class="btn btn-outline shadow-xl px-4 w-fit">Sign up for Driver</button>
+      <button class="btn btn-outline shadow-xl px-4 w-fit">Become a Seller</button>
+    </div>
+
+    <div class="flex justify-end w-full pt-2">
+      <a class="link flex items-center gap-2" (click)="showHomepage(false)" style="text-decoration: none;">
+        <p class="font-bold font-mono">BakeSale Feed</p>
+        <button class="btn btn-neutral btn-circle shadow-xl"><fa-icon icon="arrow-right"></fa-icon></button>
+      </a>
+    </div>
+    }
+    @else {
+    <div class="w-full lg:max-w-156">
+      <div class="flex flex-col gap-2">
+        @if (user.userRole == userRole.Guest) {
+        <button class="btn rounded-box w-full" (click)="showHomepage(true)">
+          <fa-icon icon="arrow-left"></fa-icon>
+          <p class="font-mono">Goto Homepage</p>
+        </button>
+        } @else {
+        <user-card [user]="user"></user-card>
+        <div class="divider"></div>
+        }
+
+        @if (user.userRole != userRole.Guest) {
+        <div class="flex gap-2">
+          <button class="btn btn-lg btn-neutral rounded-box flex-1">
+            <fa-icon icon="plus"></fa-icon>
+            <p class="font-mono">Create</p>
+          </button>
+          <button class="btn btn-lg btn-neutral rounded-box flex-1">
+            <fa-icon icon="video"></fa-icon>
+            <p class="font-mono">Reels</p>
+          </button>
+        </div>
+        }
+      </div>
+      <br />
+
+      <social-post></social-post>
+    </div>
+    }
+    }
+    <br />
+  </div>
+
+  @if (deliverySettings.category) {
+  <div class="drawer-side">
+    <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+    <ul class="menu min-h-full bg-base-100 w-86 text-base-content text-lg">
+      <!-- Sidebar content here -->
+      <div class="menu-title">
+        <div class="flex items-center gap-4">
+          @if (deliverySettings.category.icon) {
+          <fa-icon [icon]="deliverySettings.category.icon" class="text-2xl"></fa-icon>
+          } @else {
+          <app-logo firstName="Bake" lastName="Sale" [style]="1" />
+          }
+
+          <h1 class="text-5xl">{{ deliverySettings.category.name }}</h1>
+        </div>
+      </div>
+
+      @for (cat of deliverySettings.category.subcats; track cat)
+      {
+      <li (click)="focusCategory(cat)">
+        @if (cat.subcats && cat.subcats.length > 0) {
+        <details open>
+          <summary>
+            <span class="flex items-center gap-2">
+              <a [class]="isFocused(cat) ? 'font-bold text-2xl' : 'font-light text-lg'">{{ cat.name }}</a>
+              @if (isActive(cat)) {
+              <span class="status status-lg status-warning animate-bounce"></span>
+              }
+            </span>
+          </summary>
+
+          <ul>
+            @for (subcat of cat.subcats; track subcat) {
+            <li (click)="focusCategory(subcat)">
+              <span class="flex items-center gap-2">
+                <a [class]="isFocused(subcat) ? 'font-bold text-2xl' : 'font-light text-lg'">{{ subcat.name }}</a>
+                @if (isActive(subcat)) {
+                <span class="status status-warning status-lg animate-bounce"></span>
+                }
+              </span>
+            </li>
+            }
+          </ul>
+        </details>
+        }
+        @else {
+        <span class="flex items-center gap-2">
+          <a [class]="isFocused(cat) ? 'font-bold text-2xl' : 'font-light text-lg'">{{ cat.name }}</a>
+          @if (isActive(cat)) {
+          <span class="status status-lg status-warning animate-bounce"></span>
+          }
+        </span>
+        }
+      </li>
+      }
+    </ul>
+  </div>
+  }
+</div>

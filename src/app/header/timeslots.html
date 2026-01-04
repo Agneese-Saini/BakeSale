@@ -1,0 +1,106 @@
+<div class="bg-base-200 min-w-84 p-4">
+  <h2 mat-dialog-title class="text-4xl font-bold">Schedule {{ deliveryMode?.label }}</h2>
+  <br />
+
+  @if (timeSlots) {
+  <div class="overflow-x-auto">
+    <div class="tabs tabs-xl tabs-box justify-center bg-base-300 rounded-field min-w-max p-2">
+      @for (slot of timeSlots; track slot) {
+      <label class="tab">
+        <input type="radio" name="my_tabs" [checked]="selectedTimeslot==slot" (change)="onTimeSlotChange(slot)" />
+        <div class="flex flex-col">
+          <div class="flex gap-2">
+            @if (deliverySettings.timeslot == slot) {
+            <fa-icon icon="check"></fa-icon>
+            }
+            <h1 class="font-bold">{{ slot.label }}</h1>
+          </div>
+          <p class="text-xs">{{ slot.time }}</p>
+        </div>
+      </label>
+      }
+    </div>
+  </div>
+  <br />
+
+  <fieldset class="fieldset bg-base-300 rounded-box overflow-x-auto p-2">
+    <legend class="fieldset-legend px-1 font-medium">Select <b class="text-lg">timeslot</b> you want to place the order:
+    </legend>
+
+    <div class="flex overflow-x-auto h-64">
+      <table class="table table-zebra">
+        <tbody>
+          @if (selectedTimeslot && selectedTimeslot.slots) {
+          @for (slot of selectedTimeslot.slots; track slot) {
+          <tr class="h-16">
+            <td>
+              @if (deliverySettings.time == slot) {
+              <label class="label cursor-pointer flex justify-between">
+                <span class="label-text font-extrabold text-xl">{{ slot.start }} - {{ slot.end }}</span>
+                <input type="radio" name="times" class="radio" checked="true" [value]="slot"
+                  [(ngModel)]="selectedTimeInterval" />
+              </label>
+              }
+              @else {
+              <label class="label cursor-pointer flex justify-between">
+                <span class="label-text font-normal text-xl">{{ slot.start }} - {{ slot.end }}</span>
+                <input type="radio" name="times" class="radio" checked="false" [value]="slot"
+                  [(ngModel)]="selectedTimeInterval" />
+              </label>
+              }
+            </td>
+          </tr>
+          }
+          }
+          @else {
+          <tr>
+            <th>
+              <label class="label cursor-pointer flex flex-col">
+                <fa-icon icon="face-frown" class="text-4xl"></fa-icon>
+                <span class="font-bold text-xl">No timeslots available!</span>
+                <p class="font-normal">Looks like we are fully booked for this day!</p>
+              </label>
+            </th>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </fieldset>
+  <br />
+
+  <div class="grid">
+    <button class="btn btn-neutral m-1" (click)="schedule()">
+      Schedule
+    </button>
+    <button class="btn bg-base-100 m-1" (click)="placeNow()">
+      @if (isNow) {
+      <b><fa-icon icon="check"></fa-icon> Place Now</b>
+      } @else {
+      Place Now
+      }
+    </button>
+  </div>
+  }
+  @else {
+  <fieldset class="fieldset bg-base-200 rounded-box mx-4">
+    <legend class="fieldset-legend px-1 font-medium"></legend>
+
+    <div class="flex flex-col items-center p-4">
+      <fa-icon icon="face-frown" class="text-4xl"></fa-icon>
+      <span class="font-bold text-xl">No timeslots available!</span>
+      <p class="font-thin text-lg text-center my-4">
+        Looks like we are fully booked at this moment.
+      </p>
+      <p class="font-light text-lg text-center">
+        If you already have an order and need help: <a class="font-normal" href="">Contact Us</a><br />
+        You can always visit us at our <a class="font-normal" href="">Store Location</a>
+      </p>
+    </div>
+
+  </fieldset>
+  <div class="grid p-4">
+    <button class="btn btn-neutral m-1" (click)="close()">Close</button>
+  </div>
+  }
+</div>

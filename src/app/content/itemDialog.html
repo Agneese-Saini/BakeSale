@@ -1,0 +1,137 @@
+<div class="bg-base-200 p-4">
+  @if (item.notify) {
+  <div class="flex gap-2 pt-2 items-center justify-end">
+    <i class="opacity-60">"{{ item.notify }}"</i>
+    <span class="badge badge-sm badge-warning text-white">NEW</span>
+  </div>
+  }
+
+  @if (item.company) {
+  <span class="label text-sm font-bold"><fa-icon class="text-info" icon="check-circle"></fa-icon> {{ item.company
+    }}</span>
+  }
+
+  <h1 mat-dialog-title class="flex items-center gap-2 text-4xl font-bold">
+    {{ item.name }}
+  </h1>
+  <item-price-tag [value]="item" [likes]="false"></item-price-tag>
+
+  @if (item.price.buyOneGetOne) {
+  <span class="badge badge-error text-white">Buy 1, Get 1</span>
+  }
+  @else if (item.price.label) {
+  <span class="badge badge-warning text-white">{{ item.price.label }}</span>
+  }
+
+  @if (item.author) {
+  <div class="flex flex-row-reverse items-center text-right gap-2">
+    <img class="size-12 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp" />
+    <div class="grid">
+      <label class="text-xs uppercase opacity-60">Created by:</label>
+      <a class="link" style="text-decoration: none;">{{ item.author }}</a>
+    </div>
+  </div>
+  }
+  <br />
+
+  <div class="rounded-box max-h-98 overflow-y-auto p-1">
+    @if (item.about) {
+    <text-read-more [text]="item.about" [maxLength]="150"></text-read-more>
+    }
+    <br />
+
+    <div class="flex flex-col gap-4 items-center min-w-84 lg:max-w-128">
+      <div class="rounded-box flex bg-base-300 justify-center w-full">
+        <img class="h-64" [src]="displayImage" />
+      </div>
+      <div class="flex flex-wrap justify-center gap-2">
+        @for (img of item.image; track img) {
+        <img [class]="'link rounded-box h-12 w-12 ' + (displayImage == img ? 'ring ring-2' : '')" [src]="img"
+          (click)="selectImage(img)" />
+        }
+      </div>
+    </div>
+    <br />
+
+    <item-details [item]="item"></item-details>
+
+    @if (item.choices) {
+    <div class="px-0.75">
+      <item-choice-list [choices]="item.choices"></item-choice-list>
+    </div>
+    <br />
+    }
+  </div>
+
+  <div class="flex justify-between items-center">
+    <h1 class="text-xl p-4">Order:</h1>
+    <div class="flex flex-col items-end p-4">
+      <select [class]="'select select-lg w-fit ' + ((this.item.amount > 1) ? 'outline outline-3 font-bold' : '')"
+        [(ngModel)]="item.amount">
+        @if (item.maxAmount) {
+        @for (num of list(item.maxAmount); track num) {
+        <option [value]="num">{{ num }}</option>
+        }
+        } @else {
+        @for (num of list(defaultMaxAmount); track num) {
+        <option [value]="num">{{ num }}</option>
+        }
+        }
+      </select>
+
+      @if (item.stockAmount != undefined) {
+      @if (item.stockAmount == 0) {
+      <span class="badge-xs badge-error badge text-white">out of stock</span>
+      } @else if (item.stockAmount < 5) { <span class="text-xs text-error">only {{ item.stockAmount }} left</span>
+        }
+        }
+        @if (item.price.buyOneGetOne) {
+        <p>Buy 1, Get 1</p>
+        }
+    </div>
+  </div>
+
+  <div class="grid gap-2">
+    <div class="flex gap-2">
+      <button
+        [class]="'flex-1 btn btn-warning font-bold ' + ((item.stockAmount != undefined && item.stockAmount == 0) ? 'btn-disabled' : '')"
+        (click)="saveToCart()">
+        <div class="flex items-center gap-2">
+          @if (item.stockAmount != undefined && item.stockAmount == 0) {
+          <p>Out of stock</p>
+          }
+          @else {
+          <p>Update Cart</p>
+
+          @if (!item.price.buyOneGetOne && item.price.previousPrice) {
+          <p class="text-sm line-through">${{ getPrice(item, item.price.previousPrice) | number: '1.2-2' }}
+          </p>
+          }
+
+          <p>${{ getPrice(item, item.price.value) | number: '1.2-2' }}</p>
+
+          @if (item.price.buyOneGetOne) {
+          <p>({{ item.amount * 2 }})</p>
+          } @else if (item.amount > 1) {
+          <p>({{ item.amount }})</p>
+          }
+          }
+        </div>
+      </button>
+
+      @if (item.choices && item.choices.size > 0) {
+      <button class="btn tooltip tooltip-left text-xl" data-tip="Duplicate Order" (click)="duplicate()">
+        <fa-icon icon="copy"></fa-icon>
+      </button>
+      }
+    </div>
+
+    <button class="btn bg-base-100" (click)="removeFromCart()">
+      <p class="text-error">Remove Item</p>
+    </button>
+
+    <button class="btn bg-base-100" (click)="cancel()">
+      Cancel
+    </button>
+  </div>
+</div>

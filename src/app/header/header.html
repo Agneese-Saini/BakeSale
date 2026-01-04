@@ -1,0 +1,182 @@
+<div class="navbar">
+  <div class="flex-none">
+    <label [for]="appDrawer" aria-label="open sidebar" class="btn btn-square btn-ghost">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+        class="inline-block h-6 w-6 stroke-current">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </label>
+  </div>
+
+  <div class="px-2 flex-1">
+    <div class="flex justify-between items-center gap-2">
+      <div class="flex items-center gap-2">
+        <app-logo firstName="Bake" lastName="Sale" (click)="onClickHome()" />
+
+        <delivery-switch class="hidden lg:block" />
+
+        <div class="dropdown dropdown-bottom dropdown-start py-2 hidden lg:block">
+          <div tabindex="0" role="button" class="link px-4 py-2" style="text-decoration: none;">
+            <div class="flex items-center justify-between">
+              @if (deliverySettings.address) {
+              <div class="flex text-left items-center">
+                <fa-icon class="text-xl rounded-full mr-4" icon="location-dot"></fa-icon>
+
+                <div class="flex flex-col text-left">
+                  <p class="text-lg font-medium">{{ deliverySettings.address.addressLine }}</p>
+                  @if (deliveryMode && deliverySettings.timeslot) {
+                  <p class="text-xs font-thin">{{ deliveryMode.label }} Time: <b>{{ deliverySettings.timeslot.label
+                      }}</b></p>
+                  }
+                </div>
+              </div>
+
+              <fa-icon icon="angle-down" class="pl-5"></fa-icon>
+              }
+              @else {
+              <div class="flex text-left">
+                <fa-icon class="text-xl rounded-full mr-4" icon="location-dot"></fa-icon>
+                <p class="text-lg font-medium">Enter Address</p>
+              </div>
+
+              <fa-icon icon="angle-down" class="pl-5"></fa-icon>
+              }
+            </div>
+          </div>
+
+          <ul tabindex="0" class="dropdown-content menu bg-base-200 rounded-box z-1 w-100 p-2 shadow-2xl">
+            <address-book [timeslot]="true" />
+          </ul>
+        </div>
+      </div>
+
+      <search-bar class="hidden lg:block" />
+
+      <div class="flex gap-2 items-center">
+        @if (user.userRole != userRole.Guest) {
+        <div class="dropdown dropdown-end">
+          <button class="link font-bold" tabindex="0" role="button" style="text-decoration: none;">
+            <fa-icon class="text-warning" icon="coins"></fa-icon> {{ user.points ? user.points : 0 }}
+          </button>
+
+          <div tabindex="0" class="card card-sm dropdown-content bg-base-100 z-1 w-64 shadow-xl">
+            <div tabindex="0" class="card-body text-wrap bg-neutral text-white rounded-box">
+              <div class="flex justify-between">
+                <h1 class="card-title">BakeSale Points</h1>
+                <h2 class="card-title"><fa-icon class="text-warning" icon="coins"></fa-icon> {{ user.points ? user.points : 0 }}</h2>
+              </div>
+              <p>You can redeem your points and use them at checkout for discounts or other BakeSale promotions (e.g. Custom cakes, etc.)</p>
+            </div>
+          </div>
+        </div>
+        }
+
+        <div class="dropdown dropdown-bottom dropdown-end p-2 hidden lg:block">
+          <div tabindex="0" role="button" class="link" style="text-decoration: none;">
+            <div class="indicator">
+              @if (numItems > 0) {
+              <p class="indicator-item badge badge-xs badge-warning rounded-full">
+                <b>{{ numItems }}</b>
+              </p>
+              }
+              <a class="link rounded-full text-2xl">
+                <fa-icon icon="bag-shopping"></fa-icon>
+              </a>
+            </div>
+          </div>
+
+          <div tabindex="0" class="dropdown-content menu bg-base-200 rounded-box z-1 w-104 p-4 shadow-2xl">
+            @if (numItems > 0) {
+            <div class="flex justify-between items-center w-full">
+              <h1 class="label font-bold text-2xl"><fa-icon class="px-2" icon="shopping-cart"></fa-icon> Cart</h1>
+              <h1 class="label font-thin text-xl"><b>{{ totalItems }}</b> {{ totalItems > 1 ? 'Items' : 'Item' }}</h1>
+            </div>
+            <br />
+
+            <div class="rounded-box bg-base-100 h-84 overflow-x-auto">
+              @for (cartItem of shoppingCart | keyvalue; track cartItem.key) {
+              <cart-item-list [items]="cartItem.value" />
+              }
+            </div>
+            <br />
+
+            <div class="flex justify-between items-center text-xl px-4">
+              <h1>SubTotal:</h1>
+              <span class="flex gap-2 text-right items-center">
+                @if (originalPrice != subTotal) {
+                <p class="text-sm line-through">${{ originalPrice | number: '1.2-2' }}</p>
+                }
+                <p>${{ subTotal | number: '1.2-2' }}</p>
+              </span>
+            </div>
+
+            <button class="btn btn-warning w-full p-2" routerLink="/checkout">
+              Proceed to Checkout
+            </button>
+            }
+            @else {
+            <div class="p-4">
+              <span class="flex flex-col justify-center items-center w-full p-4 text-xl">
+                <fa-icon icon="cart-shopping"></fa-icon>
+                <p>Your cart is empty!</p>
+              </span>
+            </div>
+            <div class="divider px-4"></div>
+
+            <empty-cart-links></empty-cart-links>
+            }
+          </div>
+        </div>
+
+        <label [for]="checkoutDrawer" aria-label="open sidebar" class="btn btn-square btn-ghost text-2xl lg:hidden">
+          <div class="indicator">
+            @if (numItems > 0) {
+            <p class="indicator-item badge badge-xs badge-warning rounded-full">
+              <b>{{ numItems }}</b>
+            </p>
+            }
+            <a class="link rounded-full text-2xl">
+              <fa-icon icon="bag-shopping"></fa-icon>
+            </a>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bg-base-100 px-4 lg:hidden">
+  <div class="flex justify-between items-center gap-2 mb-2">
+    <a tabindex="0" role="button" class="link" style="text-decoration: none;" (click)="openDialog()">
+      <div class="flex items-center justify-between">
+        @if (deliverySettings.address) {
+        <div class="flex text-left items-center">
+          <fa-icon class="text-xl rounded-full mr-4" icon="location-dot"></fa-icon>
+
+          <div class="flex flex-col text-left">
+            <p class="text-lg font-medium">{{ deliverySettings.address.addressLine }}</p>
+            @if (deliverySettings.timeslot) {
+            <p class="text-xs font-thin">{{ deliveryMode?.label }} Time: <b>{{
+                deliverySettings.timeslot.label }}</b></p>
+            }
+          </div>
+        </div>
+
+        <fa-icon icon="angle-down" class="pl-5"></fa-icon>
+        }
+        @else {
+        <div class="flex text-left">
+          <fa-icon class="text-xl rounded-full mr-4" icon="location-dot"></fa-icon>
+          <p class="text-lg font-medium">Enter Address</p>
+        </div>
+
+        <fa-icon icon="angle-down" class="pl-5"></fa-icon>
+        }
+      </div>
+    </a>
+
+    <delivery-switch />
+  </div>
+
+  <search-bar />
+</div>

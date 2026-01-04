@@ -1,0 +1,68 @@
+<div class="navbar">
+  <div class="navbar-start">
+    <div class="flex flex-col p-4 gap-2">
+      <a class="link text-lg font-mono px-2" style="text-decoration: none" routerLink="/">
+        <fa-icon icon="arrow-left"></fa-icon> Back to store
+      </a>
+    </div>
+  </div>
+
+  <div class="navbar-center hidden lg:block">
+    <a class="link text-4xl font-serif p-2" style="text-decoration: none" routerLink="/">
+      <b>Bake</b>Sale
+    </a>
+  </div>
+</div>
+
+<div class="divider px-4"></div>
+
+@if (category.pages && category.pages.length > 0) {
+<div class="flex justify-center px-4 lg:hidden">
+  <div class="overflow-x-auto">
+    <ul class="menu menu-horizontal min-w-max items-center gap-2">
+      <li>
+        <a [class]="(currentPage == undefined ? 'menu-active text-lg' : 'bg-base-300')" (click)="onSelectPage(undefined)">
+          All (4)
+        </a>
+      </li>
+      @for (page of category.pages; track page) {
+      <li>
+        <a [class]="(page == currentPage ? 'menu-active text-lg' : 'bg-base-300')" (click)="onSelectPage(page)">
+          {{ page }} (4)
+        </a>
+      </li>
+      }
+    </ul>
+  </div>
+</div>
+<br />
+}
+
+<div class="drawer lg:drawer-open">
+  <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+
+  <div class="drawer-content flex flex-col px-4">
+    <!-- Page content here -->
+    <item-list [category]="category" [wrap]="true" [itemsPerPage]="0"></item-list>
+  </div>
+
+  <div class="drawer-side">
+    <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+    <ul class="menu min-h-full bg-base-100 w-86 text-base-content text-lg">
+      <!-- Sidebar content here -->
+      <li>
+        <a [class]="(currentPage == undefined ? 'menu-active font-bold text-lg' : 'font-light text-lg')" (click)="onSelectPage(undefined)">
+          All (4)
+        </a>
+      </li>
+      
+      @for (page of category.pages; track page) {
+      <li>
+          <a [class]="(page == currentPage ? 'menu-active font-bold text-lg' : 'font-light text-lg')" (click)="onSelectPage(page)">
+            {{ page }} (4)
+          </a>                
+      </li>
+      }
+    </ul>
+  </div>
+</div>

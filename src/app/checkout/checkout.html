@@ -1,0 +1,112 @@
+<div class="navbar">
+  <div class="navbar-start">
+    <div class="flex flex-col p-4 gap-2">
+      <a class="link text-lg font-mono px-2" style="text-decoration: none" routerLink="/">
+        <fa-icon icon="arrow-left"></fa-icon> Back to store
+      </a>
+      <label class="flex items-center gap-2 text-4xl font-mono lg:hidden">
+        <fa-icon icon="bag-shopping"></fa-icon> Checkout
+      </label>
+    </div>
+  </div>
+
+  <div class="navbar-center hidden lg:block">
+    <a class="link text-4xl font-serif p-2" style="text-decoration: none" routerLink="/">
+      <b>Bake</b>Sale
+    </a>
+  </div>
+</div>
+
+<div class="divider px-4"></div>
+
+@if (numItems == 0) {
+<div class="flex justify-center p-4">
+  <div class="flex flex-col justify-center items-center gap-2 pt-24 max-w-128">
+    <fa-icon class="text-5xl" icon="shopping-cart"></fa-icon>
+    <h1 class="text-xl">Your cart is empty!</h1>
+    <div class="divider px-24"></div>
+
+    <empty-cart-links></empty-cart-links>
+  </div>
+</div>
+}
+@else {
+<div class="flex justify-center lg:hidden">
+  <ul class="timeline">
+    <li>
+      <div class="timeline-start">
+        <button [class]="'btn ' + (isPlacingOrder == false ? 'btn-neutral' : 'btn-sm')"
+          (click)="isPlacingOrder = false;">Confirm Details</button>
+      </div>
+      <div class="timeline-middle">
+        <fa-icon [class]="!isPlacingOrder ? 'text-lg' : 'text-neutral-500'" icon="circle-dot"></fa-icon>
+      </div>
+      <hr />
+    </li>
+    <li>
+      <hr />
+      <div class="timeline-start">
+        <button [class]="'btn ' + (isPlacingOrder == true ? 'btn-neutral' : 'btn-disabled  btn-sm')"
+          (click)="placeOrder()">Place Order</button>
+      </div>
+      <div class="timeline-middle">
+        <fa-icon [class]="isPlacingOrder ? 'text-lg' : 'text-neutral-500'" icon="circle-dot"></fa-icon>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div class="flex justify-center p-4 lg:hidden">
+  <div class="flex flex-col gap-4 w-full">
+    @if (!isPlacingOrder) {
+    <checkout-details />
+    <button tabindex="0" class="btn btn-neutral btn-lg w-full" (click)="next()">Next</button>
+    } 
+    @else {
+    <div class="bg-base-200 rounded-box shadow-lg p-6">
+      <input-coupon />
+    </div>
+
+    <checkout-cart />
+
+    <div class="bg-base-200 rounded-box shadow-lg p-6">
+      <h1 class="text-xl font-medium">Order Total</h1>
+
+      <div class="p-2">
+        <order-total></order-total>
+      </div>
+    </div>
+
+    <button tabindex="0" class="btn btn-neutral btn-lg w-full" (click)="placeOrder()">Place Order</button>
+    }
+  </div>
+</div>
+
+<div class="flex w-full justify-items-center hidden lg:block p-4">
+  <div class="flex gap-4 w-fit">
+    <div class="flex flex-col gap-4 flex-2">
+      <checkout-details />
+
+      <checkout-cart />
+    </div>
+
+    <div class="flex flex-col gap-4 w-fit flex-1">
+      <div class="bg-base-200 rounded-box shadow-lg p-6">
+        <input-coupon />
+      </div>
+
+      <div class="bg-base-200 rounded-box shadow-lg p-6">
+        <h1 class="text-xl font-medium">Order Total</h1>
+
+        <div class="flex flex-col gap-1 p-2">
+          <order-total></order-total>
+        </div>
+      </div>
+
+      <footer>
+        <button class="btn btn-neutral btn-lg w-full" (click)="placeOrder()">Place Order</button>
+      </footer>
+    </div>
+  </div>
+</div>
+}

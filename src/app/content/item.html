@@ -1,0 +1,91 @@
+<div class="flex flex-col w-46 lg:w-56">
+  <figure>
+    <div class="indicator w-full h-42 lg:h-52">
+      <img class="w-full h-full rounded-box link" [src]="getImage(value)"
+        [routerLink]="['/item', {category: value.parent, item: value.name}]" />
+
+      <div class="indicator-item indicator-top indicator-end" style="--indicator-x: -0.5em; --indicator-y: 0.5em;">
+        <!-- Add button -->
+        @if (itemCount > 0) {
+        <button class="btn btn-neutral btn-circle shadow shadow-lg tooltip tooltip-bottom" data-tip="Change order"
+          (click)="openItem()">
+          <p class="text-lg font-bold">{{ amount }}</p>
+        </button>
+        }
+        @else {
+        <button class="btn btn-circle shadow shadow-lg tooltip tooltip-bottom" data-tip="Add to cart"
+          [routerLink]="['/item', {category: value.parent, item: value.name}]">
+          <fa-icon icon="plus" class="text-xl font-bold"></fa-icon>
+        </button>
+        }
+      </div>
+
+      <div class="indicator-item indicator-start" style="--indicator-x: -0.5em; --indicator-y: 1.25em;">
+        <div class="flex flex-col gap-1 text-white">
+          @if (value.company) {
+          <span class="bg-neutral text-sm text-white font-bold font-serif w-fit opacity-65 px-2 ml-2">
+            {{ value.company }}
+          </span>
+          }
+
+          @if (value.price.buyOneGetOne) {
+          <span class="badge badge-error text-white">Buy 1, Get 1</span>
+          } @else if (value.price.label) {
+          <span class="badge badge-warning text-white">{{ value.price.label }}</span>
+          }
+        </div>
+      </div>
+
+      @if (value.author) {
+      <div class="indicator-item indicator-bottom indicator-start" style="--indicator-x: -0.75em; --indicator-y: 0.75em;">
+        <div class="dropdown dropdown-right">
+          <div tabindex="0" role="button" class="btn btn-ghost btn-xl btn-circle avatar tooltip tooltip-right" [attr.data-tip]="'Created by ' + value.author">
+            <div [class]="'rounded-full shadow shadow-xl ring-offset-base-100 ring-2 ' + (value.isChef ? 'ring-secondary' : 'ring-base-200')">
+              <img src="https://img.daisyui.com/images/profile/demo/1@94.webp" />
+            </div>
+          </div>
+          <ul tabindex="0" class="menu dropdown-content bg-base-200 rounded-box z-1 mt-3 w-52 p-2 shadow-2xl">
+            <span class="p-1">
+              <label class="text-lg font-bold">{{ value.author }}</label><br />
+              <label class="label font-thin text-xs">{{ getAuthorRank(value.author) }}</label>
+            </span>
+
+            <li><a>View Profile</a></li>
+            <li><a>Rate Item</a></li>
+            <li><a>Report</a></li>
+          </ul>
+        </div>
+      </div>
+      }
+    </div>
+  </figure>
+
+  <div
+    [class]="'flex flex-col w-full ' + (value.author ? 'pt-2' : '') + ' ' + ((value.stockAmount != undefined && value.stockAmount == 0) ? 'text-gray-500' : '')">
+    <!-- Name -->
+    <a class="flex gap-2 items-center link text-xl font-bold w-fit" style="text-decoration: none;"
+      [routerLink]="['/item', {category: value.parent, item: value.name}]">
+      {{ value.name }}
+      @if (value.notify) {
+      <span class="status status-warning status-lg animate-bounce"></span>
+      }
+    </a>
+
+    <!-- warning -->
+    @if (value.stockAmount != undefined) {
+    @if (value.stockAmount == 0) {
+    <span class="badge-xs badge-error badge text-white">out of stock</span>
+    } @else if (value.stockAmount < 5) { 
+    <span class="text-xs text-error">only {{ value.stockAmount }} left</span>
+    }
+    }
+
+    <!-- Price -->
+    <item-price-tag [value]="value" size="xl"></item-price-tag>
+
+    <!-- Label -->
+    @if (value.label) {
+    <span class="text-sm px-2 pb-2" style="white-space: pre-wrap;">{{ value.label }}</span>
+    }
+  </div>
+</div>

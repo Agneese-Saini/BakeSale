@@ -1,0 +1,100 @@
+<h1 class="text-lg p-2">
+  @if (isDelivery) {
+  Delivery Address:
+  } @else {
+  Pickup Location:
+  }
+</h1>
+<div class="bg-base-300 rounded-box overflow-x-auto h-64 p-2">
+  <table class="table table-pin-rows bg-base-100">
+    <tbody>
+      @if (addressBook && addressBook.length > 0) {
+      @for (addy of addressBook; track addy) {
+      <tr>
+        <td>
+          <div class="flex justify-between">
+            <label class="label cursor-pointer">
+              <input type="radio" class="radio" [value]="addy" [(ngModel)]="selectedAddress"
+                (change)="onAddressChange()" />
+              <span class="label-text text-md">
+                <span class="flex items-center">
+                  <b>{{ addy.label }}</b>
+                  @if (addy.isTemp) {
+                  <a class="badge badge-xs badge-secondary ml-2 tooltip tooltip-right"
+                    data-tip="Temporary Address">Temp</a>
+                  }
+                </span>
+                <p>{{ addy.addressLine | truncate:35 }}</p>
+              </span>
+            </label>
+            <span class="flex items-center">
+              @if (isDelivery) {
+              <span class="label tooltip tooltip-left" data-tip="Edit Address">
+                <a class="btn btn-ghost btn-circle p-1 text-xl" (click)="openAddressBookDialog(addy)">
+                  <fa-icon icon="pencil"></fa-icon>
+                </a>
+              </span>
+              }
+              @else {
+              <span class="label tooltip tooltip-left" data-tip="View on Map">
+                <a class="btn btn-ghost btn-circle p-1 text-xl">
+                  <fa-icon icon="map-location-dot"></fa-icon>
+                </a>
+              </span>
+              }
+            </span>
+          </div>
+        </td>
+      </tr>
+      }
+      }
+      @else {
+      <tr>
+        <th>
+          <label class="label flex flex-col justify-between text-center">
+            <fa-icon class="text-4xl" icon="xmark"></fa-icon>
+            <span class="font-bold text-xl">No address found!</span>
+            @if (isDelivery) {
+            <span class="font-light text-sm">
+              Please add an Address<br />
+              or use your <fa-icon class="ml-1" icon="location-dot"></fa-icon><a
+                class="link font-medium no-underline ml-1" (click)="openAddressBookDialog(currentLocation)">Current
+                location</a>
+            </span>
+            }
+            @else {
+            <span class="font-light text-sm">
+              No pickup location found, please <a class="font-medium" href="">Contact Us</a> for further help!
+            </span>
+            }
+          </label>
+        </th>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (isDelivery) {
+<div class="flex gap-1 my-2">
+  <button class="flex-1 btn btn-neutral" (click)="openAddressBookDialog()">
+    <fa-icon icon="plus-circle"></fa-icon> Add Address
+  </button>
+
+  <button class="btn btn-neutral" (click)="openAddressBookDialog(currentLocation)">
+    <fa-icon icon="location-dot"></fa-icon>
+  </button>
+</div>
+}
+
+@if (timeslot == true) {
+<h1 class="text-lg p-2">Time preference:</h1>
+<div class="bg-base-300 rounded-box p-2">
+  <div class="flex justify-between items-center px-2">
+    <p class="text-lg">
+      <fa-icon icon="clock"></fa-icon> {{ deliveryMode?.label }} {{ settings.timeslot?.label }}
+    </p>
+    <button class="btn btn-sm btn-neutral" (click)="openTimeslotsDialog()">Schedule</button>
+  </div>
+</div>
+}

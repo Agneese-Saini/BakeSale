@@ -1,0 +1,169 @@
+<div class="bg-base-200 min-w-84 p-4">
+  @if (isValidAddress) {
+  <h2 mat-dialog-title class="text-4xl font-bold">Edit Address</h2>
+  @if (address.isTemp) {
+  <p class="badge badge-sm badge-secondary font-mono">Temporary Address</p>
+  }
+  }
+  @else {
+  <h2 mat-dialog-title class="text-4xl font-bold">Add an Address</h2>
+  }
+
+  <div class="skeleton w-full h-25 mt-4"></div>
+
+  <h1 class="mt-4">Lookup Address:</h1>
+  <div class="flex justify-between gap-2 mt-1">
+    <input type="search" class="input input-bordered w-full placeholder-gray-500" placeholder="Search" />
+    <div class="tooltip tooltip-left" data-tip="Use Current location">
+      <button class="btn btn-neutral">
+        <fa-icon icon="location-dot"></fa-icon>
+      </button>
+    </div>
+  </div>
+  @if (error(errorTypes.LookupAddress)) {
+  <div class="flex gap-1">
+    <fa-icon class="text-error text-sm" icon="exclamation"></fa-icon>
+    <p class="font-mono text-sm text-error pb-2">{{ error(errorTypes.LookupAddress)?.message }}</p>
+  </div>
+  }
+  <br />
+
+  <div class="max-h-94 overflow-x-auto">
+    @if (showAddressInfo || isValidAddress) {
+    <fieldset class="fieldset px-1">
+      <p class="fieldset-legend text-lg">Address line:</p>
+
+      @if (error(errorTypes.AddressLine)) {
+      <input type="search" placeholder="Enter Address" class="input w-full placeholder-gray-500 outline outline-error "
+        [(ngModel)]="address.addressLine" (change)="clearError(errorTypes.AddressLine)" />
+      <p class="font-mono text-sm text-error pb-2">{{ error(errorTypes.AddressLine)?.message }}</p>
+      }
+      @else {
+      <input type="search" placeholder="Enter Address" class="input w-full placeholder-gray-500"
+        [(ngModel)]="address.addressLine" />
+      }
+    </fieldset>
+
+    <fieldset class="fieldset px-1">
+      <p class="fieldset-legend text-lg">City:</p>
+
+      @if (error(errorTypes.City)) {
+      <input type="search" placeholder="Enter City" class="input w-full placeholder-gray-500 outline outline-error "
+        [(ngModel)]="address.city" (change)="clearError(errorTypes.City)" />
+      <p class="font-mono text-sm text-error pb-2">{{ error(errorTypes.City)?.message }}</p>
+      }
+      @else {
+      <input type="search" placeholder="Enter City" class="input w-full placeholder-gray-500"
+        [(ngModel)]="address.city" />
+      }
+    </fieldset>
+
+    <div class="flex gap-2">
+      <fieldset class="fieldset px-1">
+        <p class="fieldset-legend text-lg">Province:</p>
+
+        <select class="select w-full" [(ngModel)]="address.province">
+          @for (entry of provinceList; track entry) {
+          <option [ngValue]="entry">{{ entry }}</option>
+          }
+        </select>
+      </fieldset>
+
+      <fieldset class="fieldset px-1">
+        <p class="fieldset-legend text-lg">Postal Code:</p>
+
+        @if (error(errorTypes.PostalCode)) {
+        <input type="search" placeholder="Postal Code" class="input w-full placeholder-gray-500 outline outline-error "
+          [(ngModel)]="address.postal" (change)="clearError(errorTypes.PostalCode)" />
+        <p class="font-mono text-sm text-error pb-2">{{ error(errorTypes.PostalCode)?.message }}</p>
+        }
+        @else {
+        <input type="search" placeholder="Postal Code" class="input w-full placeholder-gray-500"
+          [(ngModel)]="address.postal" />
+        }
+      </fieldset>
+    </div>
+
+    <fieldset class="fieldset px-1">
+      <p class="fieldset-legend text-lg justify-start">Apt / Suite / Floor: <span
+          class="badge badge-neutral bade-sm opacity-35 font-thin">Optional</span></p>
+
+      @if (error(errorTypes.Apt)) {
+      <input type="search" maxlength="5" placeholder="e.g. 1408"
+        class="input w-full placeholder-gray-500 outline outline-error " [(ngModel)]="address.apt"
+        (change)="clearError(errorTypes.Apt)" />
+      <p class="font-mono text-sm text-error pb-2">{{ error(errorTypes.Apt)?.message }}</p>
+      }
+      @else {
+      <input type="search" maxlength="5" placeholder="e.g. 1408" class="input w-full placeholder-gray-500"
+        [(ngModel)]="address.apt" />
+      }
+    </fieldset>
+
+    <fieldset class="fieldset px-1">
+      <legend class="fieldset-legend text-lg">Building Type:</legend>
+
+      <select class="select w-full" [(ngModel)]="address.buildingType">
+        @for (entry of buildingTypes; track entry) {
+        <option [value]="entry">{{ entry }}</option>
+        }
+      </select>
+    </fieldset>
+
+    <fieldset class="fieldset px-1">
+      <legend class="fieldset-legend text-lg">Label:</legend>
+
+      @if (error(errorTypes.Label)) {
+      <input type="text" placeholder="e.g. Home" class="input w-full placeholder-gray-500 outline outline-error"
+        [(ngModel)]="address.label" (change)="clearError(errorTypes.Label)" />
+      <p class="font-mono text-sm text-error pb-2">{{ error(errorTypes.Label)?.message }}</p>
+      }
+      @else {
+      <input type="text" placeholder="e.g. Home" class="input w-full placeholder-gray-500"
+        [(ngModel)]="address.label" />
+      }
+    </fieldset>
+    }
+
+    @if (isValidAddress && address.isTemp) {
+    <label class="text-lg">
+      <input type="checkbox" class="checkbox" [(ngModel)]="temporaryAddress" (change)="updateTemporaryAddress()" />
+      Temporary Address
+    </label>
+    <br />
+    <i class="font-thin text-sm p-3">
+      <fa-icon icon="info"></fa-icon> Temporary address gets deleted after 24 Hours.
+      This can be useful when you are ordering from somewhere you are temporarly staying like a Hotel!
+    </i>
+    }
+  </div>
+
+  <div class="grid items-stretch mt-4">
+    @if (isValidAddress) {
+    <button class="btn btn-neutral m-1" (click)="onSaveAddress(temporaryAddress)">
+      Save Address
+    </button>
+    <button class="btn bg-base-100 text-error m-1" (click)="onDeleteAddress(address.label)">
+      Delete Address
+    </button>
+    }
+    @else {
+    @if (showAddressInfo) {
+    <button class="btn btn-neutral m-1" (click)="onSaveAddress()">
+      Add Address
+    </button>
+    <button class="btn bg-base-100 m-1 text-error" (click)="onSaveAddress(true)">
+      Use as Temporary address
+    </button>
+    }
+    @else {
+    <button class="btn btn-soft m-1" (click)="showAddressInfo = true;">
+      Enter Address Manually <fa-icon icon="pencil"></fa-icon>
+    </button>
+    }
+    }
+    <button class="btn bg-base-100 m-1" (click)="onCancel()">
+      Cancel
+    </button>
+  </div>
+</div>

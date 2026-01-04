@@ -1,0 +1,209 @@
+<div class="navbar">
+  <div class="navbar-start">
+    <div class="flex flex-col p-4 gap-2">
+      <a class="link text-lg font-mono px-2" style="text-decoration: none" routerLink="/">
+        <fa-icon icon="arrow-left"></fa-icon> Back to store
+      </a>
+      <label class="flex items-center gap-2 text-4xl font-mono lg:hidden">
+        <fa-icon icon="cake-candles"></fa-icon> BakeSale Customs
+      </label>
+    </div>
+  </div>
+
+  <div class="navbar-center hidden lg:block">
+    <a class="link text-4xl font-serif p-2" style="text-decoration: none" routerLink="/">
+      <b>Bake</b>Sale
+    </a>
+  </div>
+</div>
+
+<div class="divider px-4"></div>
+
+@if (selectedCategory != firstCategory) {
+<div class="flex justify-center">
+  <ul class="timeline overflow-x-auto">
+    @for (cat of categories | keyvalue; track cat.key) {
+    @if (!cat.value.hidden) {
+    <li>
+      @if (cat.key != firstCategory) {
+      <hr />
+      }
+
+      <div class="timeline-start">
+        <button
+          [class]="'btn ' + (selectedCategory == cat.key ? 'btn-neutral btn-active btn-lg' : (((cat.key == lastCategory && hasErrors())) ? 'btn-disabled' : (hasError(cat.key, true) ? 'outline outline-error text-error' : '')))"
+          (click)="onSelectCategory(cat.key)">{{ cat.value.name }}</button>
+      </div>
+      <div class="timeline-middle">
+        <fa-icon
+          [class]="selectedCategory == cat.key ? 'text-lg' : (((cat.key == lastCategory && hasErrors())) ? 'text-gray-500' : (hasError(cat.key, true) ? 'text-error' : ''))"
+          icon="circle-dot"></fa-icon>
+      </div>
+
+      @if (cat.key != lastCategory) {
+      <hr />
+      }
+    </li>
+    }
+    }
+  </ul>
+</div>
+}
+
+<div class="flex flex-col lg:flex-row flex-col-reverse gap-4 justify-center p-4">
+  <div class="flex flex-col gap-2 items-center">
+    <div class="w-full lg:max-w-164">
+      @if (selectedCategory == firstCategory) {
+      <div class="flex flex-col items-center px-4">
+        <h1>Select the type of Cake you want to build:</h1>
+        <div class="overflow-x-auto">
+          <ul class="menu menu-horizontal gap-2">
+            @for (type of customTypes | keyvalue; track type.key) {
+            <li>
+              <a [class]="(selectedType == type.key ? 'menu-active' : '')" (click)="onCustomTypeChange(type.key)">
+                @if (type.key) {
+                <fa-icon [icon]="type.value.icon" class="text-2xl"></fa-icon>
+                } @else {
+                <fa-icon icon="circle-dot" class="text-2xl"></fa-icon>
+                }
+                <span>{{ type.value.label }}</span>
+              </a>
+            </li>
+            }
+          </ul>
+        </div>
+      </div>
+      <br />
+      }
+
+      @if (currentCategory && currentCategory.instructions) {
+      <p class="whitespace-pre-line">{{ currentCategory.instructions }}</p>
+      <br />
+      }
+
+      @if (currentCategory) {
+      <item-choice-list class="w-full" [choices]="currentCategory.choices"></item-choice-list>
+      <br />
+      }
+
+      @if (selectedCategory == lastCategory) {
+      <div class="flex flex-col gap-4 mb-6">
+        <h1 class="font-bold text-xl">Name:</h1>
+        <label [class]="'input w-full ' + (recipeNameError ? 'input-error' : '')">
+          <input type="search" class="grow placeholder-gray-500 input-lg" placeholder="Enter name for your recipe"
+            [(ngModel)]="recipeName" (change)="recipeNameError=undefined" />
+        </label>
+        @if (recipeNameError) {
+        <p class="text-right text-error">{{ recipeNameError }}</p>
+        }
+      </div>
+      <br />
+
+      <div class="flex flex-col gap-4 mb-6">
+        <h1 class="font-bold text-xl">Description:</h1>
+        <label class="input w-full">
+          <input type="search" class="grow placeholder-gray-500 input-lg"
+            placeholder="Enter a description for your recipe" [(ngModel)]="recipeDescription" />
+        </label>
+      </div>
+      <br />
+
+      <div class="flex justify-between">
+        <h1 class="font-bold text-xl">Total:</h1>
+        <h1 class="text-xl">- <fa-icon class="text-warning" icon="coins"></fa-icon>{{ pointsRequiredForRecipe }}</h1>
+      </div>
+      @if (hasEnoughPoints) {
+      <p class="text-sm text-right">You have <fa-icon class="text-warning" icon="coins"></fa-icon> {{ user.points ?
+        user.points : 0 }} points (after purchase: <fa-icon class="text-warning" icon="coins"></fa-icon> {{ (user.points
+        ?
+        user.points : 0) - pointsRequiredForRecipe }})</p>
+      } @else {
+      <p class="text-sm text-right text-error">Looks like you don't have enough points to proceed (You have: <fa-icon
+          class="text-warning" icon="coins"></fa-icon> {{ user.points ? user.points : 0 }} points)</p>
+      }
+      <br />
+      }
+
+      <footer class="flex flex-col gap-2 w-full">
+        @if (currentCategory) {
+        @for (buttons of currentCategory.buttons; track buttons) {
+        @switch (buttons.type) {
+        @case (buttonType.Finish) {
+        <button [class]="'btn btn-lg w-full btn-warning ' + (!hasEnoughPoints ? 'btn-disabled' : '')"
+          (click)="next()">{{
+          buttons.name }}</button>
+        }
+        @case (buttonType.Next) {
+        <button class="btn btn-lg w-full btn-neutral" (click)="next()">{{ buttons.name }}</button>
+        }
+        @case (buttonType.Back) {
+        <button class="btn btn-lg w-full bg-base-100" (click)="back()">{{ buttons.name }}</button>
+        }
+        @default {
+        <button class="btn btn-lg w-full bg-base-100">{{ buttons.name }}</button>
+        }
+        }
+        }
+        }
+      </footer>
+    </div>
+  </div>
+
+  @if (selectedCategory != firstCategory) {
+  <div class="flex flex-col gap-1 w-full lg:max-w-128">
+    <div class="indicator flex items-center justify-center w-full">
+      @if (true) {
+      <div class="indicator-item indicator-bottom indicator-start" style="--indicator-x: 1em; --indicator-y: -1em;">
+        <div class="flex flex-col flex-col-reverse gap-2">
+          @for (layer of layers; track layer.key) {
+          @if (layer.value && !layer.value.hidden) {
+          <a class="link flex gap-1 items-center" style="text-decoration: none;" (click)="onSelectCategory(layer.key)">
+            <button
+              [class]="'btn btn-circle btn-lg ' + (selectedCategory == layer.key ? 'text-xl btn-neutral font-bold' : 'text')">{{
+              layerName(layer.key) }}</button>
+            <p>Layer</p>
+          </a>
+          }
+          }
+        </div>
+      </div>
+      }
+
+      <div
+        class="flex justify-center border border-dashed border-2 border-base-content/35 rounded-box bg-base-300 w-full">
+        <img class="rounded-box max-h-98"
+          src="https://images.rawpixel.com/image_png_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA4L3Jhd3BpeGVsX29mZmljZV8yMl9iaXJ0aGRheV9jYWtlX2N1dGVfM2RfaXNvbGF0ZWRfb25fd2hpdGVfYmFja19lN2Y5ZWJiYi1kMTE4LTQzZDQtOGQ2Ni02ZDk4YjQyODM5MzkucG5n.png" />
+      </div>
+    </div>
+
+    @if (currentCategory && selectedCategory != lastCategory) {
+    <div class="flex justify-center p-4 w-full">
+      <item-choice-catalog [value]="currentCategory.choices"></item-choice-catalog>
+    </div>
+    }
+
+    <div class="flex flex-col gap-1 w-full">
+      <div class="stats border border-dashed border-2 border-base-content/35 bg-base-300">
+        <div class="stat place-items-center">
+          <div class="stat-title font-mono">{{ customTypes.get(selectedType)?.label }} Theme</div>
+          <div class="stat-value">
+            @if (theme == null) {
+            <fa-icon class="text-gray-500" icon="question"></fa-icon>
+            }
+            @else {
+            <b class="text-error">{{ theme }}</b>
+            }
+          </div>
+          <div class="stat-desc text-wrap"><b>{{ numLayers }}</b> Layer(s)</div>
+        </div>
+
+        <div class="stat place-items-center">
+          <div class="stat-title font-mono">Value</div>
+          <div class="stat-value">$50</div>
+          <div class="stat-desc text-success"><fa-icon icon="caret-up"></fa-icon> $2</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>
