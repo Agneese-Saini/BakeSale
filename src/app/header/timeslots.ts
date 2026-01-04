@@ -4,6 +4,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { IDeliverySettings, AddressBook, DeliveryService } from "./delivery";
+import { MatDialogModule } from "@angular/material/dialog";
 
 export interface ITime {
   start?: number,
@@ -17,8 +18,8 @@ export interface ITimeSlot {
 };
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule],
-  templateUrl: './timeslots.html'
+  imports: [FormsModule, FontAwesomeModule, MatDialogModule],
+  templateUrl: './timeslotDialog.html'
 })
 export class TimeslotsDialog {
 

@@ -1,16 +1,16 @@
 import { Component, Inject, Input } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { DecimalPipe } from "@angular/common";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { IItem, IItemDetail, Item } from "./item";
+import { IItem, Item } from "./item";
 import { ICategory, ICustomizer } from "../header/category";
 import { CartService } from "../checkout/cart";
 import { RouterModule } from "@angular/router";
 import { ItemChoiceList } from "./itemChoice";
-import _ from "lodash";
 import { Recipe } from "../recipe/recipe";
+import _ from "lodash";
 
 @Component({
   selector: 'text-read-more',
@@ -137,101 +137,39 @@ export class PriceTag {
   imports: [FormsModule, FontAwesomeModule],
   template: `
 @if (hasDetails) {
-<div [class]="'flex w-full flex-row ' + (detailsB.length != 0 ? 'p-2' : 'p-6')">
-  <div class="grid grow place-items-center">
-    <table class="table table-sm">
-      <tbody>
-        @for (detail of detailsA; track detail) {
-        <tr>
-          <th>
-            @if (detail.icon) {
-            <fa-icon icon="check"></fa-icon>
-            }
-            {{ detail.header }}
-          </th>
-          <th class="label">{{ detail.detail }}</th>
-        </tr>
+<table class="table table-sm">
+  <tbody>
+    @for (detail of item.details; track detail) {
+    <tr>
+      <th class="text-right">
+        @if (detail.icon) {
+        <fa-icon icon="check"></fa-icon>
         }
-      </tbody>
-    </table>
-  </div>
-
-  @if (detailsB.length != 0) {
-  <div class="divider divider-horizontal"></div>
-  <div class="grid grow place-items-center">
-    <table class="table table-sm">
-      <tbody>
-        @for (detail of detailsB; track detail) {
-        <tr>
-          <th>
-            @if (detail.icon) {
-            <fa-icon icon="check"></fa-icon>
-            }
-            {{ detail.header }}
-          </th>
-          <th class="label">{{ detail.detail }}</th>
-        </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  }
-</div>
-<br />
+        {{ detail.header }}
+      </th>
+      <th class="label">
+        {{ detail.detail }}
+      </th>
+    </tr>
+    }
+  </tbody>
+</table>
 }
 `
 })
 export class ItemDetails {
-  
+
   @Input({ required: true })
   public item: IItem = Item.DefaultItem;
 
-  protected detailsA: IItemDetail[] = [];
-  protected detailsB: IItemDetail[] = [];
   protected get hasDetails(): boolean {
-    return this.detailsA.length > 0;
-  }
-
-  protected ngOnInit() {
-    this.parseDetails(this.item);
-  }
-
-  protected parseDetails(item: IItem) {
-    if (item.details) {
-      const len = item.details.length;
-
-      for (let detail of item.details) {
-        const length = detail.header.length + detail.detail.length;
-        if (length > 24) {
-          this.detailsA = item.details;
-          this.detailsB = [];
-
-          return;
-        }
-      }
-
-      const limitA: number = Math.round(len / 2);
-
-      for (let i: number = 0; i < limitA; i++) {
-        const value = item.details.at(i);
-        if (value) {
-          this.detailsA.push(value);
-        }
-      }
-
-      for (let i: number = limitA; i < len; i++) {
-        const value = item.details.at(i);
-        if (value) {
-          this.detailsB.push(value);
-        }
-      }
-    }
+    return this.item != undefined && this.item.details != undefined && this.item.details.length > 0;
   }
 };
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, RouterModule, ItemChoiceList, DecimalPipe, TextReadMore, PriceTag, ItemDetails],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, ItemChoiceList, DecimalPipe, TextReadMore, PriceTag, ItemDetails, MatDialogModule],
   templateUrl: './itemDialog.html'
 })
 export class ItemDialog {
@@ -255,7 +193,7 @@ export class ItemDialog {
 
   protected ngOnInit() {
     this.displayImage = Item.getImage(this.item);
-    
+
     // Reset errors
     if (this.item.choices) {
       for (let [key, value] of this.item.choices.entries()) {

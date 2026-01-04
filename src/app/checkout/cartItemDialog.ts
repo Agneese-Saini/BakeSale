@@ -1,6 +1,6 @@
 import { Component, Inject, ChangeDetectorRef, Input } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogConfig } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogConfig, MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { IItem, Item } from "../content/item";
@@ -172,18 +172,26 @@ export class CartItemList {
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, CartItemList],
+  imports: [FormsModule, FontAwesomeModule, CartItemList, MatDialogModule],
   template: `
-
-<div class="bg-base-200 min-w-84 p-4">
-  <label class="label">Your shopping cart ({{ data.name }}):</label>
-  <div class="bg-base-100 rounded-box h-94 overflow-y-auto p-2">
-    <cart-item-list [items]="items" />    
+<div class="bg-base-200 p-4">
+  <div mat-dialog-title>
+    <h1 class="label">Your shopping cart ({{ data.name }}):</h1>
   </div>
 
-  <button class="btn btn-neutral mt-4 w-full" (click)="closeDialog()">Close</button>
-</div>
+  <div mat-dialog-content>
+    <div class="bg-base-100 rounded-box h-94 overflow-y-auto p-2">
+      <cart-item-list [items]="items" />    
+    </div>
+  </div>
+  <br />
 
+  <div mat-dialog-actions>    
+    <div class="grid gap-2">
+      <button class="btn btn-neutral" (click)="closeDialog()">Close</button>
+    </div>
+  </div>
+</div>
 `
 })
 export class CartItemsDialog {
