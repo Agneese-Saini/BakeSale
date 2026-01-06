@@ -10,7 +10,7 @@
 <br />
 
 @if (item) {
-<div class="flex flex-col lg:flex-row gap-6 lg:gap-12 justify-center p-4 min-h-screen">
+<div class="flex flex-col lg:flex-row gap-6 lg:gap-12 lg:justify-center p-4 min-h-screen">
   <div class="flex flex-col gap-4 items-center min-w-full lg:min-w-128 lg:max-w-164">
     <div class="rounded-box flex bg-base-300 justify-center w-full">
       <img class="max-h-84 lg:max-h-128" [src]="displayImage" />
@@ -61,7 +61,7 @@
     <text-read-more [text]="item.about" [maxLength]="150"></text-read-more>
     <br />
     }
-    
+
     <div class="flex justify-center">
       <item-details [item]="item"></item-details>
     </div>
@@ -73,13 +73,16 @@
     <br />
     }
 
-    <div class="bg-base-300 rounded-box p-4">
-      @if (item.choices) {
-      <div class="px-0.75">
-        <item-choice-list [choices]="item.choices"></item-choice-list>
-      </div>
+    @if (item.choices) {
+    <div class="flex flex-col gap-2">
+      @for (entry of item.choices | keyvalue; track entry.key) {
+      <item-choice-list class="w-full" [type]="entry.key" [choices]="entry.value"></item-choice-list>
       }
+    </div>
+    <br />
+    }
 
+    <div class="bg-base-300 rounded-box p-4">
       <div class="flex justify-between items-center">
         <h1 class="text-xl p-4">Order:</h1>
         <div class="flex flex-col items-end p-4">
@@ -100,11 +103,11 @@
           @if (item.stockAmount == 0) {
           <span class="badge-xs badge-error badge text-white">out of stock</span>
           } @else if (item.stockAmount < 5) { <span class="text-xs text-error">only {{ item.stockAmount }} left</span>
-          }
-          }
-          @if (item.price.buyOneGetOne) {
-          <p>Buy 1, Get 1</p>
-          }
+            }
+            }
+            @if (item.price.buyOneGetOne) {
+            <p>Buy 1, Get 1</p>
+            }
         </div>
       </div>
 

@@ -136,7 +136,7 @@ export class Content {
         <tr class="h-12">
           <td>
             <button 
-              [class]="'link text-lg w-full ' + (category.items ? '' : 'text-gray-500')" 
+              [class]="'link label text-lg w-full ' + (category.items ? 'text-neutral' : '')" 
               style="text-decoration: none;"
               (click)="focusCategory(category)">
               {{ category.name }} ({{ category.items ? category.items.length : 0 }})

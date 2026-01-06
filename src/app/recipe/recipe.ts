@@ -1,11 +1,12 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { ChoiceList, ItemChoiceCatalog, ItemChoiceList } from "../content/itemChoice";
+import { ChoiceList, IChoiceType, ItemChoiceCatalog, ItemChoiceList } from "../content/itemChoice";
 import { KeyValuePipe } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { IUser, UserService } from '../user/user';
+import _ from 'lodash';
 
 export enum ButtonType {
   Finish,
@@ -20,10 +21,8 @@ export enum RecipeType {
 }
 
 export enum Category {
-  Settings,
-  Layer1,
-  Layer2,
-  Layer3,
+  Setup,
+  Layering,
   Finish
 }
 
@@ -31,8 +30,7 @@ export interface IRecipeGroup {
   name: string,
   choices: ChoiceList,
   buttons: { name: string, type: ButtonType }[],
-  instructions?: string,
-  hidden?: boolean
+  instructions?: string
 }
 export type RecipeGroup = Map<Category, IRecipeGroup>;
 
@@ -58,12 +56,6 @@ export class Recipe {
 
   static readonly PointsPerRecipe = 15;
   static readonly PointsRequiredForRecipe = 0;
-  
-  protected pointsRequiredForRecipe = Recipe.PointsRequiredForRecipe;
-
-  protected get hasEnoughPoints(): boolean {
-    return (this.pointsRequiredForRecipe == 0 || (this.user.points != undefined && this.user.points >= this.pointsRequiredForRecipe));
-  }
 
   static readonly CustomTypes: Map<RecipeType, { label: string, icon: string }> = new Map([
     [RecipeType.Cake, {
@@ -76,8 +68,13 @@ export class Recipe {
     }]
   ]);
 
-  private recipe: RecipeGroup = new Map([
-    [Category.Settings, {
+  protected pointsRequiredForRecipe = Recipe.PointsRequiredForRecipe;
+  protected customTypes = Recipe.CustomTypes;
+  protected buttonType = ButtonType;
+  protected category = Category;
+
+  protected categories: RecipeGroup = new Map([
+    [Category.Setup, {
       name: "Cake Setup",
       instructions: "To start building, choose a theme for your cake. This will help us in designing and layering your cake accordingly.\n\
         You will have the option to select how many layers of cake you want and style each layer in the next steps.",
@@ -89,48 +86,10 @@ export class Recipe {
       buttons:
         [{ name: "Next", type: ButtonType.Next }]
     }],
-    [Category.Layer1, {
-      name: "Base Bun",
+    [Category.Layering, {
+      name: "Layering",
       instructions: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui.",
-      choices:
-        new Map([
-          [{ name: "Bun Shape", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Bun Flavor", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Cake Filling", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Cake Frosting", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Addons", limit: 5, required: false }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Finish", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]]
-        ]),
-      buttons:
-        [{ name: "Next", type: ButtonType.Next }, { name: "Back", type: ButtonType.Back }]
-    }],
-    [Category.Layer2, {
-      name: "Middle Bun",
-      instructions: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui.",
-      choices:
-        new Map([
-          [{ name: "Bun Shape", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Bun Flavor", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Cake Filling", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Cake Frosting", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Addons", limit: 5, required: false }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Finish", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]]
-        ]),
-      buttons:
-        [{ name: "Next", type: ButtonType.Next }, { name: "Back", type: ButtonType.Back }]
-    }],
-    [Category.Layer3, {
-      name: "Top Bun",
-      instructions: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui.",
-      choices:
-        new Map([
-          [{ name: "Bun Shape", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Bun Flavor", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Cake Filling", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Cake Frosting", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Addons", limit: 5, required: false }, [{ name: "Option 1" }, { name: "Option 2" }]],
-          [{ name: "Finish", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]]
-        ]),
+      choices: new Map(),
       buttons:
         [{ name: "Next", type: ButtonType.Next }, { name: "Back", type: ButtonType.Back }]
     }],
@@ -146,15 +105,13 @@ export class Recipe {
     }]
   ]);
 
-  readonly buttonType = ButtonType;
-  readonly category = Category;
-  readonly customTypes = Recipe.CustomTypes;
+  protected layers: Map<number, ChoiceList> = new Map();
 
-  protected readonly firstCategory = Category.Settings;
-  protected readonly lastCategory = Category.Finish;
-
-  protected selectedCategory: Category = this.firstCategory;
+  protected selectedCategory: Category = Category.Setup;
   protected selectedType: RecipeType = RecipeType.Cake;
+  protected selectedLayer: number = 0;
+  protected selectedChoice?: IChoiceType;
+  protected skipNonSelection: boolean =  true;
 
   protected recipeName?: string;
   protected recipeNameError?: string;
@@ -162,70 +119,31 @@ export class Recipe {
 
   protected user: IUser = UserService.DefaultUser;
 
+  protected get hasEnoughPoints(): boolean {
+    return (this.pointsRequiredForRecipe == 0 || (this.user.points != undefined && this.user.points >= this.pointsRequiredForRecipe));
+  }
+
   protected get numLayers() {
-    return Recipe.numLayers(this.recipe);
+    return Recipe.numLayers(this.categories);
   }
 
   protected get theme() {
-    return Recipe.getTheme(this.recipe);
-  }
-
-  protected get categories() {
-    this.recipe.get(Category.Layer1)!.hidden = false;
-    this.recipe.get(Category.Layer2)!.hidden = true;
-    this.recipe.get(Category.Layer3)!.hidden = true;
-
-    if (this.numLayers > 1) {
-      this.recipe.get(Category.Layer3)!.hidden = false;
-    }
-
-    if (this.numLayers > 2) {
-      this.recipe.get(Category.Layer2)!.hidden = false;
-    }
-
-    return this.recipe;
+    return Recipe.getTheme(this.categories);
   }
 
   protected get currentCategory() {
     return this.categories.get(this.selectedCategory);
   }
 
-  protected get layers(): { key: Category, value?: IRecipeGroup }[] {
-    return [
-      { key: Category.Layer1, value: this.recipe.get(Category.Layer1) },
-      { key: Category.Layer2, value: this.recipe.get(Category.Layer2) },
-      { key: Category.Layer3, value: this.recipe.get(Category.Layer3) }
-    ];
+  protected get currentLayer() {
+    return this.layers.get(this.selectedLayer);
   }
 
-  protected layerName(key: Category) {
-    switch (this.numLayers) {
-      case 1: {
-        return "1st";
-      }
-
-      case 2: {
-        if (key == Category.Layer1) {
-          return "1st";
-        } else if (key == Category.Layer3) {
-          return "2nd";
-        }
-        break;
-      }
-
-      case 3: {
-        if (key == Category.Layer1) {
-          return "1st";
-        } else if (key == Category.Layer2) {
-          return "2nd";
-        } else if (key == Category.Layer3) {
-          return "3rd";
-        }
-        break;
-      }
-    }
-
-    return "\0";
+  protected get currentChoice() {
+    const choiceList = this.layers.get(this.selectedLayer);
+    return choiceList && this.selectedChoice
+      ? choiceList.get(this.selectedChoice)
+      : undefined;
   }
 
   protected getSelection = ItemChoiceList.GetSelection;
@@ -243,29 +161,56 @@ export class Recipe {
     });
   }
 
+  protected initLayers() {
+    const layerChoices: ChoiceList = new Map([
+      [{ name: "Bun Shape", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
+      [{ name: "Bun Flavor", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
+      [{ name: "Cake Filling", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
+      [{ name: "Cake Frosting", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
+      [{ name: "Addons", limit: 5, required: false }, [{ name: "Option 1" }, { name: "Option 2" }]],
+      [{ name: "Finish", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]]
+    ]);
+
+    this.layers.clear();
+
+    for (let i: number = 1; i <= this.numLayers; i++) {
+      this.layers.set(i, _.cloneDeep(layerChoices));
+    }
+
+    this.onSelectLayer(1);
+  
+    this.skipNonSelection = true;
+  }
+
   protected onSelectCategory(category: Category) {
     this.selectedCategory = category;
+  }
+
+  protected onSelectLayer(layer: number) {
+    this.selectedLayer = layer;
+
+    const choiceList = this.layers.get(this.selectedLayer);
+    if (choiceList) {
+      // Reset errors
+      for (let [key, value] of choiceList) {
+        key.error = undefined;
+      }
+
+      // Set selected choice to 1st
+      this.selectedChoice = [...choiceList.keys()].at(0);
+    }
+  }
+
+  protected onSelectChoice(choiceType: IChoiceType) {
+    this.selectedChoice = choiceType;
   }
 
   protected onCustomTypeChange(type: RecipeType) {
     this.selectedType = type;
   }
 
-  protected hasChoice(category: Category): boolean {
-    const data = this.recipe.get(category);
-    if (data) {
-      for (let [key, value] of data.choices) {
-        if (ItemChoiceList.NumSelection(value) > 0) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  protected hasError(category: Category, skipNonSelection?: boolean): boolean {
-    const data = this.recipe.get(category);
+  protected hasError(category: Category, skipNonSelection?: boolean, choice?: IChoiceType): boolean {
+    const data = this.categories.get(category);
 
     if (data) {
       for (let [key, value] of data.choices) {
@@ -275,13 +220,40 @@ export class Recipe {
       }
     }
 
+    if (category == Category.Layering) {
+      if (choice) {
+        const choiceList = this.layers.get(this.selectedLayer);
+          if (choiceList) {
+          const choiceIndex = [...choiceList.keys()].findIndex(value => (value == choice));
+          const choices = [...choiceList.values()].at(choiceIndex);
+          if (choices && ItemChoiceList.HasError(choice, choices, skipNonSelection)) {
+            return true;
+          }
+        }
+      }
+      else if (this.selectedChoice && this.currentChoice) {
+        if (ItemChoiceList.HasError(this.selectedChoice, this.currentChoice, skipNonSelection)) {
+          return true;
+        }
+      }
+    }
+
     return false;
   }
 
+  // This checks for errors in all categories except the last one
   protected hasErrors(skipNonSelection?: boolean): boolean {
     for (let [key, value] of this.categories) {
-      if (key != this.lastCategory && !value.hidden) {
+      if (key != Category.Finish) {
         if (this.hasError(key, skipNonSelection)) {
+          return true;
+        }
+      }
+    }
+
+    for (let [layer, choiceList] of this.layers) {
+      for (let [key, value] of choiceList) {
+        if (ItemChoiceList.HasError(key, value, skipNonSelection)) {
           return true;
         }
       }
@@ -291,71 +263,101 @@ export class Recipe {
   }
 
   protected showErrors(category: Category) {
-    const data = this.recipe.get(category);
+    const data = this.categories.get(category);
     if (data) {
       for (let [key, value] of data.choices) {
         ItemChoiceList.ShowError(key, value);
       }
 
-      if (category == this.lastCategory) {
+      if (category == Category.Finish) {
         this.recipeNameError = !(this.recipeName && this.recipeName.length > 4)
           ? "Invalid recipe name"
           : undefined;
       }
+    }
+    
+    if (this.selectedChoice && this.currentChoice) {
+      ItemChoiceList.ShowError(this.selectedChoice, this.currentChoice);
     }
   }
 
   protected next() {
     this.showErrors(this.selectedCategory);
 
-    if (!this.hasError(this.selectedCategory, false)) {
-      const keysArray = Array.from(this.recipe.keys());
-      const currentIndex = keysArray.indexOf(this.selectedCategory);
-
-      if (currentIndex != -1) {
-        let newindex = currentIndex + 1;
-
-        if (newindex == keysArray.length) {
-          if (this.recipeNameError) {
-            this.snackBar.open("Please provide a valid name for your recipe.", "Close", {
-              duration: 2500
-            });
-            return;
-          }
-
-          return this.finish();
-        }
-
-        while (newindex < keysArray.length) {
-          const recipe = this.recipe.get(keysArray[newindex]);
-          if (recipe && !recipe.hidden) {
-            if (keysArray[newindex] == this.lastCategory) {
-              if (this.hasErrors()) {
-                for (let [key, value] of this.categories) {
-                  if (key != this.lastCategory && !value.hidden) {
-                    this.showErrors(key);
-                  }
-                }
-
-                this.snackBar.open("Make sure there are no errors in previous steps in order to proceed.", "Close", {
-                  duration: 3000
-                });
-                return;
-              }
-            }
-
-            this.selectedCategory = keysArray[newindex];
-            break;
-          }
-
-          newindex += 1;
-        }
-      }
-    }
-    else {
+    if (this.hasError(this.selectedCategory, false)) {
       this.snackBar.open("Please fix the errors before proceeding.", "Close", {
         duration: 2500
       });
+
+      return;
+    }
+
+    const keysArray = Array.from(this.categories.keys());
+    const currentIndex = keysArray.indexOf(this.selectedCategory);
+
+    if (currentIndex != -1) {
+      let newindex = currentIndex + 1;
+
+      // Finish
+      if (newindex == keysArray.length) {
+        if (this.recipeNameError) {
+          this.snackBar.open("Please provide a valid name for your recipe.", "Close", {
+            duration: 2500
+          });
+          return;
+        }
+
+        return this.finish();
+      }
+
+      if (currentIndex == Category.Setup) {
+        this.initLayers();
+      }
+      else if (currentIndex == Category.Layering) {
+        const choiceList = this.layers.get(this.selectedLayer);
+        if (choiceList) {
+          const lastChoice = [...choiceList.keys()].at(-1);
+          if (this.selectedChoice == lastChoice) {
+            if (this.selectedLayer != this.numLayers) {
+              this.onSelectLayer(++this.selectedLayer);
+              return;
+            }
+          } else {
+            const currentChoiceIndex = [...choiceList.keys()].findIndex(value => (value == this.selectedChoice));
+            const nextChoice = [...choiceList.keys()].at(currentChoiceIndex + 1);
+            if (nextChoice) {
+              this.onSelectChoice(nextChoice);
+              return;
+            }
+          }
+
+          if (keysArray[newindex] == Category.Finish) {
+            // Show all errors if the next step is Finish
+            if (this.hasErrors()) {
+              for (let [key, value] of this.categories) {
+                if (key != Category.Finish) {
+                  this.showErrors(key);
+                }
+              }
+              
+              for (let [layer, choiceList] of this.layers) {
+                for (let [key, value] of choiceList) {
+                  ItemChoiceList.ShowError(key, value);
+                }
+              }
+
+              this.skipNonSelection = false;
+
+              this.snackBar.open("Make sure there are no errors in previous steps in order to proceed.", "Close", {
+                duration: 3000
+              });
+              return;
+            }
+          }
+        }
+      }
+
+      this.selectedCategory = keysArray[newindex];
     }
   }
 
@@ -369,7 +371,7 @@ export class Recipe {
       desc: this.recipeDescription,
       type: this.selectedType,
       value: 25,
-      recipe: this.recipe,
+      recipe: this.categories,
       buyHistory: new Map(),
       pointsPerBuy: 15,
       date: Date.now()
@@ -381,27 +383,43 @@ export class Recipe {
   }
 
   protected back() {
-    const keysArray = Array.from(this.recipe.keys());
+    const keysArray = Array.from(this.categories.keys());
     const currentIndex = keysArray.indexOf(this.selectedCategory);
 
-    if (currentIndex != -1) {
-      let newindex = currentIndex - 1;
-      while (newindex > -1) {
-        const recipe = this.recipe.get(keysArray[newindex]);
-        if (recipe && !recipe.hidden) {
-          this.selectedCategory = keysArray[newindex];
-          break;
+    if (currentIndex == Category.Layering) {
+      const choiceList = this.layers.get(this.selectedLayer);
+      if (choiceList) {
+        const firstChoice = [...choiceList.keys()].at(0);
+        if (this.selectedChoice == firstChoice) {
+          if (this.selectedLayer != 1) {
+            this.onSelectLayer(--this.selectedLayer);
+            const lastChoice = [...choiceList.keys()].at(-1);
+            if (lastChoice) {
+              this.onSelectChoice(lastChoice);
+            }
+            return;
+          }
+        } else {
+          const currentChoiceIndex = [...choiceList.keys()].findIndex(value => (value == this.selectedChoice));
+          const previousChoice = [...choiceList.keys()].at(currentChoiceIndex - 1);
+          if (previousChoice) {
+            this.onSelectChoice(previousChoice);
+            return;
+          }
         }
-
-        newindex -= 1;
       }
+    }
+
+    let newindex = currentIndex - 1;
+    if (newindex > -1) {
+      this.selectedCategory = keysArray[newindex];
     }
   }
 
   static numLayers(recipeGroup: RecipeGroup) {
     let num = 0;
 
-    const settings = recipeGroup.get(Category.Settings);
+    const settings = recipeGroup.get(Category.Setup);
     if (settings) {
       const choice = ItemChoiceList.GetChoice(settings.choices, "Layers");
       if (choice) {
@@ -413,7 +431,7 @@ export class Recipe {
   }
 
   static getTheme(recipeGroup: RecipeGroup) {
-    const settings = recipeGroup.get(Category.Settings);
+    const settings = recipeGroup.get(Category.Setup);
     if (settings) {
       const choice = ItemChoiceList.GetChoice(settings.choices, "Theme");
       if (choice) {

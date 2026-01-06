@@ -5,7 +5,7 @@
         <fa-icon icon="arrow-left"></fa-icon> Back to store
       </a>
       <label class="flex items-center gap-2 text-4xl font-mono lg:hidden">
-        <fa-icon icon="cake-candles"></fa-icon> BakeSale Customs
+        <fa-icon icon="cake-candles"></fa-icon> Customs Cake
       </label>
     </div>
   </div>
@@ -19,32 +19,30 @@
 
 <div class="divider px-4"></div>
 
-@if (selectedCategory != firstCategory) {
+@if (selectedCategory != category.Setup) {
 <div class="flex justify-center">
   <ul class="timeline overflow-x-auto">
     @for (cat of categories | keyvalue; track cat.key) {
-    @if (!cat.value.hidden) {
     <li>
-      @if (cat.key != firstCategory) {
+      @if (cat.key != category.Setup) {
       <hr />
       }
 
       <div class="timeline-start">
         <button
-          [class]="'btn ' + (selectedCategory == cat.key ? 'btn-neutral btn-active btn-lg' : (((cat.key == lastCategory && hasErrors())) ? 'btn-disabled' : (hasError(cat.key, true) ? 'outline outline-error text-error' : '')))"
+          [class]="'btn ' + (selectedCategory == cat.key ? 'btn-neutral btn-active btn-lg' : (((cat.key == category.Finish && hasErrors())) ? 'btn-disabled' : (hasError(cat.key, true) ? 'outline outline-error text-error' : '')))"
           (click)="onSelectCategory(cat.key)">{{ cat.value.name }}</button>
       </div>
       <div class="timeline-middle">
         <fa-icon
-          [class]="selectedCategory == cat.key ? 'text-lg' : (((cat.key == lastCategory && hasErrors())) ? 'text-gray-500' : (hasError(cat.key, true) ? 'text-error' : ''))"
+          [class]="selectedCategory == cat.key ? 'text-lg' : (((cat.key == category.Finish && hasErrors())) ? 'text-gray-500' : (hasError(cat.key, true) ? 'text-error' : ''))"
           icon="circle-dot"></fa-icon>
       </div>
 
-      @if (cat.key != lastCategory) {
+      @if (cat.key != category.Finish) {
       <hr />
       }
     </li>
-    }
     }
   </ul>
 </div>
@@ -53,7 +51,7 @@
 <div class="flex flex-col lg:flex-row flex-col-reverse gap-4 justify-center p-4">
   <div class="flex flex-col gap-2 items-center">
     <div class="w-full lg:max-w-164">
-      @if (selectedCategory == firstCategory) {
+      @if (selectedCategory == category.Setup) {
       <div class="flex flex-col items-center px-4">
         <h1>Select the type of Cake you want to build:</h1>
         <div class="overflow-x-auto">
@@ -81,12 +79,48 @@
       <br />
       }
 
-      @if (currentCategory) {
-      <item-choice-list class="w-full" [choices]="currentCategory.choices"></item-choice-list>
+      @if (selectedCategory == category.Layering && numLayers > 1) {
+      <div class="tabs tabs-box tabs-lg justify-center">
+        @for (layer of layers | keyvalue; track layer.key) {
+        <a role="tab" [class]="'tab ' + (selectedLayer==layer.key ? 'tab-active bg-primary text-white font-bold' : '')"
+          (click)="onSelectLayer(layer.key)">
+          Layer {{ layer.key }}
+        </a>
+        }
+      </div>
       <br />
       }
 
-      @if (selectedCategory == lastCategory) {
+      @if (selectedCategory == category.Layering) {
+      <div role="tablist" class="tabs tabs-border justify-center">
+        @let currentLayer = layers.get(selectedLayer);
+        @for (choice of currentLayer | keyvalue; track choice.key) {
+        <a role="tab"
+          [class]="'tab ' + (selectedChoice==choice.key ? 'tab-active' : '') + ' ' + (hasError(selectedCategory, skipNonSelection, choice.key) ? 'text-error' : '')"
+          (click)="onSelectChoice(choice.key)">
+          {{ choice.key.name }}
+        </a>
+        }
+      </div>
+      <br />
+
+      <div class="flex flex-col gap-2">
+        @if (currentChoice) {
+        <item-choice-list class="w-full" [type]="selectedChoice!" [choices]="currentChoice"></item-choice-list>
+        }
+      </div>
+      <br />
+      }
+      @else if (currentCategory) {
+      <div class="flex flex-col gap-2">
+        @for (entry of currentCategory.choices | keyvalue; track entry.key) {
+        <item-choice-list class="w-full" [type]="entry.key" [choices]="entry.value"></item-choice-list>
+        }
+      </div>
+      <br />
+      }
+
+      @if (selectedCategory == category.Finish) {
       <div class="flex flex-col gap-4 mb-6">
         <h1 class="font-bold text-xl">Name:</h1>
         <label [class]="'input w-full ' + (recipeNameError ? 'input-error' : '')">
@@ -101,25 +135,29 @@
 
       <div class="flex flex-col gap-4 mb-6">
         <h1 class="font-bold text-xl">Description:</h1>
-        <label class="input w-full">
-          <input type="search" class="grow placeholder-gray-500 input-lg"
-            placeholder="Enter a description for your recipe" [(ngModel)]="recipeDescription" />
-        </label>
+        <fieldset class="fieldset">
+          <textarea class="textarea placeholder-gray-500 h-24 w-full" placeholder="Enter a description for your recipe"
+            [(ngModel)]="recipeDescription"></textarea>
+          <div class="label">Optional</div>
+        </fieldset>
       </div>
       <br />
 
       <div class="flex justify-between">
         <h1 class="font-bold text-xl">Total:</h1>
-        <h1 class="text-xl">- <fa-icon class="text-warning" icon="coins"></fa-icon>{{ pointsRequiredForRecipe }}</h1>
+        <b class="text-xl">- <fa-icon class="text-warning" icon="coins"></fa-icon>{{ pointsRequiredForRecipe }}</b>
       </div>
       @if (hasEnoughPoints) {
-      <p class="text-sm text-right">You have <fa-icon class="text-warning" icon="coins"></fa-icon> {{ user.points ?
-        user.points : 0 }} points (after purchase: <fa-icon class="text-warning" icon="coins"></fa-icon> {{ (user.points
-        ?
-        user.points : 0) - pointsRequiredForRecipe }})</p>
+      <p class="text-sm text-right itallic">
+        You have <fa-icon class="text-warning" icon="coins"></fa-icon> {{ user.points ? user.points : 0 }} points
+        (after purchase: <fa-icon class="text-warning" icon="coins"></fa-icon> <b>{{ (user.points ? user.points : 0) -
+          pointsRequiredForRecipe }})</b>
+      </p>
       } @else {
-      <p class="text-sm text-right text-error">Looks like you don't have enough points to proceed (You have: <fa-icon
-          class="text-warning" icon="coins"></fa-icon> {{ user.points ? user.points : 0 }} points)</p>
+      <p class="text-sm text-right text-error">
+        Looks like you don't have enough points to proceed
+        (You have: <fa-icon class="text-warning" icon="coins"></fa-icon> {{ user.points ? user.points : 0 }} points)
+      </p>
       }
       <br />
       }
@@ -149,59 +187,29 @@
     </div>
   </div>
 
-  @if (selectedCategory != firstCategory) {
-  <div class="flex flex-col gap-1 w-full lg:max-w-128">
-    <div class="indicator flex items-center justify-center w-full">
-      @if (true) {
-      <div class="indicator-item indicator-bottom indicator-start" style="--indicator-x: 1em; --indicator-y: -1em;">
-        <div class="flex flex-col flex-col-reverse gap-2">
-          @for (layer of layers; track layer.key) {
-          @if (layer.value && !layer.value.hidden) {
-          <a class="link flex gap-1 items-center" style="text-decoration: none;" (click)="onSelectCategory(layer.key)">
-            <button
-              [class]="'btn btn-circle btn-lg ' + (selectedCategory == layer.key ? 'text-xl btn-neutral font-bold' : 'text')">{{
-              layerName(layer.key) }}</button>
-            <p>Layer</p>
-          </a>
-          }
-          }
-        </div>
-      </div>
-      }
+  @if (selectedCategory != category.Setup) {
+  <div class="flex flex-col w-full lg:max-w-128">
+    <div class="flex justify-between w-full">
+      <span class="bg-error p-1 text-white font-bold">{{ theme }}</span>
+      <span class="bg-success p-1 text-white font-bold">Value: $50</span>
+    </div>
 
-      <div
-        class="flex justify-center border border-dashed border-2 border-base-content/35 rounded-box bg-base-300 w-full">
+    <div class="indicator flex flex-col w-fit">
+      <div class="flex justify-center border border-2 border-base-content/20 bg-base-300 w-full">
         <img class="rounded-box max-h-98"
           src="https://images.rawpixel.com/image_png_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA4L3Jhd3BpeGVsX29mZmljZV8yMl9iaXJ0aGRheV9jYWtlX2N1dGVfM2RfaXNvbGF0ZWRfb25fd2hpdGVfYmFja19lN2Y5ZWJiYi1kMTE4LTQzZDQtOGQ2Ni02ZDk4YjQyODM5MzkucG5n.png" />
       </div>
-    </div>
 
-    @if (currentCategory && selectedCategory != lastCategory) {
-    <div class="flex justify-center p-4 w-full">
-      <item-choice-catalog [value]="currentCategory.choices"></item-choice-catalog>
-    </div>
-    }
-
-    <div class="flex flex-col gap-1 w-full">
-      <div class="stats border border-dashed border-2 border-base-content/35 bg-base-300">
-        <div class="stat place-items-center">
-          <div class="stat-title font-mono">{{ customTypes.get(selectedType)?.label }} Theme</div>
-          <div class="stat-value">
-            @if (theme == null) {
-            <fa-icon class="text-gray-500" icon="question"></fa-icon>
-            }
-            @else {
-            <b class="text-error">{{ theme }}</b>
-            }
+      <div class="indicator-item indicator-top indicator-start " style="--indicator-x: 1.0em; --indicator-y: 0.5em;">
+        @for (layer of layers | keyvalue; track layer.key) {
+        <div class="collapse collapse-sm">
+          <input type="radio" name="layer-accordion" [checked]="selectedLayer==layer.key" />
+          <div class="collapse-title font-semibold p-0">Layer {{ layer.key }}</div>
+          <div class="collapse-content text-xs p-1 w-64">
+            <item-choice-catalog [value]="layer.value"></item-choice-catalog>
           </div>
-          <div class="stat-desc text-wrap"><b>{{ numLayers }}</b> Layer(s)</div>
         </div>
-
-        <div class="stat place-items-center">
-          <div class="stat-title font-mono">Value</div>
-          <div class="stat-value">$50</div>
-          <div class="stat-desc text-success"><fa-icon icon="caret-up"></fa-icon> $2</div>
-        </div>
+        }
       </div>
     </div>
   </div>

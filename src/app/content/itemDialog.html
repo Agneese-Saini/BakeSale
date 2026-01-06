@@ -61,9 +61,11 @@
       </div>
       <br />
 
-      @if (item.choices) {
-      <div class="px-0.75">
-        <item-choice-list [choices]="item.choices"></item-choice-list>
+      @if (item.choices) {      
+      <div class="flex flex-col gap-2">
+        @for (entry of item.choices | keyvalue; track entry.key) {
+        <item-choice-list class="w-full" [type]="entry.key" [choices]="entry.value"></item-choice-list>
+        }
       </div>
       <br />
       }

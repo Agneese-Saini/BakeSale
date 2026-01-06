@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, ParamMap, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, KeyValuePipe } from '@angular/common';
 import { Recipe } from '../recipe/recipe';
 import { IUser, UserService } from '../user/user';
 import { IItem, Item } from './item';
@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-item',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe, PriceTag, TextReadMore, ItemChoiceList, Header, ItemDetails],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, DecimalPipe, PriceTag, TextReadMore, ItemChoiceList, Header, ItemDetails],
   templateUrl: "itemPage.html"
 })
 export class ItemPage {

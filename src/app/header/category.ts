@@ -45,7 +45,7 @@ export class CategoryService {
 	private categoryList: ICategory[] = [
 		{
 			name: "Cakes", hidden: true, subcats:
-				[{ name: "Create Your Own", fontSize: 0, customizer: this.customCake },
+				[{ name: "Create Your Own", fontSize: 2, customizer: this.customCake },
 				{ name: "Cake", fontSize: 2 },
 				{ name: "Cheesecake", fontSize: 2 },
 				{
@@ -164,7 +164,7 @@ export class CategoryService {
 						vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
 						 posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i",
 				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt, and flavor (vanilla extract)",
-				label: "THC: 12% | CBD: < 1%",
+				label: "THC: 12%\nCBD: < 1%",
 				company: "Gunns Bakery",
 				image: ["https://thescranline.com/wp-content/uploads/2025/02/VANILLA-CAKE-25-WEB-04-768x1024.jpg"],
 				price: { value: 4.99 },
@@ -195,8 +195,8 @@ export class CategoryService {
 				amount: 0,
 				author: "Her",
 				choices: new Map([
-					[{ name: "Side", limit: 5, tooltip: "this is test" }, [{ name: "Potatoes" }, { name: "Mash Potatoes" }]],
-					[{ name: "Other Side", limit: 5, tooltip: "this is test" }, [{ name: "Potatoes" }, { name: "Mash Potatoes" }]]
+					[{ name: "Long side name", limit: 1, required: true, description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." }, [{ name: "Potatoes" }, { name: "Mash Potatoes" }]],
+					[{ name: "Other Side", limit: 1, description: "this is test" }, [{ name: "Potatoes" }, { name: "Mash Potatoes" }]]
 				])
 			});
 

@@ -17,29 +17,32 @@ import { ItemChoiceSummary } from "../content/itemChoice";
     @for (item of items; track item) {
     <div class="flex justify-between items-center p-2">
       <div class="flex gap-2 items-center w-full">
-        <img class="rounded-box w-12 h-12" [src]="getImage(item)"/>
 
         <div class="flex-1">
           @if (numChoices(item) > 0) {
-          <div class="collapse collapse-arrow">
+          <div class="collapse">
             <input type="checkbox" />
 
-            <div class="collapse-title flex flex-col p-1">
-              <div class="flex gap-2 items-center">
-                <h1>
-                  {{ item.name }}
-                  @if (item.price.buyOneGetOne) {
-                  <b>({{ item.amount * 2 }})</b>
-                  }
-                </h1>
+            <div class="collapse-title flex gap-2 items-center p-0">
+              <img class="rounded-box w-12 h-12" [src]="getImage(item)"/>
+
+              <div class="flex flex-col">
+                <div class="flex gap-2 items-center">
+                  <h1>
+                    {{ item.name }}
+                    @if (item.price.buyOneGetOne) {
+                    <b>({{ item.amount * 2 }})</b>
+                    }
+                  </h1>
+                </div>
+
+                <item-price-tag [value]="item" [showSale]="true" size="sm"></item-price-tag>
+
+                <p class="label text-xs">{{ numChoices(item) }} choice(s)</p>
               </div>
-
-              <item-price-tag [value]="item" [showSale]="true" size="sm"></item-price-tag>
-
-              <p class="label text-xs">{{ numChoices(item) }} choice(s)</p>
             </div>
 
-            <div class="collapse-content">
+            <div class="collapse-content p-1">
               <item-choice-summary [value]="item.choices"></item-choice-summary>
               <br />
 
@@ -50,17 +53,21 @@ import { ItemChoiceSummary } from "../content/itemChoice";
           </div>
           }
           @else {
-          <a class="link flex flex-col p-1" style="text-decoration: none;" (click)="openItemDialog(item)">
-            <div class="flex gap-2 items-center">
-              <h1>
-                {{ item.name }}
-                @if (item.price.buyOneGetOne) {
-                <b>({{ item.amount * 2 }})</b>
-                }
-              </h1>
-            </div>
+          <a class="link flex gap-2 items-center p-0" style="text-decoration: none;" (click)="openItemDialog(item)">
+            <img class="rounded-box w-12 h-12" [src]="getImage(item)"/>
 
-            <item-price-tag [value]="item" [showSale]="true" size="sm"></item-price-tag>
+            <span class="flex flex-col">
+              <div class="flex gap-2 items-center">
+                <h1>
+                  {{ item.name }}
+                  @if (item.price.buyOneGetOne) {
+                  <b>({{ item.amount * 2 }})</b>
+                  }
+                </h1>
+              </div>
+
+              <item-price-tag [value]="item" [showSale]="true" size="sm"></item-price-tag>
+            </span>
           </a>
           }
         </div>

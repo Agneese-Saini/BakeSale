@@ -6,8 +6,8 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Category, ICategory } from '../header/category';
 import { ItemCreateDialog } from './itemDialog';
 import { IItem, Item } from './item';
-import * as _ from 'lodash';
 import { Recipe } from '../recipe/recipe';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'item-list',
@@ -50,28 +50,25 @@ import { Recipe } from '../recipe/recipe';
 
 <!-- Category customizer -->
 @if (category.customizer) {
-<div class="flex gap-1 p-4 px-6">
-  <div class="link btn-circle bg-base-300 w-32 h-32 text-warning text-6xl flex justify-center items-center"
+<div class="flex flex-col gap-2 p-2 pb-4">
+  <button 
+    [class]="'btn btn-ghost rounded-box flex flex-col gap-2 py-4 bg-base-300 justify-center items-center ' + cardSize.width + ' ' + cardSize.height"
     (click)="openItemCreateDialog(category)">
-    <fa-icon [icon]="category.customizer.icon"></fa-icon>
-  </div>
-  <div class="p-4">
-    <div class="flex flex-col gap-2">
-      <a class="link" style="text-decoration: none;" (click)="openItemCreateDialog(category)">
-        <p>Create your own</p>
-        <b class="text-xl pl-2">{{ category.customizer.name }}</b>
-      </a>
-      <div class="flex flex-col px-2">
-        <label class="label w-fit">
-          <fa-icon icon="coins" class="text-warning"></fa-icon> <b>{{ pointsRequiredForRecipe }}</b>
+    <fa-icon class="text-4xl" icon="cake"></fa-icon>
+    <button class="link w-fit text-xl font-extrabold" style="text-decoration: none;">Custom {{ category.customizer.name }}</button>
+  </button>
+
+  <div class="flex flex-col px-2">
+        <label class="label">
+          <fa-icon icon="coins" class="text-warning"></fa-icon> <b>{{ pointsRequiredForRecipe }}</b>(points required)
         </label>
 
-        <div class="dropdown dropdown-center">
+        <div class="dropdown">
           <button class="link label text-sm" tabindex="0" role="button" style="text-decoration: none;">
             <fa-icon icon="info-circle"></fa-icon> How to earn points?
           </button>
 
-          <div tabindex="0" class="card card-sm dropdown-content z-1 w-64 shadow-xl">
+          <div tabindex="0" class="dropdown-content card card-sm z-2 w-64 pt-2 shadow-xl">
             <div tabindex="0" class="card-body text-wrap bg-neutral text-white rounded-box">
               <h1 class="card-title"><fa-icon class="text-warning" icon="coins"></fa-icon> BakeSale Points Program</h1>
               <p>Through BakeSale points program, you earn points on your purchases, recipes, and even social media!</p>
@@ -79,8 +76,6 @@ import { Recipe } from '../recipe/recipe';
             </div>
           </div>
         </div>
-      </div>
-    </div>
   </div>
 </div>
 <div class="divider m-0"></div>
@@ -124,8 +119,9 @@ import { Recipe } from '../recipe/recipe';
 })
 export class ItemList {
 
-  protected readonly pointsRequiredForRecipe = Recipe.PointsRequiredForRecipe;
-  
+  protected cardSize = Item.CardSize;
+  protected pointsRequiredForRecipe = Recipe.PointsRequiredForRecipe;
+
   @Input({ required: true })
   public category: ICategory = Category.DefaultCategory;
 

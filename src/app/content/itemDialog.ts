@@ -1,6 +1,6 @@
 import { Component, Inject, Input } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { DecimalPipe } from "@angular/common";
+import { DecimalPipe, KeyValuePipe } from "@angular/common";
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -169,7 +169,7 @@ export class ItemDetails {
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, RouterModule, ItemChoiceList, DecimalPipe, TextReadMore, PriceTag, ItemDetails, MatDialogModule],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, ItemChoiceList, KeyValuePipe, DecimalPipe, TextReadMore, PriceTag, ItemDetails, MatDialogModule],
   templateUrl: './itemDialog.html'
 })
 export class ItemDialog {

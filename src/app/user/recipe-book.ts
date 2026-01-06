@@ -116,7 +116,7 @@ export class RecipeBook {
   static numLayers(recipeGroup: RecipeGroup) {
     let num = 0;
 
-    const settings = recipeGroup.get(Category.Settings);
+    const settings = recipeGroup.get(Category.Setup);
     if (settings) {
       const choice = ItemChoiceList.GetChoice(settings.choices, "Layers");
       if (choice) {
@@ -130,7 +130,7 @@ export class RecipeBook {
   protected numLayers = RecipeBook.numLayers;
 
   static getTheme(recipeGroup: RecipeGroup) {
-    const settings = recipeGroup.get(Category.Settings);
+    const settings = recipeGroup.get(Category.Setup);
     if (settings) {
       const choice = ItemChoiceList.GetChoice(settings.choices, "Theme");
       if (choice) {

@@ -51,12 +51,12 @@ import { OrderTotal } from "../checkout/order";
                   }
 
                   @if (numChoices(item) > 0) {
-                  <p class="label text-xs">{{ numChoices(item) }} choice(s) <fa-icon icon="angle-down"></fa-icon></p>
+                  <p class="label text-xs">{{ numChoices(item) }} choice(s)</p>
                   }
                 </div>
 
                 @if (numChoices(item) > 0) {
-                <div class="collapse-content">
+                <div class="collapse-content p-0 px-1">
                   <item-choice-summary [value]="item.choices"></item-choice-summary>
                 </div>
                 }
