@@ -127,7 +127,7 @@ export class Content {
   imports: [FormsModule, FontAwesomeModule, MatDialogModule],
   template: `
 <div class="bg-base-300">
-  <h2 mat-dialog-title class="text-4xl font-bold">{{ data.name }}</h2>
+  <h1 mat-dialog-title class="text-4xl font-bold">{{ data.name }}</h1>
 
   <div mat-dialog-content>
     <table class="table table-zebra">
@@ -136,10 +136,10 @@ export class Content {
         <tr class="h-12">
           <td>
             <button 
-              [class]="'link label text-lg w-full ' + (category.items ? 'text-neutral' : '')" 
+              [class]="'link label text-lg w-full ' + (category.items || category.customizer ? 'text-neutral' : '')" 
               style="text-decoration: none;"
               (click)="focusCategory(category)">
-              {{ category.name }} ({{ category.items ? category.items.length : 0 }})
+              {{ category.name }} ({{ category.items ? category.items.length : (category.customizer ? 'custom cake' : 0) }})
             </button>
           </td>
         </tr>

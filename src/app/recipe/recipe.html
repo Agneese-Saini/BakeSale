@@ -24,22 +24,22 @@
   <ul class="timeline overflow-x-auto">
     @for (cat of categories | keyvalue; track cat.key) {
     <li>
-      @if (cat.key != category.Setup) {
+      @if (cat.key != firstCategory) {
       <hr />
       }
 
       <div class="timeline-start">
         <button
-          [class]="'btn ' + (selectedCategory == cat.key ? 'btn-neutral btn-active btn-lg' : (((cat.key == category.Finish && hasErrors())) ? 'btn-disabled' : (hasError(cat.key, true) ? 'outline outline-error text-error' : '')))"
+          [class]="'btn ' + (selectedCategory == cat.key ? 'btn-neutral btn-active btn-lg' : (((cat.key == lastCategory && hasErrors())) ? 'btn-disabled' : (hasError(cat.key, true) ? 'outline outline-error text-error' : '')))"
           (click)="onSelectCategory(cat.key)">{{ cat.value.name }}</button>
       </div>
       <div class="timeline-middle">
         <fa-icon
-          [class]="selectedCategory == cat.key ? 'text-lg' : (((cat.key == category.Finish && hasErrors())) ? 'text-gray-500' : (hasError(cat.key, true) ? 'text-error' : ''))"
+          [class]="selectedCategory == cat.key ? 'text-lg' : (((cat.key == lastCategory && hasErrors())) ? 'text-gray-500' : (hasError(cat.key, true) ? 'text-error' : ''))"
           icon="circle-dot"></fa-icon>
       </div>
 
-      @if (cat.key != category.Finish) {
+      @if (cat.key != lastCategory) {
       <hr />
       }
     </li>
@@ -121,10 +121,20 @@
       }
 
       @if (selectedCategory == category.Finish) {
-      <div class="flex flex-col gap-4 mb-6">
+      <div class="flex flex-col gap-4 px-2">
+        <h1 class="text-lg">Special Instructions:</h1>
+        <fieldset class="fieldset">
+          <input type="search" class="input placeholder-gray-350 input-lg w-full"
+            placeholder="Enter additional instructions for finish" [(ngModel)]="recipeName" />
+          <label class="label justify-end w-full">Optional</label>
+        </fieldset>
+      </div>
+      }
+      @else if (selectedCategory == category.Publish) {
+      <div class="flex flex-col gap-4">
         <h1 class="font-bold text-xl">Name:</h1>
         <label [class]="'input w-full ' + (recipeNameError ? 'input-error' : '')">
-          <input type="search" class="grow placeholder-gray-500 input-lg" placeholder="Enter name for your recipe"
+          <input type="search" class="grow placeholder-gray-350 input-lg" placeholder="Enter name of your cake"
             [(ngModel)]="recipeName" (change)="recipeNameError=undefined" />
         </label>
         @if (recipeNameError) {
@@ -133,12 +143,23 @@
       </div>
       <br />
 
-      <div class="flex flex-col gap-4 mb-6">
+      <div class="flex flex-col gap-4">
         <h1 class="font-bold text-xl">Description:</h1>
         <fieldset class="fieldset">
-          <textarea class="textarea placeholder-gray-500 h-24 w-full" placeholder="Enter a description for your recipe"
+          <textarea class="textarea placeholder-gray-350 h-24 w-full" placeholder="Enter a description for your recipe"
             [(ngModel)]="recipeDescription"></textarea>
-          <div class="label">Optional</div>
+          <label class="label justify-end w-full">Optional</label>
+        </fieldset>
+      </div>
+      <br />
+
+      <div class="flex justify-between gap-2">
+        <h1 class="font-bold text-xl">Public Recipe:</h1>
+        <fieldset class="fieldset flex-1 flex flex-col items-end">
+          <input type="checkbox" checked="checked" class="toggle" />
+          <label class="text-right">
+            Public recipe allows other customers to see your item and purchase it (each purchase will grant you BakeSale points).
+          </label>
         </fieldset>
       </div>
       <br />
@@ -189,23 +210,24 @@
 
   @if (selectedCategory != category.Setup) {
   <div class="flex flex-col w-full lg:max-w-128">
-    <div class="flex justify-between w-full">
-      <span class="bg-error p-1 text-white font-bold">{{ theme }}</span>
-      <span class="bg-success p-1 text-white font-bold">Value: $50</span>
-    </div>
-
     <div class="indicator flex flex-col w-fit">
       <div class="flex justify-center border border-2 border-base-content/20 bg-base-300 w-full">
         <img class="rounded-box max-h-98"
           src="https://images.rawpixel.com/image_png_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA4L3Jhd3BpeGVsX29mZmljZV8yMl9iaXJ0aGRheV9jYWtlX2N1dGVfM2RfaXNvbGF0ZWRfb25fd2hpdGVfYmFja19lN2Y5ZWJiYi1kMTE4LTQzZDQtOGQ2Ni02ZDk4YjQyODM5MzkucG5n.png" />
       </div>
 
+      <div class="indicator-item indicator-bottom indicator-end text-right"
+        style="--indicator-x: -0.5em; --indicator-y: -0.5em;">
+        <p>{{ theme }} {{ type?.label }}</p>
+        <p class="font-bold">Value: $50</p>
+      </div>
+
       <div class="indicator-item indicator-top indicator-start " style="--indicator-x: 1.0em; --indicator-y: 0.5em;">
         @for (layer of layers | keyvalue; track layer.key) {
-        <div class="collapse collapse-sm">
+        <div class="collapse collapse-sm ">
           <input type="radio" name="layer-accordion" [checked]="selectedLayer==layer.key" />
           <div class="collapse-title font-semibold p-0">Layer {{ layer.key }}</div>
-          <div class="collapse-content text-xs p-1 w-64">
+          <div class="collapse-content text-xs px-1 w-64">
             <item-choice-catalog [value]="layer.value"></item-choice-catalog>
           </div>
         </div>

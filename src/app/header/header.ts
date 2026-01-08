@@ -72,7 +72,7 @@ export class Logo {
   <div class="dropdown px-4">
     Search in <i tabindex="0" role="button" class="link w-54"><u>{{ getFilterLabel() }} <fa-icon
           icon="filter"></fa-icon></u></i>
-    <ul tabindex="0" class="dropdown-content menu bg-base-200 rounded-box z-1 w-65 p-2 shadow-2xl">
+    <ul tabindex="0" class="dropdown-content menu bg-base-300 rounded-box z-50 w-65 p-2 shadow-2xl">
       <category-list />
     </ul>
   </div>

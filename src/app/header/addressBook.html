@@ -91,8 +91,8 @@
 <h1 class="text-lg p-2">Time preference:</h1>
 <div class="bg-base-300 rounded-box p-2">
   <div class="flex justify-between items-center px-2">
-    <p>
-      <fa-icon icon="clock"></fa-icon> {{ deliveryMode?.label }} {{ settings.timeslot?.label }}
+    <p [class]="settings.timeslot ? '' : 'text-error'">
+      <fa-icon icon="clock"></fa-icon> {{ settings.timeslot ? settings.timeslot.label : 'Select a timeslot' }}
     </p>
     <button class="btn btn-sm btn-neutral" (click)="openTimeslotsDialog()">Schedule</button>
   </div>

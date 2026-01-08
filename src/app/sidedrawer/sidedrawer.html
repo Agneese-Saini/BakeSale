@@ -62,11 +62,10 @@
 
     <div class="divider"></div>
 
-    <a class="link text-lg px-4" style="text-decoration: none;">Learn About Us</a>
-    <a class="link text-lg px-4" style="text-decoration: none;">Get Help</a>
+    <a class="link text-lg px-4" style="text-decoration: none;">About Us</a>
     <a class="link text-lg px-4" style="text-decoration: none;">Contact Us</a>
 
     @if (user.userRole != userRole.Guest) {
-    <a class="link text-lg px-4" style="text-decoration: none;" (click)="logout()">Sign Out</a>
+    <a class="link text-error text-lg px-4" style="text-decoration: none;" (click)="logout()">Sign Out</a>
     }
 </div>

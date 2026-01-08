@@ -61,7 +61,8 @@ export interface IAddress {
 })
 export class AddressDialog {
 
-  protected readonly errorTypes = ErrorTypes;
+  protected errorTypes = ErrorTypes;
+  protected buildingType = BuildingType;
 
   protected addressBook: IAddress[] = [];
 

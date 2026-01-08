@@ -23,7 +23,8 @@ export enum RecipeType {
 export enum Category {
   Setup,
   Layering,
-  Finish
+  Finish,
+  Publish
 }
 
 export interface IRecipeGroup {
@@ -101,9 +102,19 @@ export class Recipe {
           [{ name: "Finishing Touch", tooltip: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", limit: 2, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]]
         ]),
       buttons:
+        [{ name: "Next", type: ButtonType.Next }, { name: "Back", type: ButtonType.Back }]
+    }],
+    [Category.Publish, {
+      name: "Publish",
+      instructions: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui.",
+      choices: new Map(),
+      buttons:
         [{ name: "Publish Recipe", type: ButtonType.Finish }, { name: "Back", type: ButtonType.Back }]
-    }]
+    }],
   ]);
+
+  readonly firstCategory = Category.Setup;
+  readonly lastCategory = Category.Publish;
 
   protected layers: Map<number, ChoiceList> = new Map();
 
@@ -111,7 +122,7 @@ export class Recipe {
   protected selectedType: RecipeType = RecipeType.Cake;
   protected selectedLayer: number = 0;
   protected selectedChoice?: IChoiceType;
-  protected skipNonSelection: boolean =  true;
+  protected skipNonSelection: boolean = true;
 
   protected recipeName?: string;
   protected recipeNameError?: string;
@@ -129,6 +140,10 @@ export class Recipe {
 
   protected get theme() {
     return Recipe.getTheme(this.categories);
+  }
+
+  protected get type() {
+    return this.customTypes.get(this.selectedType);
   }
 
   protected get currentCategory() {
@@ -178,8 +193,19 @@ export class Recipe {
     }
 
     this.onSelectLayer(1);
-  
+
+    for (let [key, value] of this.categories) {
+      if (key != Category.Setup) {
+        for (let [type, choices] of value.choices) {
+          ItemChoiceList.Reset(choices);          
+        }
+      }
+    }
+    
     this.skipNonSelection = true;
+    this.recipeName = undefined;
+    this.recipeNameError = undefined;
+    this.recipeDescription = undefined;
   }
 
   protected onSelectCategory(category: Category) {
@@ -210,8 +236,29 @@ export class Recipe {
   }
 
   protected hasError(category: Category, skipNonSelection?: boolean, choice?: IChoiceType): boolean {
-    const data = this.categories.get(category);
+    if (category == Category.Layering) {
+      if (choice) {
+        const choiceList = this.layers.get(this.selectedLayer);
+        if (choiceList) {
+          const choiceIndex = [...choiceList.keys()].findIndex(value => (value == choice));
+          const choices = [...choiceList.values()].at(choiceIndex);
+          if (choices && ItemChoiceList.HasError(choice, choices, skipNonSelection)) {
+            return true;
+          }
+        }
+      }
+      else {
+        for (let [layer, choiceList] of this.layers) {
+          for (let [key, value] of choiceList) {
+            if (ItemChoiceList.HasError(key, value, skipNonSelection)) {
+              return true;
+            }
+          }
+        }
+      }
+    }
 
+    const data = this.categories.get(category);
     if (data) {
       for (let [key, value] of data.choices) {
         if (ItemChoiceList.HasError(key, value, skipNonSelection)) {
@@ -220,31 +267,61 @@ export class Recipe {
       }
     }
 
-    if (category == Category.Layering) {
-      if (choice) {
-        const choiceList = this.layers.get(this.selectedLayer);
-          if (choiceList) {
-          const choiceIndex = [...choiceList.keys()].findIndex(value => (value == choice));
-          const choices = [...choiceList.values()].at(choiceIndex);
-          if (choices && ItemChoiceList.HasError(choice, choices, skipNonSelection)) {
-            return true;
-          }
-        }
+    if (category == Category.Publish) {
+      if (this.recipeNameError) {
+        return true;
       }
-      else if (this.selectedChoice && this.currentChoice) {
-        if (ItemChoiceList.HasError(this.selectedChoice, this.currentChoice, skipNonSelection)) {
-          return true;
-        }
+
+      if (this.recipeName == undefined && skipNonSelection) {
+        return false;
       }
+
+      return (this.recipeName == undefined || this.recipeName.length < 4);
     }
 
     return false;
   }
 
+  protected showErrors(category: Category, choice?: IChoiceType) {
+    if (category == Category.Layering) {
+      if (choice) {
+        const choiceList = this.layers.get(this.selectedLayer);
+        if (choiceList) {
+          const choiceIndex = [...choiceList.keys()].findIndex(value => (value == choice));
+          const choices = [...choiceList.values()].at(choiceIndex);
+          if (choices) {
+            ItemChoiceList.ShowError(choice, choices);
+          }
+        }
+      }
+      else {
+        for (let [layer, choiceList] of this.layers) {
+          for (let [key, value] of choiceList) {
+            ItemChoiceList.ShowError(key, value);
+          }
+        }
+      }
+      return;
+    }
+
+    const data = this.categories.get(category);
+    if (data) {
+      for (let [key, value] of data.choices) {
+        ItemChoiceList.ShowError(key, value);
+      }
+    }
+
+    if (category == Category.Publish) {
+      this.recipeNameError = this.hasError(category)
+        ? "Invalid recipe name"
+        : undefined;
+    }
+  }
+
   // This checks for errors in all categories except the last one
   protected hasErrors(skipNonSelection?: boolean): boolean {
     for (let [key, value] of this.categories) {
-      if (key != Category.Finish) {
+      if (key != this.lastCategory) {
         if (this.hasError(key, skipNonSelection)) {
           return true;
         }
@@ -262,29 +339,10 @@ export class Recipe {
     return false;
   }
 
-  protected showErrors(category: Category) {
-    const data = this.categories.get(category);
-    if (data) {
-      for (let [key, value] of data.choices) {
-        ItemChoiceList.ShowError(key, value);
-      }
-
-      if (category == Category.Finish) {
-        this.recipeNameError = !(this.recipeName && this.recipeName.length > 4)
-          ? "Invalid recipe name"
-          : undefined;
-      }
-    }
-    
-    if (this.selectedChoice && this.currentChoice) {
-      ItemChoiceList.ShowError(this.selectedChoice, this.currentChoice);
-    }
-  }
-
   protected next() {
-    this.showErrors(this.selectedCategory);
+    this.showErrors(this.selectedCategory, this.selectedChoice);
 
-    if (this.hasError(this.selectedCategory, false)) {
+    if (this.hasError(this.selectedCategory, false, this.selectedChoice)) {
       this.snackBar.open("Please fix the errors before proceeding.", "Close", {
         duration: 2500
       });
@@ -297,18 +355,6 @@ export class Recipe {
 
     if (currentIndex != -1) {
       let newindex = currentIndex + 1;
-
-      // Finish
-      if (newindex == keysArray.length) {
-        if (this.recipeNameError) {
-          this.snackBar.open("Please provide a valid name for your recipe.", "Close", {
-            duration: 2500
-          });
-          return;
-        }
-
-        return this.finish();
-      }
 
       if (currentIndex == Category.Setup) {
         this.initLayers();
@@ -330,30 +376,24 @@ export class Recipe {
               return;
             }
           }
+        }
+      }
 
-          if (keysArray[newindex] == Category.Finish) {
-            // Show all errors if the next step is Finish
-            if (this.hasErrors()) {
-              for (let [key, value] of this.categories) {
-                if (key != Category.Finish) {
-                  this.showErrors(key);
-                }
-              }
-              
-              for (let [layer, choiceList] of this.layers) {
-                for (let [key, value] of choiceList) {
-                  ItemChoiceList.ShowError(key, value);
-                }
-              }
-
-              this.skipNonSelection = false;
-
-              this.snackBar.open("Make sure there are no errors in previous steps in order to proceed.", "Close", {
-                duration: 3000
-              });
-              return;
+      if (keysArray[newindex] == this.lastCategory) {
+        // Show all errors if the next step is Finish
+        if (this.hasErrors()) {
+          for (let [key, value] of this.categories) {
+            if (key != this.lastCategory) {
+              this.showErrors(key);
             }
           }
+
+          this.skipNonSelection = false;
+
+          this.snackBar.open("Make sure there are no errors in previous steps in order to proceed.", "Close", {
+            duration: 3000
+          });
+          return;
         }
       }
 

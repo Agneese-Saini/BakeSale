@@ -305,6 +305,12 @@ export class ItemChoiceList {
   }
 
   protected getChoice = ItemChoiceList.GetChoice;
+
+  static Reset(choices: IChoice[]) {
+    for (const choice of choices) {
+      choice.amount = 0;
+    }
+  }
 };
 
 
