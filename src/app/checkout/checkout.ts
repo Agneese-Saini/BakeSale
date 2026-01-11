@@ -14,7 +14,6 @@ import { IOrderHistory } from '../user/order-history';
 import { UserService } from '../user/user';
 import { ItemChoiceList } from '../content/itemChoice';
 import { OrderTotal, Tip } from "./order";
-import _ from 'lodash';
 
 export enum DriverTip {
   Tip_10 = 10,
@@ -441,7 +440,7 @@ export class Checkout {
       gstPercentage: OrderTotal.GST_Rate,
       pstPercentage: OrderTotal.PST_Rate,
       couponDiscount: this.couponDiscount,
-      cart: _.cloneDeep(this.shoppingCart),
+      cart: structuredClone(this.shoppingCart),
       date: Date.now(),
       time: this.deliverySettings.time!,
       address: this.deliverySettings.address!,

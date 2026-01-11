@@ -3,11 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Category, ICategory } from '../header/category';
+import { Category, CustomizerType, ICategory } from '../header/category';
 import { ItemCreateDialog } from './itemDialog';
 import { IItem, Item } from './item';
 import { Recipe } from '../recipe/recipe';
-import * as _ from 'lodash';
 
 @Component({
   selector: 'item-list',
@@ -50,34 +49,57 @@ import * as _ from 'lodash';
 
 <!-- Category customizer -->
 @if (category.customizer) {
+@switch (category.customizer.type) {
+@case (customizerType.Recipe) {
 <div class="flex flex-col gap-2 p-2 pb-4">
   <button 
     [class]="'btn btn-ghost rounded-box flex flex-col gap-2 py-4 bg-base-300 justify-center items-center ' + cardSize.width + ' ' + cardSize.height"
     (click)="openItemCreateDialog(category)">
-    <fa-icon class="text-4xl" icon="cake"></fa-icon>
+    <fa-icon class="text-4xl" [icon]="category.customizer.icon"></fa-icon>
     <button class="link w-fit text-xl font-extrabold" style="text-decoration: none;">Custom {{ category.customizer.name }}</button>
   </button>
 
   <div class="flex flex-col px-2">
-        <label class="label">
-          <fa-icon icon="coins" class="text-warning"></fa-icon> <b>{{ pointsRequiredForRecipe }}</b>(points required)
-        </label>
+    <label class="label">
+      <fa-icon icon="coins" class="text-warning"></fa-icon> <b>{{ pointsRequiredForRecipe }}</b>(points required)
+    </label>
 
-        <div class="dropdown">
-          <button class="link label text-sm" tabindex="0" role="button" style="text-decoration: none;">
-            <fa-icon icon="info-circle"></fa-icon> How to earn points?
-          </button>
+    <div class="dropdown">
+      <button class="link label text-sm" tabindex="0" role="button" style="text-decoration: none;">
+        <fa-icon icon="info-circle"></fa-icon> How to earn points?
+      </button>
 
-          <div tabindex="0" class="dropdown-content card card-sm z-2 w-64 pt-2 shadow-xl">
-            <div tabindex="0" class="card-body text-wrap bg-neutral text-white rounded-box">
-              <h1 class="card-title"><fa-icon class="text-warning" icon="coins"></fa-icon> BakeSale Points Program</h1>
-              <p>Through BakeSale points program, you earn points on your purchases, recipes, and even social media!</p>
-              <p>You are automatically enrolled once you have an account with us: <a class="link">Sign In</a></p>
-            </div>
-          </div>
+      <div tabindex="0" class="dropdown-content card card-sm z-2 w-64 pt-2 shadow-xl">
+        <div tabindex="0" class="card-body text-wrap bg-neutral text-white rounded-box">
+          <h1 class="card-title"><fa-icon class="text-warning" icon="coins"></fa-icon> BakeSale Points Program</h1>
+          <p>Through BakeSale points program, you earn points on your purchases, recipes, and even social media!</p>
+          <p>You are automatically enrolled once you have an account with us: <a class="link">Sign In</a></p>
         </div>
+      </div>
+    </div>
   </div>
 </div>
+}
+@case (customizerType.Subscription) {
+<div class="card w-full bg-base-300 shadow">
+  <div class="card-body">
+    <h2 class="text-3xl font-bold">Get {{ category.customizer.name }} daily</h2>
+    @if (category.customizer.info != undefined && category.customizer.info.length > 0) {
+    @for (info of category.customizer.info; track info) {
+    <div class="flex gap-2">
+      <fa-icon [icon]="info.icon"></fa-icon>
+      <span>{{ info.label }}</span>
+    </div>
+    }
+    }
+    <div class="mt-6">
+      <button class="btn bg-orange-500 text-white btn-block">Get Started <fa-icon icon="arrow-right"></fa-icon></button>
+    </div>
+  </div>
+</div>
+}
+}
+
 <div class="divider m-0"></div>
 }
 <!-- Category items -->
@@ -119,6 +141,7 @@ import * as _ from 'lodash';
 })
 export class ItemList {
 
+  protected customizerType = CustomizerType;
   protected cardSize = Item.CardSize;
   protected pointsRequiredForRecipe = Recipe.PointsRequiredForRecipe;
 

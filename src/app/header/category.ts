@@ -4,13 +4,18 @@ import { FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IItem } from '../content/item';
-import _ from 'lodash';
+
+export enum CustomizerType {
+	Recipe,
+	Subscription
+};
 
 export interface ICustomizer {
 	name: string,
 	description: string,
 	icon: string,
-	sell?: boolean
+	type: CustomizerType,
+	info?: { icon: string, label: string }[]
 };
 
 export interface ICategory {
@@ -39,7 +44,40 @@ export class CategoryService {
 			In lectus velit, semper ut iaculis vel, congue nec ipsum. Cras ultrices eros elit, gravida euismod mi lobortis \
 			vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
 			posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i',
-		icon: 'cake'
+		icon: 'cake',
+		type: CustomizerType.Recipe
+	};
+
+	readonly subscribeBread: ICustomizer = {
+		name: 'Bread',
+		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui. \
+			Aenean tempus ligula nec suscipit venenatis. Fusce luctus ipsum diam, aliquet dictum ligula imperdiet et. \
+			In lectus velit, semper ut iaculis vel, congue nec ipsum. Cras ultrices eros elit, gravida euismod mi lobortis \
+			vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
+			posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i',
+		icon: 'bread-slice',
+		type: CustomizerType.Subscription,
+		info: [
+			{ icon: "car-side", label: "Free Delivery" },
+			{ icon: "bread-slice", label: "Made fresh everyday" },
+			{ icon: "basket-shopping", label: "Many options to choose from" }
+		]
+	};
+
+	readonly subscribeCheese: ICustomizer = {
+		name: 'Cheese',
+		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui. \
+			Aenean tempus ligula nec suscipit venenatis. Fusce luctus ipsum diam, aliquet dictum ligula imperdiet et. \
+			In lectus velit, semper ut iaculis vel, congue nec ipsum. Cras ultrices eros elit, gravida euismod mi lobortis \
+			vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
+			posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i',
+		icon: 'cheese',
+		type: CustomizerType.Subscription,
+		info: [
+			{ icon: "car-side", label: "Free Delivery" },
+			{ icon: "basket-shopping", label: "Fresh to Aged cheese products available" },
+			{ icon: "xmark", label: "Without preservatives" }
+		]
 	};
 
 	private categoryList: ICategory[] = [
@@ -75,7 +113,8 @@ export class CategoryService {
 		},
 		{
 			name: "Bread", hidden: true, subcats:
-				[{ name: "Sandwich Loaves", fontSize: 2 },
+				[{ name: "Daily Bread", fontSize: 0, customizer: this.subscribeBread },
+				{ name: "Sandwich Loaves", fontSize: 2 },
 				{ name: "Buns & Doughs", fontSize: 2 },
 				{ name: "European", fontSize: 2 },
 				{ name: "Middle Eastern", fontSize: 2 },
@@ -86,7 +125,8 @@ export class CategoryService {
 		},
 		{
 			name: "Cheese", hidden: true, subcats:
-				[{ name: "Cheese Blocks", fontSize: 2 },
+				[{ name: "Daily Cheese", fontSize: 0, customizer: this.subscribeCheese },
+				{ name: "Cheese Blocks", fontSize: 2 },
 				{ name: "Shredded Cheese", fontSize: 2 },
 				{ name: "Sliced Cheese", fontSize: 2 },
 				{ name: "Cream Cheese", fontSize: 2 },

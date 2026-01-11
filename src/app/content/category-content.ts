@@ -4,7 +4,6 @@ import { ActivatedRoute, Router, RouterLinkActive, RouterModule } from "@angular
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { Category, CategoryService, ICategory } from '../header/category';
 import { ItemList } from './itemList';
-import * as _ from 'lodash';
 
 @Component({
     selector: 'category-content',

@@ -6,7 +6,6 @@ import { Router, RouterModule } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { IUser, UserService } from '../user/user';
-import _ from 'lodash';
 
 export enum ButtonType {
   Finish,
@@ -31,7 +30,8 @@ export interface IRecipeGroup {
   name: string,
   choices: ChoiceList,
   buttons: { name: string, type: ButtonType }[],
-  instructions?: string
+  instructions?: string,
+  skipNonSelection?: boolean
 }
 export type RecipeGroup = Map<Category, IRecipeGroup>;
 
@@ -41,7 +41,6 @@ export interface IRecipe {
   value: number,
   recipe: Map<Category, IRecipeGroup>,
   buyHistory: Map<IUser, number>,
-  pointsPerBuy: number,
   date: number,
   isPrivate?: boolean,
   desc?: string,
@@ -61,15 +60,23 @@ export class Recipe {
   static readonly CustomTypes: Map<RecipeType, { label: string, icon: string }> = new Map([
     [RecipeType.Cake, {
       label: "Cake",
-      icon: "circle-dot"
+      icon: "cake-candles"
     }],
     [RecipeType.CheeseCake, {
       label: "Cheesecake",
-      icon: "cake-candles"
+      icon: "cheese"
     }]
   ]);
 
-  protected pointsRequiredForRecipe = Recipe.PointsRequiredForRecipe;
+  static readonly LayerChoices: ChoiceList = new Map([
+    [{ name: "Bun Shape", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
+    [{ name: "Bun Flavor", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
+    [{ name: "Cake Filling", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
+    [{ name: "Cake Frosting", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
+    [{ name: "Addons", limit: 5, required: false }, [{ name: "Option 1" }, { name: "Option 2" }]],
+    [{ name: "Finish", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]]
+  ]);
+
   protected customTypes = Recipe.CustomTypes;
   protected buttonType = ButtonType;
   protected category = Category;
@@ -122,16 +129,21 @@ export class Recipe {
   protected selectedType: RecipeType = RecipeType.Cake;
   protected selectedLayer: number = 0;
   protected selectedChoice?: IChoiceType;
-  protected skipNonSelection: boolean = true;
 
   protected recipeName?: string;
   protected recipeNameError?: string;
   protected recipeDescription?: string;
+  protected recipeInstructions?: string;
+  protected publicRecipe: boolean = false;
 
   protected user: IUser = UserService.DefaultUser;
 
+  protected get requiredPoints(): number {
+    return Recipe.PointsRequiredForRecipe * (this.publicRecipe ? 9.5 : 1);
+  }
+
   protected get hasEnoughPoints(): boolean {
-    return (this.pointsRequiredForRecipe == 0 || (this.user.points != undefined && this.user.points >= this.pointsRequiredForRecipe));
+    return (this.requiredPoints == 0 || (this.user.points != undefined && this.user.points >= this.requiredPoints));
   }
 
   protected get numLayers() {
@@ -147,7 +159,7 @@ export class Recipe {
   }
 
   protected get currentCategory() {
-    return this.categories.get(this.selectedCategory);
+    return this.categories.get(this.selectedCategory)!;
   }
 
   protected get currentLayer() {
@@ -177,19 +189,10 @@ export class Recipe {
   }
 
   protected initLayers() {
-    const layerChoices: ChoiceList = new Map([
-      [{ name: "Bun Shape", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-      [{ name: "Bun Flavor", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-      [{ name: "Cake Filling", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-      [{ name: "Cake Frosting", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]],
-      [{ name: "Addons", limit: 5, required: false }, [{ name: "Option 1" }, { name: "Option 2" }]],
-      [{ name: "Finish", limit: 1, required: true }, [{ name: "Option 1" }, { name: "Option 2" }]]
-    ]);
-
     this.layers.clear();
-
+ 
     for (let i: number = 1; i <= this.numLayers; i++) {
-      this.layers.set(i, _.cloneDeep(layerChoices));
+      this.layers.set(i, structuredClone(Recipe.LayerChoices));
     }
 
     this.onSelectLayer(1);
@@ -197,12 +200,14 @@ export class Recipe {
     for (let [key, value] of this.categories) {
       if (key != Category.Setup) {
         for (let [type, choices] of value.choices) {
-          ItemChoiceList.Reset(choices);          
+          type.error = undefined;
+          ItemChoiceList.Reset(choices);
         }
+
+        value.skipNonSelection = true;
       }
     }
-    
-    this.skipNonSelection = true;
+
     this.recipeName = undefined;
     this.recipeNameError = undefined;
     this.recipeDescription = undefined;
@@ -217,12 +222,7 @@ export class Recipe {
 
     const choiceList = this.layers.get(this.selectedLayer);
     if (choiceList) {
-      // Reset errors
-      for (let [key, value] of choiceList) {
-        key.error = undefined;
-      }
-
-      // Set selected choice to 1st
+       // Set selected choice to 1st
       this.selectedChoice = [...choiceList.keys()].at(0);
     }
   }
@@ -235,31 +235,43 @@ export class Recipe {
     this.selectedType = type;
   }
 
-  protected hasError(category: Category, skipNonSelection?: boolean, choice?: IChoiceType): boolean {
+  protected hasError(category: Category, skipNonSelection?: boolean, choice?: IChoiceType, layer?: number): boolean {
     if (category == Category.Layering) {
-      if (choice) {
-        const choiceList = this.layers.get(this.selectedLayer);
+      if (choice != undefined || layer != undefined) {
+        const choiceList = layer != undefined ? this.layers.get(layer) : this.currentLayer;
         if (choiceList) {
-          const choiceIndex = [...choiceList.keys()].findIndex(value => (value == choice));
-          const choices = [...choiceList.values()].at(choiceIndex);
-          if (choices && ItemChoiceList.HasError(choice, choices, skipNonSelection)) {
+          if (choice != undefined) {
+            const choiceIndex = [...choiceList.keys()].findIndex(value => (value == choice));
+            const choices = [...choiceList.values()].at(choiceIndex);
+            if (choices && ItemChoiceList.HasError(choice, choices, skipNonSelection)) {
+              return true;
+            }
+          }
+          else {
+            for (let [key, value] of choiceList) {
+              if (ItemChoiceList.HasError(key, value, skipNonSelection)) {
+                return true;
+              }
+            }
+          }
+
+          return false;
+        }
+      }
+
+      for (let [layer, choiceList] of this.layers) {
+        for (let [key, value] of choiceList) {
+          if (ItemChoiceList.HasError(key, value, skipNonSelection)) {
             return true;
           }
         }
       }
-      else {
-        for (let [layer, choiceList] of this.layers) {
-          for (let [key, value] of choiceList) {
-            if (ItemChoiceList.HasError(key, value, skipNonSelection)) {
-              return true;
-            }
-          }
-        }
-      }
+
+      return false;
     }
 
     const data = this.categories.get(category);
-    if (data) {
+    if (data != undefined) {
       for (let [key, value] of data.choices) {
         if (ItemChoiceList.HasError(key, value, skipNonSelection)) {
           return true;
@@ -368,6 +380,22 @@ export class Recipe {
               this.onSelectLayer(++this.selectedLayer);
               return;
             }
+            else {
+              // Show all errors
+              if (this.hasError(currentIndex, false)) {
+                this.showErrors(currentIndex);
+
+                let category = this.categories.get(currentIndex);
+                if (category) {
+                  category.skipNonSelection = false;
+                }
+
+                this.snackBar.open("There are errors in Layering, please fix them before continuing.", "Close", {
+                  duration: 3000
+                });
+                return;
+              }
+            }
           } else {
             const currentChoiceIndex = [...choiceList.keys()].findIndex(value => (value == this.selectedChoice));
             const nextChoice = [...choiceList.keys()].at(currentChoiceIndex + 1);
@@ -378,17 +406,17 @@ export class Recipe {
           }
         }
       }
+      else if (currentIndex == this.lastCategory) {
+        return this.finish();
+      }
 
-      if (keysArray[newindex] == this.lastCategory) {
-        // Show all errors if the next step is Finish
-        if (this.hasErrors()) {
+      if (newindex == this.lastCategory) {
+        if (this.hasErrors(false)) {
           for (let [key, value] of this.categories) {
             if (key != this.lastCategory) {
               this.showErrors(key);
             }
           }
-
-          this.skipNonSelection = false;
 
           this.snackBar.open("Make sure there are no errors in previous steps in order to proceed.", "Close", {
             duration: 3000
@@ -401,7 +429,7 @@ export class Recipe {
     }
   }
 
-  protected finish() {
+  private finish() {
     this.snackBar.open("Finished.", "Close", {
       duration: 3000
     });
@@ -413,7 +441,7 @@ export class Recipe {
       value: 25,
       recipe: this.categories,
       buyHistory: new Map(),
-      pointsPerBuy: 15,
+      isPrivate: this.publicRecipe,
       date: Date.now()
     };
 
@@ -483,6 +511,6 @@ export class Recipe {
   }
 
   static getPoints(recipe: IRecipe) {
-    return recipe.buyHistory.size * recipe.pointsPerBuy;
+    return recipe.buyHistory.size * Recipe.PointsPerRecipe;
   }
 }

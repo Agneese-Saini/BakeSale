@@ -8,7 +8,7 @@ import { ItemList } from './itemList';
 import { Logo, Header } from "../header/header";
 import { SocialPost } from "./socialPost";
 import { IUser, UserRole, UserService, UserCard } from '../user/user';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef, MatDialogContent, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { CartItemsDialog } from '../checkout/cartItemDialog';
 
 @Component({
@@ -139,7 +139,7 @@ export class Content {
               [class]="'link label text-lg w-full ' + (category.items || category.customizer ? 'text-neutral' : '')" 
               style="text-decoration: none;"
               (click)="focusCategory(category)">
-              {{ category.name }} ({{ category.items ? category.items.length : (category.customizer ? 'custom cake' : 0) }})
+              {{ category.name }} ({{ category.items ? category.items.length : (category.customizer ? category.customizer.name : 0) }})
             </button>
           </td>
         </tr>

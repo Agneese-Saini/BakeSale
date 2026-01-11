@@ -144,7 +144,7 @@ export class RecipeBook {
   protected getTheme = RecipeBook.getTheme;
 
   static getPoints(recipe: IRecipe) {
-    return recipe.buyHistory.size * recipe.pointsPerBuy;
+    return recipe.buyHistory.size * Recipe.PointsPerRecipe;
   }
 
   protected getPoints = RecipeBook.getPoints;

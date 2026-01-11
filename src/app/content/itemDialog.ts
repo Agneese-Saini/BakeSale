@@ -5,12 +5,11 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from "@angular/materia
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { IItem, Item } from "./item";
-import { ICategory, ICustomizer } from "../header/category";
+import { CustomizerType, ICategory, ICustomizer } from "../header/category";
 import { CartService } from "../checkout/cart";
 import { RouterModule } from "@angular/router";
 import { ItemChoiceList } from "./itemChoice";
 import { Recipe } from "../recipe/recipe";
-import _ from "lodash";
 
 @Component({
   selector: 'text-read-more',
@@ -188,7 +187,7 @@ export class ItemDialog {
     protected snackBar: MatSnackBar,
     protected cartService: CartService) {
 
-    this.item = _.cloneDeep(data);
+    this.item = structuredClone(data);
   }
 
   protected ngOnInit() {
@@ -265,7 +264,7 @@ export class ItemDialog {
   }
 
   protected duplicate() {
-    let newItem = _.cloneDeep(this.item);
+    let newItem = structuredClone(this.item);
     newItem.id = undefined;
     this.cartService.addToCart(newItem);
 
@@ -344,6 +343,6 @@ export class ItemCreateDialog {
     @Inject(MAT_DIALOG_DATA) protected data: ICategory,
     protected dialogRef: MatDialogRef<ItemCreateDialog>) {
 
-    this.customizer = data.customizer ?? { name: '', description: '', icon: '' };
+    this.customizer = data.customizer ?? { name: '', description: '', icon: '', type: CustomizerType.Subscription };
   }
 };

@@ -4,7 +4,6 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogActions, MatDialogContent, MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AddressBook, DeliveryService, IDeliverySettings } from "./delivery";
-import _ from "lodash";
 
 export enum BuildingType {
   House = 'House',
@@ -101,7 +100,7 @@ export class AddressDialog {
     private cdr: ChangeDetectorRef) {
 
     if (data) {
-      this.address = _.cloneDeep(data);
+      this.address = structuredClone(data);
 
       // When "CurrentLocation" is supplied, that means we are trying to Add new address
       if (this.data == AddressBook.CurrentLocation) {

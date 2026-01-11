@@ -30,13 +30,16 @@
 
       <div class="timeline-start">
         <button
-          [class]="'btn ' + (selectedCategory == cat.key ? 'btn-neutral btn-active btn-lg' : (((cat.key == lastCategory && hasErrors())) ? 'btn-disabled' : (hasError(cat.key, true) ? 'outline outline-error text-error' : '')))"
-          (click)="onSelectCategory(cat.key)">{{ cat.value.name }}</button>
+          [class]="'btn ' + (selectedCategory == cat.key ? 'btn-neutral btn-active btn-lg' : (((cat.key == lastCategory && hasErrors(false))) ? 'btn-disabled' : (hasError(cat.key, cat.value.skipNonSelection) ? 'outline outline-error text-error' : '')))"
+          (click)="onSelectCategory(cat.key)">
+          {{ cat.value.name }}
+        </button>
       </div>
       <div class="timeline-middle">
         <fa-icon
-          [class]="selectedCategory == cat.key ? 'text-lg' : (((cat.key == lastCategory && hasErrors())) ? 'text-gray-500' : (hasError(cat.key, true) ? 'text-error' : ''))"
-          icon="circle-dot"></fa-icon>
+          [class]="selectedCategory == cat.key ? 'text-lg' : (((cat.key == lastCategory && hasErrors(false))) ? 'text-gray-500' : (hasError(cat.key, cat.value.skipNonSelection) ? 'text-error' : ''))"
+          icon="circle-dot">
+        </fa-icon>
       </div>
 
       @if (cat.key != lastCategory) {
@@ -51,19 +54,23 @@
 <div class="flex flex-col lg:flex-row flex-col-reverse gap-4 justify-center p-4">
   <div class="flex flex-col gap-2 items-center">
     <div class="w-full lg:max-w-164">
-      @if (selectedCategory == category.Setup) {
-      <div class="flex flex-col items-center px-4">
-        <h1>Select the type of Cake you want to build:</h1>
+      @if (currentCategory.instructions) {
+      <p class="whitespace-pre-line">{{ currentCategory.instructions }}</p>
+      <br/>
+      }
+      
+      <!-- Custom options -->
+      @switch (selectedCategory) {
+      <!-- Cake Setup -->
+      @case (category.Setup) {
+      <div class="flex flex-col items-center p-4 rounded-box bg-base-300">
+        <h1 class="font-bold">Select the type of Cake you want to build:</h1>
         <div class="overflow-x-auto">
           <ul class="menu menu-horizontal gap-2">
             @for (type of customTypes | keyvalue; track type.key) {
             <li>
               <a [class]="(selectedType == type.key ? 'menu-active' : '')" (click)="onCustomTypeChange(type.key)">
-                @if (type.key) {
-                <fa-icon [icon]="type.value.icon" class="text-2xl"></fa-icon>
-                } @else {
-                <fa-icon icon="circle-dot" class="text-2xl"></fa-icon>
-                }
+                <fa-icon [icon]="type.value.icon" class="text-2xl"></fa-icon>                
                 <span>{{ type.value.label }}</span>
               </a>
             </li>
@@ -71,18 +78,14 @@
           </ul>
         </div>
       </div>
-      <br />
+      <br />  
       }
-
-      @if (currentCategory && currentCategory.instructions) {
-      <p class="whitespace-pre-line">{{ currentCategory.instructions }}</p>
-      <br />
-      }
-
-      @if (selectedCategory == category.Layering && numLayers > 1) {
+      <!-- Layering -->
+      @case (category.Layering) {
+      @if (numLayers > 1) {
       <div class="tabs tabs-box tabs-lg justify-center">
         @for (layer of layers | keyvalue; track layer.key) {
-        <a role="tab" [class]="'tab ' + (selectedLayer==layer.key ? 'tab-active bg-primary text-white font-bold' : '')"
+        <a role="tab" [class]="'tab ' + (selectedLayer==layer.key ? 'tab-active bg-primary text-white font-bold' : '') + ' ' + (hasError(selectedCategory, currentCategory.skipNonSelection, undefined, layer.key) ? 'text-error' : '')"
           (click)="onSelectLayer(layer.key)">
           Layer {{ layer.key }}
         </a>
@@ -91,12 +94,10 @@
       <br />
       }
 
-      @if (selectedCategory == category.Layering) {
       <div role="tablist" class="tabs tabs-border justify-center">
-        @let currentLayer = layers.get(selectedLayer);
         @for (choice of currentLayer | keyvalue; track choice.key) {
         <a role="tab"
-          [class]="'tab ' + (selectedChoice==choice.key ? 'tab-active' : '') + ' ' + (hasError(selectedCategory, skipNonSelection, choice.key) ? 'text-error' : '')"
+          [class]="'tab ' + (selectedChoice==choice.key ? 'tab-active' : '') + ' ' + (hasError(selectedCategory, currentCategory.skipNonSelection, choice.key) ? 'text-error' : '')"
           (click)="onSelectChoice(choice.key)">
           {{ choice.key.name }}
         </a>
@@ -105,32 +106,15 @@
       <br />
 
       <div class="flex flex-col gap-2">
-        @if (currentChoice) {
-        <item-choice-list class="w-full" [type]="selectedChoice!" [choices]="currentChoice"></item-choice-list>
-        }
+        <item-choice-list class="w-full" [type]="selectedChoice!" [choices]="currentChoice!"></item-choice-list>
       </div>
       <br />
       }
-      @else if (currentCategory) {
-      <div class="flex flex-col gap-2">
-        @for (entry of currentCategory.choices | keyvalue; track entry.key) {
-        <item-choice-list class="w-full" [type]="entry.key" [choices]="entry.value"></item-choice-list>
-        }
-      </div>
-      <br />
+      <!-- Finish -->
+      @case (category.Finish) {        
       }
-
-      @if (selectedCategory == category.Finish) {
-      <div class="flex flex-col gap-4 px-2">
-        <h1 class="text-lg">Special Instructions:</h1>
-        <fieldset class="fieldset">
-          <input type="search" class="input placeholder-gray-350 input-lg w-full"
-            placeholder="Enter additional instructions for finish" [(ngModel)]="recipeName" />
-          <label class="label justify-end w-full">Optional</label>
-        </fieldset>
-      </div>
-      }
-      @else if (selectedCategory == category.Publish) {
+      <!-- Publish -->
+      @case (category.Publish) {
       <div class="flex flex-col gap-4">
         <h1 class="font-bold text-xl">Name:</h1>
         <label [class]="'input w-full ' + (recipeNameError ? 'input-error' : '')">
@@ -154,43 +138,51 @@
       <br />
 
       <div class="flex justify-between gap-2">
-        <h1 class="font-bold text-xl">Public Recipe:</h1>
+        <h1 class="font-bold text-xl">Publish Recipe:</h1>
         <fieldset class="fieldset flex-1 flex flex-col items-end">
-          <input type="checkbox" checked="checked" class="toggle" />
+          <input type="checkbox" class="toggle" [(ngModel)]="publicRecipe" />
           <label class="text-right">
-            Public recipe allows other customers to see your item and purchase it (each purchase will grant you BakeSale points).
+            Other people can view/buy your recipe when its public (each buy gets you BakeSale points).
           </label>
         </fieldset>
       </div>
       <br />
-
-      <div class="flex justify-between">
-        <h1 class="font-bold text-xl">Total:</h1>
-        <b class="text-xl">- <fa-icon class="text-warning" icon="coins"></fa-icon>{{ pointsRequiredForRecipe }}</b>
-      </div>
-      @if (hasEnoughPoints) {
-      <p class="text-sm text-right itallic">
-        You have <fa-icon class="text-warning" icon="coins"></fa-icon> {{ user.points ? user.points : 0 }} points
-        (after purchase: <fa-icon class="text-warning" icon="coins"></fa-icon> <b>{{ (user.points ? user.points : 0) -
-          pointsRequiredForRecipe }})</b>
-      </p>
-      } @else {
-      <p class="text-sm text-right text-error">
-        Looks like you don't have enough points to proceed
-        (You have: <fa-icon class="text-warning" icon="coins"></fa-icon> {{ user.points ? user.points : 0 }} points)
-      </p>
       }
+      }
+
+      <!-- Choice list -->
+      @if (selectedCategory != category.Layering) {
+      <div class="flex flex-col gap-2">
+        @for (entry of currentCategory.choices | keyvalue; track entry.key) {
+        <item-choice-list class="w-full" [type]="entry.key" [choices]="entry.value"></item-choice-list>
+        }
+      </div>
       <br />
       }
 
+      <!-- Finish -->
+      @if (selectedCategory == category.Finish) {
+      <div class="flex flex-col gap-4 px-2">
+        <h1 class="text-lg">Special Instructions:</h1>
+        <fieldset class="fieldset">
+          <input type="search" class="input placeholder-gray-350 input-lg w-full"
+            placeholder="Enter additional instructions for finish" [(ngModel)]="recipeInstructions" />
+          <label class="label justify-end w-full">Optional</label>
+        </fieldset>
+      </div>
+      }
+
+      <!-- Buttons -->
       <footer class="flex flex-col gap-2 w-full">
-        @if (currentCategory) {
         @for (buttons of currentCategory.buttons; track buttons) {
         @switch (buttons.type) {
         @case (buttonType.Finish) {
-        <button [class]="'btn btn-lg w-full btn-warning ' + (!hasEnoughPoints ? 'btn-disabled' : '')"
-          (click)="next()">{{
-          buttons.name }}</button>
+        <button [class]="'btn btn-lg w-full btn-warning ' + (!hasEnoughPoints ? 'btn-disabled' : '')" (click)="next()">
+          {{ publicRecipe ? 'Publish Recipe' : 'Create Recipe' }} (<fa-icon icon="coins"></fa-icon> {{ requiredPoints }})
+        </button>
+        @if (!hasEnoughPoints) {
+        <label class="text-error text-center w-full">You don't have enough points</label>
+        }
         }
         @case (buttonType.Next) {
         <button class="btn btn-lg w-full btn-neutral" (click)="next()">{{ buttons.name }}</button>
@@ -200,7 +192,6 @@
         }
         @default {
         <button class="btn btn-lg w-full bg-base-100">{{ buttons.name }}</button>
-        }
         }
         }
         }

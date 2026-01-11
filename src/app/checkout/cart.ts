@@ -3,7 +3,6 @@ import { IItem, Item } from "../content/item";
 import { BehaviorSubject } from "rxjs";
 import { FormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import _ from "lodash";
 
 export type Cart = Map<string, IItem[]>;
 
@@ -50,7 +49,7 @@ export class CartService {
   public addToCart(item: IItem) {
     const itemName = item.name;
     const itemID = item.id;
-    let newItem = _.cloneDeep(item);
+    let newItem = structuredClone(item);
 
     let cart = this._shoppingCart.value;
     let cartItems = cart.get(itemName);

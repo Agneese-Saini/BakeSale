@@ -2,9 +2,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { DecimalPipe, KeyValuePipe } from "@angular/common";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { IItem, Item } from "./item";
-import { ItemDialog } from "./itemDialog";
-import _ from "lodash";
+import { Item } from "./item";
 
 export interface IChoiceType {
   name: string,
@@ -224,7 +222,7 @@ export class ItemChoiceList {
       return true;
     }
 
-    if (skipNonSelection == true && ItemChoiceList.NumSelection(choices) == 0)
+    if (skipNonSelection == undefined || (skipNonSelection == true && ItemChoiceList.NumSelection(choices) == 0))
       return false;
 
     if (type.limit && ItemChoiceList.NumSelection(choices) > type.limit) {

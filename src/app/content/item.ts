@@ -7,7 +7,6 @@ import { ItemDialog, PriceTag } from './itemDialog';
 import { CartItemsDialog } from '../checkout/cartItemDialog';
 import { ChoiceList } from './itemChoice';
 import { RouterLink } from "@angular/router";
-import * as _ from 'lodash';
 
 export interface IItemDetail {
   icon?: string,
