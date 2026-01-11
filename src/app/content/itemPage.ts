@@ -12,7 +12,6 @@ import { ItemChoiceList } from './itemChoice';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CartService } from '../checkout/cart';
 import { Header } from "../header/header";
-import { cloneDeep } from 'lodash';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -166,7 +165,7 @@ export class ItemPage {
   protected removeFromCart() {
     if (!this.item) return;
 
-    const oldItem = cloneDeep(this.item);
+    const oldItem = structuredClone(this.item);
 
     // remove from cart
     this.cartService.removeFromCart(this.item);
