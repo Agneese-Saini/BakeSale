@@ -35,14 +35,7 @@
 
         <h1 class="font-bold text-2xl">{{ item.name }}</h1>
 
-        <item-price-tag [value]="item" [likes]="false"></item-price-tag>
-
-        @if (item.price.buyOneGetOne) {
-        <span class="badge badge-error text-white">Buy 1, Get 1</span>
-        }
-        @else if (item.price.label) {
-        <span class="badge badge-warning text-white">{{ item.price.label }}</span>
-        }
+        <item-price-tag [value]="item" [likes]="false" [showSale]="true"></item-price-tag>
       </div>
 
       @if (item.author) {

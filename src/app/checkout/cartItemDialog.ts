@@ -36,7 +36,7 @@ import { ItemChoiceSummary } from "../content/itemChoice";
                   </h1>
                 </div>
 
-                <item-price-tag [value]="item" [showSale]="true" size="sm"></item-price-tag>
+                <item-price-tag [value]="item" [showSale]="true" size="sm" saleSize="xs"></item-price-tag>
 
                 <p class="label text-xs">{{ numChoices(item) }} choice(s)</p>
               </div>
@@ -66,7 +66,7 @@ import { ItemChoiceSummary } from "../content/itemChoice";
                 </h1>
               </div>
 
-              <item-price-tag [value]="item" [showSale]="true" size="sm"></item-price-tag>
+              <item-price-tag [value]="item" [showSale]="true" size="sm" saleSize="xs"></item-price-tag>
             </span>
           </a>
           }

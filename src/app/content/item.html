@@ -21,17 +21,21 @@
       </div>
 
       <div class="indicator-item indicator-start" style="--indicator-x: -0.5em; --indicator-y: 1.25em;">
-        <div class="flex flex-col gap-1 text-white">
+        <div class="flex flex-col gap-1">
           @if (value.company) {
-          <span class="bg-neutral text-xs text-white font-bold font-serif w-fit px-1">
+          <span class="bg-neutral text-xs lg:text-sm text-white font-bold font-serif w-fit px-1">
             {{ value.company }}
           </span>
           }
 
-          @if (value.price.buyOneGetOne) {
-          <span class="badge badge-error text-white">Buy 1, Get 1</span>
-          } @else if (value.price.label) {
-          <span class="badge badge-warning badge-sm text-white">{{ value.price.label }}</span>
+          @if (value.price.buyOneGetOne || (!value.price.buyOneGetOne && value.price.label)) {
+          <span [class]="'badge badge-sm lg:badge-md p-1 font-bold text-white ' + (value.price.buyOneGetOne ? 'badge-error' : 'badge-warning')">
+            @if (value.price.buyOneGetOne) {
+            Buy 1, Get 1
+            } @else {
+            {{ value.price.label }}
+            }
+          </span>
           }
         </div>
       </div>

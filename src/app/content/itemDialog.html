@@ -15,14 +15,7 @@
     <h1 class="flex items-center gap-2 text-4xl font-bold">
       {{ item.name }}
     </h1>
-    <item-price-tag [value]="item" [likes]="false"></item-price-tag>
-
-    @if (item.price.buyOneGetOne) {
-    <span class="badge badge-error text-white">Buy 1, Get 1</span>
-    }
-    @else if (item.price.label) {
-    <span class="badge badge-warning text-white">{{ item.price.label }}</span>
-    }
+    <item-price-tag [value]="item" [likes]="false" [showSale]="true" saleSize="sm"></item-price-tag>
 
     @if (item.author) {
     <div class="flex flex-row-reverse items-center text-right gap-2">
@@ -33,15 +26,16 @@
       </div>
     </div>
     }
-    <br />
 
-    <div class="rounded-box p-1">
+    <div class="pt-4">
       @if (item.about) {
       <text-read-more [text]="item.about" [maxLength]="150"></text-read-more>
       <br />
       }
 
-      <a class="link" [routerLink]="['/item', {category: item.parent, item: item.name}]" (click)="cancel()"><fa-icon icon="arrow-up-right-from-square"></fa-icon> View Full Item Description</a>
+      <a class="link" [routerLink]="['/item', {category: item.parent, item: item.name}]" (click)="cancel()">
+        <fa-icon icon="arrow-up-right-from-square"></fa-icon> View Full Item Description
+      </a>
 
       <div class="flex flex-col gap-4 items-center pt-4">
         <div class="rounded-box flex bg-base-300 justify-center w-full">

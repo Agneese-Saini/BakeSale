@@ -6,7 +6,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Category, CustomizerType, ICategory } from '../header/category';
 import { ItemCreateDialog } from './itemDialog';
 import { IItem, Item } from './item';
-import { Recipe } from '../recipe/recipe';
+import { Recipe } from '../custom/recipe';
 
 @Component({
   selector: 'item-list',
@@ -81,11 +81,11 @@ import { Recipe } from '../recipe/recipe';
 </div>
 }
 @case (customizerType.Subscription) {
-<div class="card w-full bg-base-300 shadow">
+<div class="card w-full lg:max-w-128 bg-base-300 shadow">
   <div class="card-body">
     <h2 class="text-3xl font-bold">Get {{ category.customizer.name }} daily</h2>
-    @if (category.customizer.info != undefined && category.customizer.info.length > 0) {
-    @for (info of category.customizer.info; track info) {
+    @if (category.customizer.details != undefined && category.customizer.details.length > 0) {
+    @for (info of category.customizer.details; track info) {
     <div class="flex gap-2">
       <fa-icon [icon]="info.icon"></fa-icon>
       <span>{{ info.label }}</span>
@@ -93,7 +93,9 @@ import { Recipe } from '../recipe/recipe';
     }
     }
     <div class="mt-6">
-      <button class="btn bg-orange-500 text-white btn-block">Get Started <fa-icon icon="arrow-right"></fa-icon></button>
+      <button class="btn bg-orange-500 text-white btn-block" [routerLink]="['/subscribe', {type: category.customizer.name}]">
+        Get Started <fa-icon icon="arrow-right"></fa-icon>
+      </button>
     </div>
   </div>
 </div>

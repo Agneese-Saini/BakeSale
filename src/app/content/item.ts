@@ -153,7 +153,7 @@ export class Item {
       : 'https://static.vecteezy.com/system/resources/thumbnails/048/910/778/small/default-image-missing-placeholder-free-vector.jpg';
   }
 
-  public getImage = Item.getImage;
+  protected getImage = Item.getImage;
 
   static getLikeCount(item: IItem): number {
     const likes = item.likes != undefined ? item.likes : 0;
@@ -161,7 +161,7 @@ export class Item {
     return likes + dislikes;
   }
 
-  public getLikeCount = Item.getLikeCount;
+  protected getLikeCount = Item.getLikeCount;
 
   static getLikePercentage(item: IItem): number {
     const likes = item.likes != undefined ? item.likes : 0;
@@ -171,7 +171,7 @@ export class Item {
     return (total != 0 ? likes / total : 0) * 100;
   }
 
-  public getLikePercentage = Item.getLikePercentage;
+  protected getLikePercentage = Item.getLikePercentage;
 
   static getAmount(item: IItem): number {
     return item.amount ? Number(item.amount) : 0;
@@ -189,11 +189,11 @@ export class Item {
       }
     }
 
-    if (amount == undefined && item.amount != undefined) {
+    if (amount == undefined) {
       amount = item.amount;
     }
 
-    if (amount == undefined || amount < 0) {
+    if (amount < 0) {
       amount = 0;
     }
 

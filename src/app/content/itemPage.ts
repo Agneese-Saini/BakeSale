@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, ParamMap, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { DecimalPipe, KeyValuePipe } from '@angular/common';
-import { Recipe } from '../recipe/recipe';
+import { Recipe } from '../custom/recipe';
 import { IUser, UserService } from '../user/user';
 import { IItem, Item } from './item';
 import { Category, CategoryService, ICategory } from '../header/category';

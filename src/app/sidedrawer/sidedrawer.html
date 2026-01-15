@@ -30,15 +30,16 @@
         </div>
         <div class="flex gap-4 items-center text-lg">
             <fa-icon icon="bowl-food"></fa-icon>
-            <a class="link" style="text-decoration: none;" routerLink="/recipe-book">Recipe Book {{ user.recipeBook ? ('(' + user.recipeBook.length + ')') : '' }}</a>
+            <a class="link" style="text-decoration: none;" routerLink="/recipe-book">Recipe Book {{ user.recipeBook ?
+                ('(' + user.recipeBook.length + ')') : '' }}</a>
+        </div>
+        <div class="flex gap-4 items-center text-lg">
+            <fa-icon icon="credit-card"></fa-icon>
+            <a class="link" style="text-decoration: none;">Subscriptions</a>
         </div>
         <div class="flex gap-4 items-center text-lg">
             <fa-icon icon="credit-card"></fa-icon>
             <a class="link" style="text-decoration: none;">Payment Methods</a>
-        </div>
-        <div class="flex gap-4 items-center text-lg">
-            <fa-icon icon="tag"></fa-icon>
-            <a class="link" style="text-decoration: none;">Promotions</a>
         </div>
     </div>
 

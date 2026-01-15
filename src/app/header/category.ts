@@ -15,7 +15,7 @@ export interface ICustomizer {
 	description: string,
 	icon: string,
 	type: CustomizerType,
-	info?: { icon: string, label: string }[]
+	details?: { icon: string, label: string }[]
 };
 
 export interface ICategory {
@@ -57,26 +57,10 @@ export class CategoryService {
 			posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i',
 		icon: 'bread-slice',
 		type: CustomizerType.Subscription,
-		info: [
+		details: [
 			{ icon: "car-side", label: "Free Delivery" },
 			{ icon: "bread-slice", label: "Made fresh everyday" },
 			{ icon: "basket-shopping", label: "Many options to choose from" }
-		]
-	};
-
-	readonly subscribeCheese: ICustomizer = {
-		name: 'Cheese',
-		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui. \
-			Aenean tempus ligula nec suscipit venenatis. Fusce luctus ipsum diam, aliquet dictum ligula imperdiet et. \
-			In lectus velit, semper ut iaculis vel, congue nec ipsum. Cras ultrices eros elit, gravida euismod mi lobortis \
-			vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
-			posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i',
-		icon: 'cheese',
-		type: CustomizerType.Subscription,
-		info: [
-			{ icon: "car-side", label: "Free Delivery" },
-			{ icon: "basket-shopping", label: "Fresh to Aged cheese products available" },
-			{ icon: "xmark", label: "Without preservatives" }
 		]
 	};
 
@@ -125,8 +109,7 @@ export class CategoryService {
 		},
 		{
 			name: "Cheese", hidden: true, subcats:
-				[{ name: "Daily Cheese", fontSize: 0, customizer: this.subscribeCheese },
-				{ name: "Cheese Blocks", fontSize: 2 },
+				[{ name: "Cheese Blocks", fontSize: 2 },
 				{ name: "Shredded Cheese", fontSize: 2 },
 				{ name: "Sliced Cheese", fontSize: 2 },
 				{ name: "Cream Cheese", fontSize: 2 },
@@ -288,6 +271,33 @@ export class CategoryService {
 					{ header: 'THC', detail: '12%' },
 					{ header: 'CBD', detail: '< 1%' }
 				]
+			});
+		}
+
+		category = Category.findCategory("Daily Bread", this.categoryList, "Bread");
+		if (category) {
+			Category.addItem(category, {
+				name: 'Bread 1',
+				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt",
+				price: { value: 4.5, previousPrice: 5.0, label: 'SAVE $0.5', style: 'success' },
+				image: ["https://www.sixsistersstuff.com/wp-content/uploads/2022/08/Cheesy-Garlic-Texas-Toast-1.jpg"],
+				amount: 0
+			});
+
+			Category.addItem(category, {
+				name: 'Bread 2',
+				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt",
+				price: { value: 2.75, previousPrice: 3.0, label: 'SAVE $0.25', style: 'success' },
+				image: ["https://www.sixsistersstuff.com/wp-content/uploads/2022/08/Cheesy-Garlic-Texas-Toast-1.jpg"],
+				amount: 0
+			});
+
+			Category.addItem(category, {
+				name: 'Bread 3',
+				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt",
+				price: { value: 4.0, previousPrice: 5.0, label: 'SAVE $1', style: 'success' },
+				image: ["https://www.sixsistersstuff.com/wp-content/uploads/2022/08/Cheesy-Garlic-Texas-Toast-1.jpg"],
+				amount: 0
 			});
 		}
 
@@ -506,6 +516,7 @@ export class Category {
 		item.likes = 0;
 		item.dislikes = 0;
 		item.buys = 0;
+		item.amount = 0;
 		item.id = undefined;
 
 		category.items.push(item);

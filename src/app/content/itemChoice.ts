@@ -222,7 +222,7 @@ export class ItemChoiceList {
       return true;
     }
 
-    if (skipNonSelection == undefined || (skipNonSelection == true && ItemChoiceList.NumSelection(choices) == 0))
+    if (skipNonSelection == true && ItemChoiceList.NumSelection(choices) == 0)
       return false;
 
     if (type.limit && ItemChoiceList.NumSelection(choices) > type.limit) {

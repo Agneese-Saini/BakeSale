@@ -1,8 +1,10 @@
 import { Component, Injectable, Input } from '@angular/core';
-import { IRecipe } from '../recipe/recipe';
+import { IRecipe } from '../custom/recipe';
 import { BehaviorSubject } from 'rxjs';
 import { IOrderHistory } from './order-history';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { IItem } from '../content/item';
+import { DaysOfWeek } from '../custom/subscribe';
 
 export enum UserRole {
   Guest = 0,
@@ -39,9 +41,6 @@ export class UserService {
 
   private _user = new BehaviorSubject<IUser>(UserService.DefaultUser);
   public user$ = this._user.asObservable(); // Expose as Observable
-
-  private _recipe = new BehaviorSubject<IRecipe | undefined>(undefined);
-  public recipe$ = this._user.asObservable(); // Expose as Observable
 
   public login(name: string, password: string) {
     let value: IUser = {
@@ -123,7 +122,7 @@ export class UserCard {
 
   @Input({ required: true })
   public user: IUser = UserService.DefaultUser;
-  
+
 }
 
 

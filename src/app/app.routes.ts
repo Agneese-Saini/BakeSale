@@ -2,11 +2,12 @@ import { Routes } from '@angular/router'
 import { Checkout } from './checkout/checkout';
 import { Content } from './content/content';
 import { CategoryContent } from './content/category-content';
-import { Recipe } from './recipe/recipe';
+import { Recipe } from './custom/recipe';
 import { OrderHistory } from './user/order-history';
 import { ViewReceipt } from './user/view-receipt';
 import { RecipeBook } from './user/recipe-book';
 import { ItemPage } from './content/itemPage';
+import { Subscribe } from './custom/subscribe';
 
 export const routes: Routes = [
     {
@@ -24,6 +25,10 @@ export const routes: Routes = [
     {
         path: 'create',
         component: Recipe
+    },
+    {
+        path: 'subscribe',
+        component: Subscribe
     },
     {
         path: 'order-history',

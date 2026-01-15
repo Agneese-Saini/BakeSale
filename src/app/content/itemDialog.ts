@@ -9,7 +9,7 @@ import { CustomizerType, ICategory, ICustomizer } from "../header/category";
 import { CartService } from "../checkout/cart";
 import { RouterModule } from "@angular/router";
 import { ItemChoiceList } from "./itemChoice";
-import { Recipe } from "../recipe/recipe";
+import { Recipe } from "../custom/recipe";
 
 @Component({
   selector: 'text-read-more',
@@ -65,14 +65,14 @@ export class TextReadMore {
 <div class="flex flex-col p-1">  
   <div class="flex items-center gap-2">
     @if (value.price.value > 0) {
-    <label [class]="'font-mono font-bold text-neutral ' + (size ? ('text-' + size) : 'text-lg')">{{ currency }}{{ value.price.value }}</label>
+    <label [class]="'font-mono font-bold text-neutral ' + textSize">{{ currency }}{{ value.price.value }}</label>
     } @else {
-    <label [class]="'font-mono font-bold text-error ' + (size ? ('text-' + size) : 'text-lg')">FREE</label>
+    <label [class]="'font-mono font-bold text-error ' + textSize">FREE</label>
     }
 
     @if (!value.price.buyOneGetOne && value.price.previousPrice) {
-    <label class="label font-mono">
-      Was: <span class="text-sm line-through">{{ currency }}{{ value.price.previousPrice }}</span>
+    <label class="font-mono text-sm text-gray-500 line-through">
+      {{ currency }}{{ value.price.previousPrice }}
     </label>
     }
   </div>
@@ -86,10 +86,14 @@ export class TextReadMore {
   }
   
   @if (showSale == true) {
-  @if (value.price.buyOneGetOne) {
-  <span [class]="'badge badge-xs badge-soft text-nowrap outline font-bold ' + (value.price.style ? ('badge-' + value.price.style) : 'badge-error')">Buy 1, Get 1</span>
-  } @else if (value.price.label) {
-  <span [class]="'badge badge-xs badge-soft text-nowrap outline font-bold ' + (value.price.style ? ('badge-' + value.price.style) : 'badge-warning')">{{ value.price.label }}</span>
+  @if (value.price.buyOneGetOne || (!value.price.buyOneGetOne && value.price.label)) {
+  <span [class]="'badge px-1 text-nowrap font-bold ' + badgeSize + ' ' + (value.price.style ? ('badge-' + value.price.style) : (value.price.buyOneGetOne ? 'badge-error text-white' : 'badge-warning'))">
+    @if (value.price.buyOneGetOne) {
+    Buy 1, Get 1
+    } @else {
+    {{ value.price.label }}
+    }
+  </span>
   }
   }
 </div>
@@ -116,7 +120,18 @@ export class PriceTag {
   public size: string = 'lg';
 
   @Input()
+  public saleSize: string = 'sm';
+
+  @Input()
   public showSale: boolean = false;
+
+  protected get textSize(): string {
+    return "text-" + this.size;
+  }
+
+  protected get badgeSize(): string {
+    return "badge-" + this.saleSize;
+  }
 
   protected get showLikes(): boolean {
     return this.likes &&

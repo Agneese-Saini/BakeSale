@@ -11,7 +11,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CartItemsDialog } from '../checkout/cartItemDialog';
 import { IAddress } from '../header/addressDialog';
 import { ITime } from '../header/timeslots';
-import { Category, Recipe, IRecipe, RecipeGroup } from '../recipe/recipe';
+import { Category, Recipe, IRecipe, RecipeGroup } from '../custom/recipe';
 import { ItemChoiceList } from '../content/itemChoice';
 import { MatSnackBar } from '@angular/material/snack-bar';
 

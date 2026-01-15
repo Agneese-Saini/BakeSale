@@ -17,75 +17,77 @@
 <div class="divider px-4"></div>
 
 @if (order) {
-<div class="flex flex-col gap-4 p-4 items-center min-w-full lg:min-w-128">
-  <div class="rounded-box bg-base-200 min-w-full lg:min-w-128 p-6">
-    @if (order.deliveryType != undefined) {
-    <h1 class="font-bold text-xl p-2">Delivery Details:</h1>
-    } @else {
-    <h1 class="font-bold text-xl p-2">Pickup Details:</h1>
-    }
+<div class="flex justify-center w-full p-4">
+  <div class="flex flex-col gap-4 w-full lg:w-auto lg:min-w-156">
+    <div class="rounded-box bg-base-200 w-full p-6 border border-base-300">
+      @if (order.deliveryType != undefined) {
+      <h1 class="font-bold text-xl p-2">Delivery Details:</h1>
+      } @else {
+      <h1 class="font-bold text-xl p-2">Pickup Details:</h1>
+      }
 
-    <table class="table table-zebra">
-      <tbody>
-        <tr>
-          <td>
-            <b>Address:</b>
-          </td>
-          <td>
-            <label class="flex flex-col">
-              <b>{{ order.address.addressLine }}</b>
-              <p class="text-sm">{{ order.address.city }}, {{ order.address.province }} {{
-                order.address.postal }}</p>
-            </label>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <b>Time:</b>
-          </td>
-          <td>
-            12:54 am
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="rounded-box bg-base-200 min-w-full lg:min-w-128 p-6">
-    <div class="flex justify-between p-2">
-      <h1 class="font-bold text-xl">Cart Items:</h1>
-      <p class="text-xl">{{ totalItems }} items</p>
+      <table class="table table-zebra">
+        <tbody>
+          <tr>
+            <td>
+              <b>Address:</b>
+            </td>
+            <td>
+              <label class="flex flex-col">
+                <b>{{ order.address.addressLine }}</b>
+                <p class="text-sm">{{ order.address.city }}, {{ order.address.province }} {{
+                  order.address.postal }}</p>
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <b>Time:</b>
+            </td>
+            <td>
+              12:54 am
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <order-summary [order]="order" [open]="true"></order-summary>
-  </div>
 
-  <div class="rounded-box bg-base-200 min-w-full lg:min-w-128 p-6">
-    <h1 class="font-bold text-xl p-2">Order Details:</h1>
-    <div class="p-4">
-      <order-total [order]="order"></order-total>
+    <div class="rounded-box bg-base-200 w-full p-6 border border-base-300">
+      <div class="flex justify-between p-2">
+        <h1 class="font-bold text-xl">Cart Items:</h1>
+        <p class="text-xl">{{ totalItems }} items</p>
+      </div>
+      <order-summary [order]="order" [open]="true"></order-summary>
     </div>
-  </div>
 
-  <div class="rounded-box bg-base-200 min-w-full lg:min-w-128 p-6">
-    <h1 class="font-bold text-xl">Payments:</h1>
-    <div class="flex justify-between items-center p-4">
-      <div class="flex gap-4 text-lg items-center">
-        <fa-icon icon="credit-card"></fa-icon>
-        <div class="flex flex-col">
-          <b>Visa **** {{ order.payment }}</b>
-          <p class="label text-sm"><i>15 Jan, 2053</i> at <i>12:45pm</i></p>
+    <div class="rounded-box bg-base-200 w-full p-6 border border-base-300">
+      <h1 class="font-bold text-xl p-2">Order Details:</h1>
+      <div class="p-4">
+        <order-total [order]="order"></order-total>
+      </div>
+    </div>
+
+    <div class="rounded-box bg-base-200 w-full p-6 border border-base-300">
+      <h1 class="font-bold text-xl">Payments:</h1>
+      <div class="flex justify-between items-center p-4">
+        <div class="flex gap-4 text-lg items-center">
+          <fa-icon icon="credit-card"></fa-icon>
+          <div class="flex flex-col">
+            <b>Visa **** {{ order.payment }}</b>
+            <p class="label text-sm"><i>15 Jan, 2053</i> at <i>12:45pm</i></p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="flex gap-4 justify-end min-w-full lg:min-w-128">
-    <button class="link">Print</button>
-    <button class="link">Send by email</button>
-    <button class="link">Get Help</button>
-  </div>
+    <div class="flex gap-4 justify-end w-full">
+      <button class="link">Print</button>
+      <button class="link">Send by email</button>
+      <button class="link">Get Help</button>
+    </div>
 
-  <br />
+    <br />
+  </div>
 </div>
 }
 @else {
