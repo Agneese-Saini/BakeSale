@@ -3,8 +3,7 @@ import { IRecipe } from '../custom/recipe';
 import { BehaviorSubject } from 'rxjs';
 import { IOrderHistory } from './order-history';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { IItem } from '../content/item';
-import { DaysOfWeek } from '../custom/subscribe';
+import { ISubscription } from '../custom/subscribe';
 
 export enum UserRole {
   Guest = 0,
@@ -16,6 +15,7 @@ export enum UserRole {
 };
 
 export interface IPayMethod {
+  name: string
 };
 
 export interface IUser {
@@ -26,6 +26,7 @@ export interface IUser {
   image?: string,
   orders?: IOrderHistory[],
   recipeBook?: IRecipe[],
+  subscriptions?: ISubscription[],
   savedPayMethods?: IPayMethod[]
 };
 
@@ -77,6 +78,15 @@ export class UserService {
       value.recipeBook = [];
     }
     value.recipeBook.push(recipe);
+    this._user.next(value);
+  }
+
+  public addSubscription(sub: ISubscription) {
+    let value = this._user.value;
+    if (!value.subscriptions) {
+      value.subscriptions = [];
+    }
+    value.subscriptions.push(sub);
     this._user.next(value);
   }
 }

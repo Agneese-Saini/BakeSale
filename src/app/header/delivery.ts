@@ -9,6 +9,7 @@ import { AddressBookAction, AddressDialog, IAddress } from './addressDialog';
 import { ICategory } from './category';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DriverTip } from '../checkout/checkout';
+import { IPayMethod } from '../user/user';
 
 export const enum DeliveryMode {
   Delivery,
@@ -26,7 +27,7 @@ export interface IDeliverySettings {
   deliveryType: DeliveryType,
   address?: IAddress,
   time?: ITime,
-  payment?: string,
+  payment?: IPayMethod,
   timeslot?: ITimeSlot,
   category?: ICategory,
   focusedCategory?: ICategory,

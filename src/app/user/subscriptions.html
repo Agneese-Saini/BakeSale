@@ -1,0 +1,152 @@
+<div class="navbar">
+  <div class="navbar-start">
+    <div class="flex flex-col p-4 gap-2">
+      <a class="link text-lg font-mono px-2" style="text-decoration: none" routerLink="/">
+        <fa-icon icon="arrow-left"></fa-icon> Back to store
+      </a>
+      <label class="flex items-center gap-2 text-4xl font-mono lg:hidden">
+        <fa-icon icon="s"></fa-icon> Subscriptions
+      </label>
+    </div>
+  </div>
+
+  <div class="navbar-center hidden lg:block">
+    <a class="link text-4xl font-serif p-2" style="text-decoration: none" routerLink="/">
+      <b>Bake</b>Sale
+    </a>
+  </div>
+</div>
+
+<div class="divider px-4"></div>
+
+<div class="drawer lg:drawer-open">
+  <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+
+  <div class="drawer-content p-4">
+    <div class="w-full flex flex-col gap-2">
+      <!-- Page content here -->
+      <div class="hidden lg:block">
+        <div class="flex items-center gap-4">
+          <fa-icon class="text-2xl" icon="s"></fa-icon>
+          <h1 class="font-bold text-5xl">Subscriptions</h1>
+        </div>
+        <div class="divider"></div>
+      </div>
+
+      @if (user.subscriptions && user.subscriptions.length > 0) {
+      <h1 class="text-lg">Upcoming Deliveries:</h1>
+      <table class="table bg-base-300">
+        <tbody>
+          @for (sub of user.subscriptions; track $index) {
+          @let subName = sub.category.customizer!.name + ($index + 1);
+          @for (day of sub.days | keyvalue; track day.key) {
+          <tr>
+            <td>
+              <div class="flex flex-col">
+                <div class="flex justify-between">
+                  <p><b>{{ subName }}</b>: {{ sub.date | date }} - {{ day.value.name }}</p>
+                </div>
+                <p></p>
+                <div class="flex gap-2 px-2">
+                  <a class="link">View Order</a>
+                  <a class="link text-error">Cancel this Order</a>
+                </div>
+              </div>
+            </td>
+          </tr>
+          }
+          }
+        </tbody>
+      </table>
+      <br />
+
+      <h1 class="text-lg">Your Subscriptions:</h1>
+      <div class="flex flex-col gap-2 rounded-box bg-base-200 border border-base-300 p-2">
+        @for (sub of user.subscriptions; track $index) {
+        <div class="collapse bg-base-100 border-base-300 border">
+          <input type="checkbox" />
+
+          <div class="collapse-title flex justify-between items-center text-xl">
+            <div class="flex gap-2 items-center">
+              <fa-icon class="text-success" [icon]="sub.category.customizer!.icon"></fa-icon>
+              <div class="flex flex-col">
+                <h2 class="font-bold"> {{ sub.category.customizer!.name }} {{ $index + 1 }}</h2>
+                <p class="text-sm text-gray-500">{{ getTotalItems(getSelectedItems(sub.category)) }} items</p>
+              </div>
+            </div>
+            <p class="font-bold">${{ getTotal(sub) | number: '1.2-2' }}</p>
+          </div>
+
+          <div class="collapse-content bg-base-300 text-sm">
+            <div class="pt-2">
+              <h2 class="font-bold">Items:</h2>
+              <span class="flex">
+                @for (item of getSelectedItems(sub.category); track item) {
+                {{ item.name }}{{ item.amount > 1 ? (' (' + item.amount + ')') : '' }}{{ item !=
+                getLastItem(sub) ? ', ' : '' }}
+                }
+              </span>
+              <br />
+
+              <div class="flex gap-4">
+                <div class="flex-1 flex flex-col">
+                  <h2 class="font-bold">Delivery Days:</h2>
+                  <span class="flex">
+                    @for (day of sub.days | keyvalue; track day.key) {
+                    {{ day.value.name }}{{ day.key != getLastDay(sub) ? ', ' : '' }}
+                    }
+                  </span>
+                </div>
+                <div class="flex-1 flex flex-col">
+                  <h2 class="font-bold">Delivery Frequency:</h2>
+                  <p>{{ sub.freq > 1 ? (sub.freq + ' Weeks') : 'Weekly' }}</p>
+                </div>
+              </div>
+              <br />
+
+              <h2 class="font-bold">Upcoming delivery dates:</h2>
+              <div class="bg-base-200 rounded-box flex flex-col p-2">
+                <div class="flex flex-col gap-2 font-mono">
+                  @for (day of sub.days | keyvalue; track day.key) {
+                  <p>{{ sub.date | date }} - {{ day.value.name }}</p>
+                  }
+                  <p>...</p>
+                </div>
+              </div>
+              <br />
+
+              <div class="flex justify-end items-end gap-2">
+                <button class="btn btn-neutral" (click)="openChangeSubscriptionDialogDialog(sub)">Change</button>
+                <button class="btn" (click)="openOrderSummaryDialog(sub)">View Order</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      }
+      @else {
+      <div class="flex flex-col w-full items-center justify-items-center pt-10">
+        <h1 class="text-2xl">No subscriptions found!</h1>
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="drawer-side">
+    <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+    <ul class="menu min-h-full w-86 text-base-content text-lg">
+      <!-- Sidebar content here -->
+      <li>
+        <a class="menu-active font-bold">
+          Bread
+        </a>
+      </li>
+      <li>
+        <a class="font-light">
+          Other
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

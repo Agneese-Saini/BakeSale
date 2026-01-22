@@ -65,14 +65,14 @@ export class TextReadMore {
 <div class="flex flex-col p-1">  
   <div class="flex items-center gap-2">
     @if (value.price.value > 0) {
-    <label [class]="'font-mono font-bold text-neutral ' + textSize">{{ currency }}{{ value.price.value }}</label>
+    <label [class]="'font-mono font-bold text-neutral' + textSize">{{ currency }}{{ value.price.value | number: '1.0-2' }}</label>
     } @else {
-    <label [class]="'font-mono font-bold text-error ' + textSize">FREE</label>
+    <label [class]="'font-mono font-bold text-error' + textSize">FREE</label>
     }
 
     @if (!value.price.buyOneGetOne && value.price.previousPrice) {
-    <label class="font-mono text-sm text-gray-500 line-through">
-      {{ currency }}{{ value.price.previousPrice }}
+    <label [class]="'font-mono font-bold text-gray-500 line-through' + textSize">
+      {{ currency }}{{ value.price.previousPrice | number: '1.0-2' }}
     </label>
     }
   </div>
@@ -87,12 +87,17 @@ export class TextReadMore {
   
   @if (showSale == true) {
   @if (value.price.buyOneGetOne || (!value.price.buyOneGetOne && value.price.label)) {
-  <span [class]="'badge px-1 text-nowrap font-bold ' + badgeSize + ' ' + (value.price.style ? ('badge-' + value.price.style) : (value.price.buyOneGetOne ? 'badge-error text-white' : 'badge-warning'))">
+  <span [class]="'badge px-1 text-nowrap font-mono ' + badgeSize + badgeStyle">
     @if (value.price.buyOneGetOne) {
     Buy 1, Get 1
     } @else {
     {{ value.price.label }}
     }
+  </span>
+  }
+  @else if (value.price.previousPrice) {
+  <span [class]="'badge badge-success badge-soft px-1 text-nowrap font-bold font-mono' + badgeSize">
+    SAVE {{ '$' }}{{ (value.price.previousPrice - value.price.value) | number: '1.1-2' }}
   </span>
   }
   }
@@ -126,11 +131,15 @@ export class PriceTag {
   public showSale: boolean = false;
 
   protected get textSize(): string {
-    return "text-" + this.size;
+    return " text-" + this.size + ' ';
   }
 
   protected get badgeSize(): string {
-    return "badge-" + this.saleSize;
+    return " badge-" + this.saleSize + ' ';
+  }
+
+  protected get badgeStyle(): string {
+    return " badge-" + (this.value.price.style ? this.value.price.style : (this.value.price.buyOneGetOne ? 'error text-white' : 'warning')) + ' ';
   }
 
   protected get showLikes(): boolean {

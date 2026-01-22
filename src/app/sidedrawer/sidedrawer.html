@@ -29,13 +29,14 @@
             <a class="link" style="text-decoration: none;" routerLink="/order-history">Order History</a>
         </div>
         <div class="flex gap-4 items-center text-lg">
-            <fa-icon icon="bowl-food"></fa-icon>
-            <a class="link" style="text-decoration: none;" routerLink="/recipe-book">Recipe Book {{ user.recipeBook ?
-                ('(' + user.recipeBook.length + ')') : '' }}</a>
+            <fa-icon icon="book"></fa-icon>
+            <a class="link" style="text-decoration: none;" routerLink="/recipe-book">
+                Recipe Book {{ user.recipeBook ? ('(' + user.recipeBook.length + ')') : '' }}
+            </a>
         </div>
         <div class="flex gap-4 items-center text-lg">
-            <fa-icon icon="credit-card"></fa-icon>
-            <a class="link" style="text-decoration: none;">Subscriptions</a>
+            <fa-icon icon="s"></fa-icon>
+            <a class="link" style="text-decoration: none;" routerLink="/subscriptions">Subscriptions</a>
         </div>
         <div class="flex gap-4 items-center text-lg">
             <fa-icon icon="credit-card"></fa-icon>

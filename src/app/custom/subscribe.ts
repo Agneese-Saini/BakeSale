@@ -1,9 +1,9 @@
 import { DatePipe, DecimalPipe, KeyValuePipe } from "@angular/common";
-import { ChangeDetectorRef, Component, Inject } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { Category, CategoryService, ICategory } from "../header/category";
+import { Category, CategoryService, ICategory, ICustomizer } from "../header/category";
 import { IItem, Item } from "../content/item";
 import { PriceTag, TextReadMore } from "../content/itemDialog";
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
@@ -12,10 +12,18 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { CartItemsDialog } from "../checkout/cartItemDialog";
-import { UserService } from "../user/user";
+import { IPayMethod, UserService } from "../user/user";
 import { IDeliverySettings, AddressBook, DeliveryService } from "../header/delivery";
 import { OrderTotal } from "../checkout/order";
+
+export interface ISubscription {
+  category: ICategory,
+  freq: number,
+  days: DaysOfWeekSetting,
+  canceledDays?: Date[],
+  date?: Date, 
+  payment?: IPayMethod
+};
 
 export enum DaysOfWeek {
   Monday,
@@ -27,23 +35,215 @@ export enum DaysOfWeek {
   Sunday
 };
 
-export interface ISubscriptionPlanSetting {
-  name: string,
-  weeks: number,
-  fee: number,
-  discountPercent?: number
-};
-
 export type DaysOfWeekSetting = Map<DaysOfWeek, { name: string, checked: boolean, label: string }>;
 
 @Component({
+  selector: 'subscribe-item-list',
+  imports: [FormsModule, FontAwesomeModule, RouterModule, PriceTag, MatDialogModule],
+  template: `
+<div [class]="'overflow-y-auto rounded-box w-full' + ' ' + (maxHeight ? ('max-h-' + maxHeight) : '') + ' ' + (error && background ? 'border border-error' : '')">
+  <table [class]="'table' + ' ' + (background ? 'bg-base-200 border border-base-300' : '')">
+    <thead>
+      <tr [class]="background ? 'bg-base-100' : ''">
+        <th>
+          <div class="flex justify-between items-center">
+            <p class="text-xl">Select items:</p>
+            @if (totalItems > 0) {
+            <p class="text-neutral">
+              {{ totalItems }} {{ totalItems == 1 ? 'item' : 'items'}} - <b>{{ '$' }}{{ itemsPrice }}</b>
+            </p>
+            }
+          </div>
+          @if (error) {
+          <span class="flex gap-1 items-center text-xs text-error">
+            <fa-icon icon="exclamation-circle"></fa-icon>
+            <p>{{ error }}</p>
+          </span>
+          }
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <label class="input w-full">
+            <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </g>
+            </svg>
+            <input type="search" class="grow placeholder-gray-500 input-lg" placeholder="Search" />
+          </label>
+        </td>
+      </tr>
+      @for (item of category.items; track item) {
+      <tr>
+        <td class="flex justify-between items-center">
+          <div class="flex gap-2 items-center lg:items-start">
+            <div class="indicator">
+              <div class="w-18 lg:w-32">
+                <img class="rounded-box link w-full h-18 lg:h-32" [src]="getImage(item)" (click)="openItemDialog(item)" />
+
+                <div class="indicator-item indicator-start" style="--indicator-x: -0.5em; --indicator-y: 1.25em;">
+                  <div class="flex flex-col gap-1">
+                    @if (item.company) {
+                    <span class="bg-neutral text-xs lg:text-sm text-white font-bold font-serif w-fit px-1">
+                      {{ item.company }}
+                    </span>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              [class]="'flex flex-col w-full ' + ((item.stockAmount != undefined && item.stockAmount == 0) ? 'text-gray-500' : '')">
+              <!-- Name -->
+              <a class="link flex gap-2 items-center text-lg w-fit" style="text-decoration: none;"
+                (click)="openItemDialog(item)">
+                {{ item.name }}
+              </a>
+
+              <!-- warning -->
+              @if (item.stockAmount != undefined && item.stockAmount == 0) {
+              <span class="badge-xs badge-error badge text-white">out of stock</span>
+              }
+
+              <!-- Price -->
+              <item-price-tag [value]="item" size="sm" [showSale]="true" saleSize="sm"></item-price-tag>
+
+              <!-- Label -->
+              @if (item.label) {
+              <span class="text-xs px-2 pb-2 whitespace-pre-line">{{ item.label }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            @if (item.amount > 0) {
+            <button class="btn btn-ghost btn-circle" (click)="decrease(item)">
+              @if (item.amount == 1) {
+              <fa-icon class="text-error" icon="trash"></fa-icon>
+              } @else {
+              <fa-icon icon="minus"></fa-icon>
+              }
+            </button>
+
+            <b class="text-lg">{{ item.amount }}</b>
+            }
+
+            <button [class]="'btn btn-ghost btn-circle ' + (item.amount == 0 ? 'btn-soft' : '')" (click)="increase(item)">
+              <fa-icon icon="plus"></fa-icon>
+            </button>
+          </div>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+ `
+})
+export class SubscribeItemList {
+
+  @Input({ required: true })
+  public category!: ICategory;
+
+  @Input()
+  public error?: string;
+
+  @Input()
+  public background?: boolean;
+
+  @Input()
+  public maxHeight?: number;
+
+  @Output()
+  public change = new EventEmitter<void>();
+
+  protected get selectedItems(): IItem[] {    
+    return SubscribeItemList.getSelectedItems(this.category);
+  }
+
+  protected get totalItems(): number {
+    let num: number = 0;
+    for (let item of this.selectedItems) {
+      num += item.amount;
+    }
+    return num;
+  }
+
+  protected get itemsPrice(): number {
+    let num: number = 0;
+    for (let item of this.selectedItems) {
+      num += Item.getPrice(item);
+    }
+    return num;
+  }
+
+  protected getImage = Item.getImage;
+
+  constructor(
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef) { }
+
+  protected openItemDialog(item: IItem) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = "";
+    dialogConfig.data = item;
+
+    const dialogRef = this.dialog.open(ItemInfoDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cdr.detectChanges();
+    });
+  }
+
+  protected increase(item: IItem) {
+    if (item.amount == item.maxAmount) {
+      this.snackBar.open("Max allowed: " + item.maxAmount, "Close", {
+        duration: 2500
+      });
+      return;
+    }
+
+    item.amount += 1;
+    this.change.emit();
+  }
+
+  protected decrease(item: IItem) {
+    if (item.amount == 0) return;
+
+    item.amount -= 1;
+    this.change.emit();
+  }
+
+  static getSelectedItems(category: ICategory): IItem[] {
+    let items: IItem[] = [];
+
+    if (category.items) {
+      for (let item of category.items) {
+        if (item.amount > 0) {
+          items.push(item);
+        }
+      }
+    }
+    return items;
+  }
+}
+
+
+@Component({
   selector: 'subscribe',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, PriceTag, MatDialogModule],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, MatDialogModule, SubscribeItemList],
   templateUrl: "subscribe.html"
 })
 export class Subscribe {
 
-  protected readonly minimumItemCount = 2;
+  static readonly MinimumItemCount = 2;
+
   protected readonly numDaysLimit: number = 5;
   protected readonly defaultCategory = Category.DefaultCategory;
 
@@ -61,11 +261,21 @@ export class Subscribe {
     [DaysOfWeek.Sunday, { name: "Sunday", checked: false, label: "SUN" }]
   ]);
 
-  protected category: ICategory = this.defaultCategory;
-  protected selectedItems: IItem[] = [];
-  protected selectedDeliveryFrequency: number = this.deliveryFrequencies[0];
+  protected category?: ICategory;
   protected selectedItemsError?: string;
+  protected selectedDeliveryFrequency: number = this.deliveryFrequencies[0];
   protected selectedDeliveryDaysError?: string;
+  protected setupDelivery: boolean = false;
+
+  protected get totalSelectedItems(): number {
+    let num: number = 0;
+    if (this.category) {
+      for (let item of SubscribeItemList.getSelectedItems(this.category)) {
+        num += item.amount;
+      }
+    }
+    return num;
+  }
 
   protected get selectedDeliveryDays(): DaysOfWeekSetting {
     let ret: DaysOfWeekSetting = new Map();
@@ -100,20 +310,9 @@ export class Subscribe {
     return num;
   }
 
-  protected get totalSelectedItems(): number {
-    let num: number = 0;
-    for (let item of this.selectedItems) {
-      num += item.amount;
-    }
-    return num;
-  }
-
-  protected getImage = Item.getImage;
-
   constructor(
     private route: ActivatedRoute,
     private categoryService: CategoryService,
-    private userService: UserService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef) { }
@@ -125,13 +324,7 @@ export class Subscribe {
         for (let cat of data) {
           let find = this.findCustomizer(cat, type);
           if (find != undefined) {
-            this.category = find;
-
-            if (this.category.items) {
-              for (let item of this.category.items) {
-                item.amount = 0;
-              }
-            }
+            this.category = structuredClone(find);
             break;
           }
         }
@@ -158,55 +351,22 @@ export class Subscribe {
     return undefined;
   }
 
-  protected openItemDialog(item: IItem) {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.panelClass = "";
-    dialogConfig.data = item;
-
-    const dialogRef = this.dialog.open(SubscribeItemDialog, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.cdr.detectChanges();
-    });
-  }
-
   protected onDaysChange() {
     this.selectedDeliveryDaysError = undefined;
   }
 
-  protected increase(item: IItem) {
-    if (item.amount == item.maxAmount) {
-      this.snackBar.open("Max allowed: " + item.maxAmount, "Close", {
-        duration: 2500
-      });
-      return;
-    }
-
-    item.amount += 1;
-    this.selectedItemsError = undefined;
-
-    const result = this.selectedItems.find(value => (value == item));
-    // new item
-    if (!result) {
-      this.selectedItems.push(item);
-    }
-  }
-
-  protected decrease(item: IItem) {
-    item.amount -= 1;
-    this.selectedItemsError = undefined;
-
-    if (item.amount == 0) {
-      const result = this.selectedItems.findIndex(value => (value == item));
-      if (result != -1) {
-        this.selectedItems.splice(result, 1);
-      }
-    }
-  }
-
   protected proceed() {
-    if (this.totalSelectedItems < this.minimumItemCount) {
-      this.selectedItemsError = "Minimum of " + this.minimumItemCount + " items required";
+    if (!this.category) return;
+
+    if (this.totalSelectedItems < Subscribe.MinimumItemCount) {
+      this.selectedItemsError = "Minimum of " + Subscribe.MinimumItemCount + " items required";
+    }
+
+    if (!this.setupDelivery) {
+      if (!this.selectedItemsError) {
+        this.setupDelivery = true;
+      }
+      return;
     }
 
     if (this.selectedDeliveryDays.size == 0) {
@@ -220,18 +380,65 @@ export class Subscribe {
       return;
     }
 
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.panelClass = "";
-    dialogConfig.data = {
-      items: this.selectedItems,
-      days: this.selectedDeliveryDays
+    const data: ISubscription = {
+      category: this.category,
+      days: this.selectedDeliveryDays,
+      freq: this.selectedDeliveryFrequency
     };
 
-    const dialogRef = this.dialog.open(CheckoutDialog, dialogConfig);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = "";
+    dialogConfig.data = data;
 
+    const dialogRef = this.dialog.open(CheckoutDialog, dialogConfig);
     dialogRef.afterClosed().subscribe(() => {
       this.cdr.detectChanges();
     });
+  }
+
+  static getTotalItems(items: IItem[]): number {
+    let num: number = 0;
+    for (let item of items) {
+      num += item.amount;
+    }
+    return num;
+  }
+
+  static getSubTotal(sub: ISubscription): number {
+    let subtotal: number = 0;
+    for (let item of SubscribeItemList.getSelectedItems(sub.category)) {
+      subtotal += Item.getPrice(item);
+    }
+    return subtotal;
+  }
+
+  static getSavings(sub: ISubscription): number {
+    let originalTotal: number = 0;
+    for (let item of SubscribeItemList.getSelectedItems(sub.category)) {
+      originalTotal += Item.getPrice(item, item.price.previousPrice ? item.price.previousPrice : item.price.value);
+    }
+    return originalTotal - Subscribe.getSubTotal(sub);
+  }
+
+  static getTaxes(sub: ISubscription): number {
+    const subtotal = Subscribe.getSubTotal(sub);
+    const GST = subtotal * (OrderTotal.GST_Rate / 100);
+    const PST = subtotal * (OrderTotal.PST_Rate / 100);
+    return GST + PST;
+  }
+
+  static getServiceFee(sub: ISubscription): number {
+    const selectedItems = SubscribeItemList.getSelectedItems(sub.category);
+    const totalItems = Subscribe.getTotalItems(selectedItems);
+    return 0.65 * totalItems * ((totalItems > 4) ? 0.83 : 1.0);
+  }
+
+  static getDeliveryFee(sub: ISubscription): number {
+    return 0.0;
+  }
+
+  static getTotal(sub: ISubscription): number {
+    return Subscribe.getSubTotal(sub) + Subscribe.getServiceFee(sub) + Subscribe.getTaxes(sub);
   }
 }
 
@@ -270,13 +477,13 @@ export class Subscribe {
 </div>
 `
 })
-export class SubscribeItemDialog {
+export class ItemInfoDialog {
 
   protected displayImage?: string;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) protected data: IItem,
-    private dialogRef: MatDialogRef<CartItemsDialog>) { }
+    private dialogRef: MatDialogRef<ItemInfoDialog>) { }
 
   protected ngOnInit() {
     this.displayImage = Item.getImage(this.data);
@@ -290,6 +497,7 @@ export class SubscribeItemDialog {
     this.dialogRef.close();
   }
 }
+
 
 @Component({
   providers: [provideNativeDateAdapter()],
@@ -327,7 +535,7 @@ export class SubscribeItemDialog {
         <div class="flex gap-2 p-2 items-center">
           <fa-icon [class]="deliverySettings.payment ? '' : 'text-error'" icon="credit-card"></fa-icon>
           <a [class]="'link flex flex-col ' + (deliverySettings.payment ? '' : 'text-error')" style="text-decoration: none;">
-            <p [class]="deliverySettings.payment ? 'font-bold' : ''">{{ deliverySettings.payment ? deliverySettings.payment : 'Select Payment method' }}</p>
+            <p [class]="deliverySettings.payment ? 'font-bold' : ''">{{ deliverySettings.payment ? deliverySettings.payment.name : 'Select Payment method' }}</p>
             @if (deliverySettings.payment) {
             <p class="text-sm">Visa **** **** **** 9609</p>
             }
@@ -342,17 +550,22 @@ export class SubscribeItemDialog {
       <h1 class="text-xl font-bold">Order Summary:</h1>
 
       <div class="bg-base-300 rounded-box p-4">
-        @for (item of data.items; track item) {
+        @for (item of selectedItems; track item) {
         <div class="flex justify-between items-center">
-          <b>{{ item.name }} {{ getAmount(item) > 1 ? ('(' + getAmount(item) + ')') : '' }}</b>
-          <p>{{ '$' }}{{ getPrice(item)  | number: '1.2-2' }}</p>
+          <b>{{ item.name }} {{ item.amount > 1 ? ('(' + item.amount + ')') : '' }}</b>
+          <div class="flex gap-2 items-center">
+            @if (item.price.previousPrice) {
+            <p class="label text-xs line-through">{{ '$' }}{{ getPrice(item, item.price.previousPrice)  | number: '1.1-2' }}</p>
+            }
+            <p>{{ '$' }}{{ getPrice(item)  | number: '1.2-2' }}</p>
+          </div>
         </div>
         }
         
         <div class="divider px-2"></div>
 
         <div class="flex justify-between items-center">
-          <b>SubTotal:</b>
+          <P>SubTotal:</P>
           <div class="flex flex-col items-end justify-end">
             <div class="flex gap-1 items-center">
               <p>{{ '$' }}{{ getSubTotal() | number: '1.2-2' }}</p>
@@ -361,16 +574,20 @@ export class SubscribeItemDialog {
         </div>
 
         <div class="flex justify-between items-center pt-1">
-          <p class="text-xs">Taxes:</p>
+          <p>Taxes:</p>
           <p>{{ '$' }}{{ getTaxes() | number: '1.2-2' }}</p>
         </div>
         <div class="flex justify-between items-center">
-          <p class="text-xs">Service Fee:</p>
+          <p>Service Fee:</p>
           <p>{{ '$' }}{{ getServiceFee() | number: '1.2-2' }}</p>
         </div>
         <div class="flex justify-between items-center">
-          <p class="text-xs">Delivery Fee:</p>
+          <p>Delivery Fee:</p>
+          @if (getDeliveryFee() == 0) {
           <p class="text-success">Free</p>
+          } @else {
+          <p>{{ '$' }}{{ getDeliveryFee() | number: '1.2-2' }}</p>
+          }
         </div>
 
         <div class="divider px-2"></div>
@@ -379,9 +596,13 @@ export class SubscribeItemDialog {
           <b>Total:</b>
           <b>{{ '$' }}{{ getTotal() | number: '1.2-2' }}</b>
         </div>
+        @if (getSavings() != 0) {
+        <p class="text-right text-success"> Saving: {{ '$' }}{{ getSavings() | number: '1.2-2' }}</p>
+        }
+        <p class="text-sm text-right text-gray-500">/per delivery</p>
       </div>
       <p><b>Payment:</b> The Total amount shown will be deducted on each delivery day. You will be notified via email/message.</p>
-      <p><b>Cancelation:</b> You can cancel this subscription whenever you like (no fee). All your Subscriptions are visible in "Subscriptions" category in Homepage side drawer (<fa-icon icon="bars"></fa-icon>).</p>
+      <p><b>Cancelation:</b> You can cancel this subscription whenever you like. The order payment will be deducted if the cancelation is done the day before or the day of delivery. All your Subscriptions are visible in "Subscriptions" category in Homepage side drawer (<fa-icon icon="bars"></fa-icon>).</p>
     </div>
   </div>
 
@@ -398,10 +619,23 @@ export class CheckoutDialog {
 
   protected selectedDate: Date = new Date();
 
+  protected get selectedItems(): IItem[] {    
+    return SubscribeItemList.getSelectedItems(this.data.category);
+  }
+
+  protected get totalItems(): number {
+    let num: number = 0;
+    for (let item of this.selectedItems) {
+      num += item.amount;
+    }
+    return num;
+  }
+
   constructor(
-    @Inject(MAT_DIALOG_DATA) protected data: { items: IItem[], days: DaysOfWeekSetting },
-    private dialogRef: MatDialogRef<CartItemsDialog>,
+    @Inject(MAT_DIALOG_DATA) protected data: ISubscription,
+    private dialogRef: MatDialogRef<CheckoutDialog>,
     private deliveryService: DeliveryService,
+    private userService: UserService,
     private snackBar: MatSnackBar,
     private router: Router,
     private cdr: ChangeDetectorRef) {
@@ -411,26 +645,27 @@ export class CheckoutDialog {
   protected getPrice = Item.getPrice;
 
   protected getSubTotal(): number {
-    let subtotal: number = 0;
-    for (let item of this.data.items) {
-      subtotal += this.getPrice(item);
-    }
-    return subtotal;
+    return Subscribe.getSubTotal(this.data);
+  }
+
+  protected getSavings(): number {
+    return Subscribe.getSavings(this.data);
   }
 
   protected getTaxes(): number {
-    const subtotal = this.getSubTotal();
-    const GST = subtotal * (OrderTotal.GST_Rate / 100);
-    const PST = subtotal * (OrderTotal.PST_Rate / 100);
-    return GST + PST;
+    return Subscribe.getTaxes(this.data);
   }
 
   protected getServiceFee(): number {
-    return 2.0 * this.data.days.size;
+    return Subscribe.getServiceFee(this.data);
+  }
+
+  protected getDeliveryFee(): number {
+    return Subscribe.getDeliveryFee(this.data);
   }
 
   protected getTotal(): number {
-    return this.getSubTotal() + this.getServiceFee() + this.getTaxes();
+    return Subscribe.getTotal(this.data);
   }
 
   protected ngOnInit() {
@@ -441,7 +676,7 @@ export class CheckoutDialog {
   }
 
   protected openPaymentMethodDialog() {
-    this.deliverySettings.payment = "TIGHT";
+    this.deliverySettings.payment = { name: "TIGHT" };
     this.deliveryService.setDeliverySetting(this.deliverySettings);
   }
 
@@ -453,11 +688,15 @@ export class CheckoutDialog {
       return;
     }
 
+    this.data.date = this.selectedDate;
+    this.data.payment = this.deliverySettings.payment;
+    this.userService.addSubscription(this.data);
+
     this.snackBar.open("Subscription added successfully.", "Close", {
       duration: 2500
     });
 
-    this.router.navigate(['/']);
+    this.router.navigate(['/subscriptions']);
 
     this.closeDialog();
   }

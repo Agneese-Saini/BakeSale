@@ -8,6 +8,7 @@ import { ViewReceipt } from './user/view-receipt';
 import { RecipeBook } from './user/recipe-book';
 import { ItemPage } from './content/itemPage';
 import { Subscribe } from './custom/subscribe';
+import { Subscriptions } from './user/subscriptions';
 
 export const routes: Routes = [
     {
@@ -37,6 +38,10 @@ export const routes: Routes = [
     {
         path: 'view-receipt',
         component: ViewReceipt
+    },
+    {
+        path: 'subscriptions',
+        component: Subscriptions
     },
     {
         path: 'recipe-book',

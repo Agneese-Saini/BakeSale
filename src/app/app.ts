@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
 import { SideDrawer } from "./sidedrawer/sidedrawer";
 import { CheckoutDrawer } from './checkout/checkout-drawer';
 import { filter } from 'rxjs';
@@ -28,6 +29,7 @@ export class App {
 
   protected ngOnInit() {
     this.fontAwesome.addIconPacks(fas);
+    this.fontAwesome.addIconPacks(far);
 
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
       this.checkoutDrawerState = false;

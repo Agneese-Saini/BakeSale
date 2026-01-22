@@ -17,9 +17,9 @@
 
     <h1>Lookup Address:</h1>
     <div class="flex justify-between gap-2 items-center">
-      <input type="search" class="input input-bordered placeholder-gray-350 w-full" placeholder="Search an address" />
+      <input type="search" class="input input-bordered placeholder-gray-350 w-full" placeholder="Search an address" [(ngModel)]="lookupAddress" />
       <div class="tooltip tooltip-left" data-tip="Use Current location">
-        <button class="btn btn-neutral">
+        <button class="btn btn-neutral" (click)="useCurrentLocation()">
           <fa-icon icon="location-dot"></fa-icon>
         </button>
       </div>

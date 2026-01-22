@@ -121,7 +121,7 @@ export class Tip {
   imports: [FormsModule, FontAwesomeModule, DecimalPipe, Tip],
   template: `
 <div class="flex flex-col gap-1">
-  <div class="flex justify-between text-md">
+  <div class="flex justify-between">
     <h1>SubTotal:</h1>
     <div class="flex flex-col items-end">
       <div class="flex gap-2">
@@ -130,6 +130,9 @@ export class Tip {
         }
         <p class="font-mono">{{ '$' }}{{ subTotal | number: '1.2-2' }}</p>
       </div>
+      @if (originalPrice > subTotal) {
+      <p class="text-success text-right">Saving {{ '$' }}{{ (originalPrice - subTotal) | number: '1.2-2' }}</p>
+      }
     </div>
   </div>
 
@@ -141,16 +144,29 @@ export class Tip {
   }
 
   @if (isDelivery) {
-  <div class="flex justify-between items-center text-md">
-    <h1>
-      Delivery Fee: <fa-icon icon="circle-info" class="tooltip tooltip-bottom"
-        data-tip="Delivery fee varies for each merchant based on your location and availability of nearby couriers."></fa-icon>
-    </h1>
+  <div class="flex justify-between items-center">
+    <div class="flex gap-1">
+      <h1>Delivery Fee:</h1>
+      <div class="dropdown dropdown-center">
+        <div tabindex="0" role="button" class="link">
+          <fa-icon icon="circle-info"></fa-icon>
+        </div>
+
+        <div tabindex="0" class="dropdown-content z-2 pt-2 shadow-xl">
+          <div tabindex="0" class="rounded-box bg-neutral text-white text-wrap p-1 px-2 w-52">
+            <p>
+              Delivery fee varies for each merchant based on your location and availability of nearby couriers.
+            </p>              
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <p class="font-mono text-right">{{ '$' }}{{ deliveryFee | number: '1.2-2' }}</p>
   </div>
   }
 
-  <div class="flex justify-between text-md">
+  <div class="flex justify-between">
     <span class="flex flex-col">
       <h1>Taxes:</h1>
       <h2 class="label text-xs px-2">
@@ -167,7 +183,7 @@ export class Tip {
   @if (!order) {
   <add-tip></add-tip>
   } @else {
-  <div class="flex justify-between items-center text-md">
+  <div class="flex justify-between items-center">
     <h1>Tip:</h1>
     <p class="font-mono text-right">{{ '$' }}{{ tipAmount | number: '1.2-2' }}</p>
   </div>
@@ -176,7 +192,7 @@ export class Tip {
   <div class="divider"></div>
   }
 
-  <div class="flex justify-between items-center text-xl">
+  <div class="flex justify-between text-xl">
     <b>Total:</b>
     <b class="font-mono text-right">{{ '$' }}{{ checkoutPrice | number: '1.2-2' }}</b>
   </div>

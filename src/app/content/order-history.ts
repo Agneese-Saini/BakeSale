@@ -8,7 +8,7 @@ import { Item } from '../content/item';
 import { DeliveryType } from '../header/delivery';
 import { IAddress } from '../header/addressDialog';
 import { ITime } from '../header/timeslots';
-import { IUser, UserService } from '../user/user';
+import { IPayMethod, IUser, UserService } from '../user/user';
 import { OrderSummary } from '../user/view-receipt';
 
 export interface IOrderHistory {
@@ -20,7 +20,7 @@ export interface IOrderHistory {
   date: number,
   time: ITime,
   address: IAddress,
-  payment: string,
+  payment: IPayMethod,
   deliveryType?: DeliveryType,
   deliveryInstructions?: string,
   inProgress?: boolean
@@ -48,7 +48,6 @@ export class OrderHistory {
   protected originalSubTotal = CartService.originalSubTotal;
   protected numChoices = Item.numChoices;
   protected getPrice = Item.getPrice;
-  protected getAmount = Item.getAmount;
 
   protected subTotal(order: IOrderHistory): number {
     return CartService.subTotal(order.cart);

@@ -44,7 +44,7 @@ export enum DriverTip {
   </button>
 </div>
 
-<div class="flex gap-2 opacity-60">
+<div class="flex gap-2 text-xs opacity-60">
   <fa-icon icon="info-circle"></fa-icon>
   <i>Coupons can be found in door to door flyers, in store and online promotions.</i>
 </div>
@@ -191,7 +191,7 @@ export class CheckoutCoupon {
       <div class="flex gap-4 text-lg p-2 items-center">
         <fa-icon [class]="deliverySettings.payment ? '' : 'text-error'" icon="credit-card"></fa-icon>
         <a [class]="'link flex flex-col ' + (deliverySettings.payment ? '' : 'text-error')" style="text-decoration: none;">
-          <p [class]="deliverySettings.payment ? 'font-bold' : ''">{{ deliverySettings.payment ? deliverySettings.payment : 'Select Payment method' }}</p>
+          <p [class]="deliverySettings.payment ? 'font-bold' : ''">{{ deliverySettings.payment ? deliverySettings.payment.name : 'Select Payment method' }}</p>
           @if (deliverySettings.payment) {
           <p class="text-sm">Visa **** **** **** 9609</p>
           }
@@ -273,7 +273,7 @@ export class CheckoutDetails {
   }
 
   protected openPaymentMethodDialog() {
-    this.deliverySettings.payment = "TIGHT";
+    this.deliverySettings.payment = { name: "TIGHT" };
     this.deliveryService.setDeliverySetting(this.deliverySettings);
   }
 }
@@ -297,9 +297,11 @@ export class CheckoutDetails {
   </div>
 
   <div class="collapse-content">
-    @for (cartItem of shoppingCart | keyvalue; track cartItem.key) {
-    <cart-item-list [items]="cartItem.value" />
-    }
+    <div class="rounded-box bg-base-100">
+      @for (cartItem of shoppingCart | keyvalue; track cartItem.key) {
+      <cart-item-list [items]="cartItem.value" />
+      }
+    </div>
   </div>
 </div>
 `

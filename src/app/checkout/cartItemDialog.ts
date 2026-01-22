@@ -111,7 +111,7 @@ export class CartItemList {
   protected getImage = Item.getImage;
 
   protected increase(item: IItem) {
-    const currentAmount = Item.getAmount(item);
+    const currentAmount = item.amount;
     const newAmount = currentAmount + 1;
 
     let maxAmount = item.maxAmount ? item.maxAmount : Item.DefaultMaxAmount;
@@ -139,7 +139,7 @@ export class CartItemList {
   }
 
   protected decrease(item: IItem) {
-    const currentAmount = Item.getAmount(item);
+    const currentAmount = item.amount;
     if (currentAmount == 1) {
       // remove from cart
       this.cartService.removeFromCart(item);
@@ -172,7 +172,6 @@ export class CartItemList {
     });
   }
 
-  protected getAmount = Item.getAmount;
   protected getPrice = Item.getPrice;
   protected numChoices = Item.numChoices;
 };

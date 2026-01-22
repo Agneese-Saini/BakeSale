@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { IUser, UserService } from './user';
+import { IPayMethod, IUser, UserService } from './user';
 import { Cart, CartService } from '../checkout/cart';
 import { DecimalPipe } from '@angular/common';
 import { Item } from '../content/item';
@@ -20,7 +20,7 @@ export interface IOrderHistory {
   date: number,
   time: ITime,
   address: IAddress,
-  payment: string,
+  payment: IPayMethod,
   deliveryType?: DeliveryType,
   deliveryInstructions?: string,
   inProgress?: boolean
@@ -46,32 +46,16 @@ export class OrderHistory {
     private cdr: ChangeDetectorRef) { }
 
   protected numItems = CartService.numItems;
-  protected originalSubTotal = CartService.originalSubTotal;
-
-  protected numChoices = Item.numChoices;
-  protected getPrice = Item.getPrice;
-  protected getAmount = Item.getAmount;
-
-  protected subTotal(order: IOrderHistory): number {
-    return CartService.subTotal(order.cart);
-  }
-
-  protected GST(order: IOrderHistory): number {
-    return this.subTotal(order) * (order.gstPercentage / 100);
-  }
-
-  protected PST(order: IOrderHistory): number {
-    return this.subTotal(order) * (order.pstPercentage / 100);
-  }
-
-  protected deliveryFee(order: IOrderHistory): number {
-    return order.deliveryType != undefined ? CartService.deliveryFee() : 0;
-  }
 
   protected checkoutPrice(order: IOrderHistory): number {
-    return this.subTotal(order)
-      + this.deliveryFee(order)
-      + (this.GST(order) + this.PST(order))
+    const subTotal = CartService.subTotal(order.cart);
+    const deliveryFee = order.deliveryType != undefined ? CartService.deliveryFee() : 0;
+    const GST = subTotal * (order.gstPercentage / 100);
+    const PST = subTotal * (order.pstPercentage / 100);
+
+    return subTotal
+      + deliveryFee
+      + GST + PST
       - order.couponDiscount
       + order.tipAmount;
   }

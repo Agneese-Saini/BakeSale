@@ -127,7 +127,7 @@ export class CartService {
     let num: number = 0;
     for (let [key, value] of cart) {
       for (let item of value) {
-        num += Item.getAmount(item);
+        num += item.amount;
       }
     }
 
@@ -138,8 +138,7 @@ export class CartService {
     let num: number = 0;
     for (let [key, value] of cart) {
       for (let item of value) {
-        const amount = Item.getAmount(item);
-        num += amount * (item.price.buyOneGetOne ? 2 : 1);
+        num += Item.getAmount(item);
       }
     }
 

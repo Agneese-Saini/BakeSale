@@ -25,11 +25,7 @@ export class CheckoutDrawer {
   protected get totalItems() {
     return CartService.totalItems(this.shoppingCart);
   }
-
-  protected get originalSubTotal(): number {
-    return CartService.originalSubTotal(this.shoppingCart);
-  }
-
+  
   protected get subTotal(): number {
     return CartService.subTotal(this.shoppingCart);
   }

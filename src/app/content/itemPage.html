@@ -13,7 +13,7 @@
 <div class="flex flex-col lg:flex-row gap-6 lg:gap-12 lg:justify-center p-4 min-h-screen">
   <div class="flex flex-col gap-4 items-center min-w-full lg:min-w-128 lg:max-w-164">
     <div class="rounded-box flex bg-base-300 justify-center w-full">
-      <img class="max-h-84 lg:max-h-128" [src]="displayImage" />
+      <img class="h-84 lg:h-128" [src]="displayImage" />
     </div>
     <div class="flex flex-wrap justify-center gap-2">
       @for (img of item.image; track img) {
@@ -24,30 +24,43 @@
   </div>
 
   <div class="flex flex-col min-w-full lg:min-w-128 lg:max-w-164">
-    <div class="flex justify-between items-start">
-      <div class="flex flex-col">
-        @if (item.company) {
-        <span class="label text-sm font-bold">
-          <fa-icon class="text-info" icon="check-circle"></fa-icon>
-          <p class="tooltip" data-tip="Verified Seller">{{ item.company }}</p>
-        </span>
-        }
-
-        <h1 class="font-bold text-2xl">{{ item.name }}</h1>
-
-        <item-price-tag [value]="item" [likes]="false" [showSale]="true"></item-price-tag>
-      </div>
-
-      @if (item.author) {
-      <div class="flex flex-row-reverse items-center text-right gap-2">
-        <img class="size-12 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp" />
-        <div class="grid">
-          <label class="text-xs uppercase opacity-60">Created by:</label>
-          <a class="link" style="text-decoration: none;">{{ item.author }}</a>
+    @if (item.notify) {
+    <div class="card bg-base-300 w-full">
+      <div class="card-body">
+        <div class="flex justify-between items-center">
+          <p class="text-gray-500"><span class="badge badge-sm badge-warning text-white">NEW</span> {{ item.notify }}
+          </p>
+          <button class="btn btn-circle bg-base-200 btn-sm" (click)="item.notify=undefined;">
+            <fa-icon icon="xmark"></fa-icon>
+          </button>
         </div>
       </div>
-      }
     </div>
+    }
+    <br />
+
+    <div class="flex flex-col">
+      @if (item.company) {
+      <span class="label text-sm font-bold">
+        <fa-icon class="text-info" icon="check-circle"></fa-icon>
+        <p class="tooltip" data-tip="Verified Seller">{{ item.company }}</p>
+      </span>
+      }
+
+      <h1 class="font-bold text-2xl">{{ item.name }}</h1>
+
+      <item-price-tag [value]="item" [likes]="false" [showSale]="true"></item-price-tag>
+    </div>
+
+    @if (item.author) {
+    <div class="flex flex-row-reverse items-center text-right gap-2">
+      <img class="size-12 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp" />
+      <div class="grid">
+        <label class="text-xs uppercase opacity-60">Created by:</label>
+        <a class="link" style="text-decoration: none;">{{ item.author }}</a>
+      </div>
+    </div>
+    }
     <br />
 
     @if (item.about) {

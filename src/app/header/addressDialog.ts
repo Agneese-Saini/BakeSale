@@ -63,10 +63,11 @@ export class AddressDialog {
   protected errorTypes = ErrorTypes;
   protected buildingType = BuildingType;
 
-  protected addressBook: IAddress[] = [];
-
+  protected lookupAddress?: string;
   protected address: IAddress;
   protected originalName: string;
+
+  protected addressBook: IAddress[] = [];
   protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
 
   protected showAddressInfo: boolean = false;
@@ -104,11 +105,10 @@ export class AddressDialog {
 
       // When "CurrentLocation" is supplied, that means we are trying to Add new address
       if (this.data == AddressBook.CurrentLocation) {
-        // Open address editing window by default
-        this.showAddressInfo = true;
+        this.useCurrentLocation();
       }
-      // If any other value is supplie, that means we are trying to Edit an existing address
       else {
+        // We are trying to Edit an existing address
         this.address.map = {};
       }
 
@@ -236,6 +236,10 @@ export class AddressDialog {
 
     // Returns TRUE if there were errors found in the address entered
     return this.errors.size != 0;
+  }
+
+  protected useCurrentLocation() {
+    this.lookupAddress = "Current Location";
   }
 
   protected error(type: ErrorTypes) {

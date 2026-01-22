@@ -1,4 +1,4 @@
-<div [class]="'flex flex-col ' + cardSize.width">
+<div [class]="'flex flex-col ' + (value.author ? 'mx-1' : '') + ' ' + cardSize.width">
   <figure>
     <div class="indicator w-full">
       <img [class]="'w-full rounded-box link ' + cardSize.height" [src]="getImage(value)"
@@ -29,7 +29,7 @@
           }
 
           @if (value.price.buyOneGetOne || (!value.price.buyOneGetOne && value.price.label)) {
-          <span [class]="'badge badge-sm lg:badge-md p-1 font-bold text-white ' + (value.price.buyOneGetOne ? 'badge-error' : 'badge-warning')">
+          <span [class]="'badge badge-sm lg:badge-md p-1 font-bold text-white ' + ('badge-' + (value.price.buyOneGetOne ? 'error' : (value.price.style ? value.price.style : 'warning')))">
             @if (value.price.buyOneGetOne) {
             Buy 1, Get 1
             } @else {
@@ -49,10 +49,11 @@
             </div>
           </div>
 
-          <div tabindex="0" class="dropdown-content card card-sm z-2 pt-2 shadow-xl">
-            <div tabindex="0" class="card-body bg-neutral text-white rounded-box flex flex-col gap-0 p-1 px-2">
+          <div tabindex="0" class="dropdown-content z-2 pt-2 shadow-xl">
+            <div tabindex="0" class="rounded-box bg-neutral text-white text-wrap p-1 px-2 max-w-32">
               <p>
-                Created by {{ value.isChef ? 'Chef' : '' }} <a class="link font-bold">{{ value.author }}</a></p>              
+                Created by {{ value.isChef ? 'Chef' : '' }} <a class="link font-bold">{{ value.author }}</a>
+              </p>              
             </div>
           </div>
         </div>        

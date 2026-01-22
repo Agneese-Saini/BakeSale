@@ -31,7 +31,6 @@ export interface ICategory {
 	fontSize?: number
 };
 
-
 @Injectable({
 	providedIn: 'root' // Makes the service a singleton and available throughout the app
 })
@@ -216,7 +215,7 @@ export class CategoryService {
 				image: ["https://cdn.prod.website-files.com/614a379840dbad1848e598c2/679906d29abceb2bbceb0696_679905de4268ad4dc4eae460_IMG_1630.jpeg"],
 				price: { value: 5, previousPrice: 15.0, label: "Clearance Sale" },
 				amount: 0,
-				author: "Her",
+				author: "MyNameIsShady",
 				choices: new Map([
 					[{ name: "Long side name", limit: 1, required: true, description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." }, [{ name: "Potatoes" }, { name: "Mash Potatoes" }]],
 					[{ name: "Other Side", limit: 1, description: "this is test" }, [{ name: "Potatoes" }, { name: "Mash Potatoes" }]]
@@ -234,7 +233,7 @@ export class CategoryService {
 				price: { value: 5, previousPrice: 15.0 },
 				image: ["https://www.piesandtacos.com/wp-content/uploads/2023/06/pistachio-cake-19-683x1024.jpg"],
 				amount: 0,
-				author: "Her",
+				author: "MyNameIsShady",
 				isChef: true,
 				notify: "New trending item recommended!",
 				choices: new Map([
@@ -279,7 +278,7 @@ export class CategoryService {
 			Category.addItem(category, {
 				name: 'Bread 1',
 				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt",
-				price: { value: 4.5, previousPrice: 5.0, label: 'SAVE $0.5', style: 'success' },
+				price: { value: 4.5, previousPrice: 5.0 },
 				image: ["https://www.sixsistersstuff.com/wp-content/uploads/2022/08/Cheesy-Garlic-Texas-Toast-1.jpg"],
 				amount: 0
 			});
@@ -287,7 +286,7 @@ export class CategoryService {
 			Category.addItem(category, {
 				name: 'Bread 2',
 				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt",
-				price: { value: 2.75, previousPrice: 3.0, label: 'SAVE $0.25', style: 'success' },
+				price: { value: 2.75, previousPrice: 3.0 },
 				image: ["https://www.sixsistersstuff.com/wp-content/uploads/2022/08/Cheesy-Garlic-Texas-Toast-1.jpg"],
 				amount: 0
 			});
@@ -295,7 +294,7 @@ export class CategoryService {
 			Category.addItem(category, {
 				name: 'Bread 3',
 				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt",
-				price: { value: 4.0, previousPrice: 5.0, label: 'SAVE $1', style: 'success' },
+				price: { value: 4.0, previousPrice: 5.0 },
 				image: ["https://www.sixsistersstuff.com/wp-content/uploads/2022/08/Cheesy-Garlic-Texas-Toast-1.jpg"],
 				amount: 0
 			});

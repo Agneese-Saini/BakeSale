@@ -54,10 +54,6 @@ export class RecipeBook {
   protected numItems = CartService.numItems;
   protected originalSubTotal = CartService.originalSubTotal;
 
-  protected numChoices = Item.numChoices;
-  protected getPrice = Item.getPrice;
-  protected getAmount = Item.getAmount;
-
   protected subTotal(order: IOrderHistory): number {
     return CartService.subTotal(order.cart);
   }
@@ -149,35 +145,3 @@ export class RecipeBook {
 
   protected getPoints = RecipeBook.getPoints;
 };
-
-
-@Component({
-  imports: [FormsModule, FontAwesomeModule],
-  template: `
-
-<div class="bg-base-200 min-w-84 p-4">
-  <figure>
-    <img class="h-32 w-full" src="https://img.daisyui.com/images/stock/creditcard.webp" alt="3D card" />
-  </figure>
-
-  <div mat-dialog-title class="flex justify-between">
-    <p class="text-4xl font-bold">Total</p>
-    <p class="text-4xl font-bold">$20</p>
-  </div>
-
-   <button class="btn btn-neutral mt-4 w-full" (click)="closeDialog()">Close</button>
-</div>
-
-`
-})
-export class ReceiptDialog {
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) protected data: IOrderHistory,
-    private dialogRef: MatDialogRef<CartItemsDialog>,
-    private cartService: CartService) { }
-
-  protected closeDialog() {
-    this.dialogRef.close();
-  }
-}

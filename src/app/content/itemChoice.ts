@@ -118,7 +118,7 @@ export class ItemChoice {
 
 <div tabindex="0" [class]="'collapse collapse-open bg-base-100 rounded-box border ' + (type.error ? 'border-error' : 'border-base-300')">
      <div class="collapse-title">
-      <div class="flex justify-between items-center gap-1">
+      <div class="flex justify-between items-center gap-2">
         <div class="flex flex-col">
           <p class="text-xl">
             @if (type.required == true) {
@@ -153,7 +153,7 @@ export class ItemChoice {
           @if (type.required) {
           Please choose {{ type.limit }}
           } @else {
-          Choose upto {{ type.limit }}
+          Choose upto {{ type.limit }} (optional)
           }
           </label>
           }
@@ -164,7 +164,7 @@ export class ItemChoice {
         <p class="text-error text-sm">{{ type.error }}</p>
         } @else {
         @if (type.required && (numSelection(choices) < 1 || (type.limit && numSelection(choices) < type.limit))) {
-        <label class="label font-thin">Required</label>
+        <label>Required</label>
         }
         }
       </div>

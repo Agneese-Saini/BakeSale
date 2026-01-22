@@ -1,12 +1,5 @@
 <div class="bg-base-200">
   <div mat-dialog-content>
-    @if (item.notify) {
-    <div class="flex gap-2 pt-2 items-center justify-end">
-      <i class="opacity-60">"{{ item.notify }}"</i>
-      <span class="badge badge-sm badge-warning text-white">NEW</span>
-    </div>
-    }
-
     @if (item.company) {
     <span class="label text-sm font-bold"><fa-icon class="text-info" icon="check-circle"></fa-icon> {{ item.company
       }}</span>

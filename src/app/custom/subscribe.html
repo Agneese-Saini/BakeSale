@@ -16,7 +16,7 @@
 
 <div class="divider px-4"></div>
 
-@if (category != defaultCategory) {
+@if (category) {
 <div class="flex justify-center w-full p-4">
   <div class="flex flex-col gap-4 w-full lg:w-auto lg:max-w-168">
     <h1 class="text-xl font-bold">Subscribe for fresh Bread Delivery</h1>
@@ -27,97 +27,21 @@
       In lectus velit, semper ut iaculis vel, congue nec ipsum.
     </p>
 
-    <div [class]="'flex overflow-x-auto max-h-128 rounded-box ' + (selectedItemsError ? 'border border-error' : '')">
+    <subscribe-item-list [category]="category" [error]="selectedItemsError" [background]="true" [maxHeight]="156"
+      (change)="selectedItemsError=undefined;"></subscribe-item-list>
+
+    @if (!setupDelivery) {
+    <button class="btn btn-neutral w-full" (click)="proceed()">Setup Delivery <fa-icon
+        icon="arrow-down"></fa-icon></button>
+    }
+    @else {
+    <div class="divider label">Delivery Settings</div>
+    <div [class]="'rounded-box ' + (selectedDeliveryDaysError ? 'border border-error' : '')">
       <table class="table bg-base-200 border border-base-300">
         <thead>
           <tr class="bg-base-100 text-wrap">
             <th>
-              <p>Select items:</p>
-              @if (selectedItemsError) {
-              <span class="flex gap-1 items-center text-xs text-error">
-                <fa-icon icon="exclamation-circle"></fa-icon>
-                <p>{{ selectedItemsError }}</p>
-              </span>
-              }
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (item of category.items; track item) {
-          <tr>
-            <td class="flex justify-between items-center">
-              <div class="flex gap-2 items-center lg:items-start">
-                <div class="indicator">
-                  <div class="w-18 lg:w-32">
-                    <img class="rounded-box link w-full h-18 lg:h-32" [src]="getImage(item)"
-                      (click)="openItemDialog(item)" />
-
-                    <div class="indicator-item indicator-start" style="--indicator-x: -0.5em; --indicator-y: 1.25em;">
-                      <div class="flex flex-col gap-1">
-                        @if (item.company) {
-                        <span class="bg-neutral text-xs lg:text-sm text-white font-bold font-serif w-fit px-1">
-                          {{ item.company }}
-                        </span>
-                        }
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  [class]="'flex flex-col w-full ' + ((item.stockAmount != undefined && item.stockAmount == 0) ? 'text-gray-500' : '')">
-                  <!-- Name -->
-                  <a class="link flex gap-2 items-center text-lg font-bold w-fit" style="text-decoration: none;"
-                    (click)="openItemDialog(item)">
-                    {{ item.name }}
-                  </a>
-
-                  <!-- warning -->
-                  @if (item.stockAmount != undefined && item.stockAmount == 0) {
-                  <span class="badge-xs badge-error badge text-white">out of stock</span>
-                  }
-
-                  <!-- Price -->
-                  <item-price-tag [value]="item" size="sm" [showSale]="true" saleSize="xs"></item-price-tag>
-
-                  <!-- Label -->
-                  @if (item.label) {
-                  <span class="text-xs px-2 pb-2 whitespace-pre-line">{{ item.label }}</span>
-                  }
-                </div>
-              </div>
-
-              <div class="flex items-center gap-2">
-                @if (item.amount > 0) {
-                <button class="btn btn-ghost btn-circle" (click)="decrease(item)">
-                  @if (item.amount == 1) {
-                  <fa-icon class="text-error" icon="trash"></fa-icon>
-                  } @else {
-                  <fa-icon icon="minus"></fa-icon>
-                  }
-                </button>
-
-                <b class="text-lg">{{ item.amount }}</b>
-                }
-
-                <button [class]="'btn btn-ghost btn-circle ' + (item.amount == 0 ? 'btn-soft' : '')"
-                  (click)="increase(item)">
-                  <fa-icon icon="plus"></fa-icon>
-                </button>
-              </div>
-            </td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <div [class]="'flex overflow-x-auto max-h-84 rounded-box ' + (selectedDeliveryDaysError ? 'border border-error' : '')">
-      <table class="table bg-base-200 border border-base-300">
-        <thead>
-          <tr class="bg-base-100 text-wrap">
-            <th>
-              <p>Select delivery days:</p>
+              <p class="text-xl">Select delivery days:</p>
               @if (selectedDeliveryDaysError) {
               <span class="flex gap-1 items-center text-xs text-error">
                 <fa-icon icon="exclamation-circle"></fa-icon>
@@ -131,19 +55,25 @@
           </tr>
         </thead>
         <tbody>
-          @for (day of daysOfWeekSetting | keyvalue; track day.key) {
           <tr>
             <td>
-              <label class="cursor-pointer text-lg flex justify-between">
-                <p [class]="(day.value.checked == false && numDays >= numDaysLimit) ? 'text-gray-300' : ''">{{
-                  day.value.name }}</p>
-                <input type="checkbox" class="checkbox"
-                  [disabled]="day.value.checked == false && numDays >= numDaysLimit" [(ngModel)]="day.value.checked"
-                  (change)="onDaysChange()" />
-              </label>
+              <div class="flex flex-wrap gap-2">
+                @for (day of daysOfWeekSetting | keyvalue; track day.key) {
+                <div class="rounded-box bg-base-100 border border-base-300 p-4">
+                  <label class="cursor-pointer flex items-center gap-2">
+                    <input type="checkbox" class="checkbox"
+                      [disabled]="day.value.checked == false && numDays >= numDaysLimit" [(ngModel)]="day.value.checked"
+                      (change)="onDaysChange()" />
+                    <span
+                      [class]="(day.value.checked == false && numDays >= numDaysLimit) ? 'text-gray-300' : (day.value.checked == true ? 'font-bold' : '')">
+                      {{ day.value.name }}
+                    </span>
+                  </label>
+                </div>
+                }
+              </div>
             </td>
           </tr>
-          }
         </tbody>
       </table>
     </div>
@@ -152,17 +82,18 @@
       <thead>
         <tr class="bg-base-100 text-wrap">
           <th>
-            <p>Select frequency of deliveries:</p>
+            <p class="text-xl">Select frequency of deliveries:</p>
           </th>
         </tr>
       </thead>
       <tbody>
         @for (freq of deliveryFrequencies; track freq) {
-        <tr class="h-16">
+        <tr>
           <td>
             <label class="cursor-pointer flex justify-between items-center gap-2">
               <span class="label-text font-normal">Every {{ freq }} week</span>
-              <input type="radio" name="type" class="radio" checked="false" [value]="freq" [(ngModel)]="selectedDeliveryFrequency" />
+              <input type="radio" name="type" class="radio" checked="false" [value]="freq"
+                [(ngModel)]="selectedDeliveryFrequency" />
             </label>
           </td>
         </tr>
@@ -171,6 +102,7 @@
     </table>
 
     <button class="btn btn-neutral w-full" (click)="proceed()">View Subscription</button>
+    }
   </div>
 </div>
 }
@@ -190,3 +122,4 @@
   </div>
 </div>
 }
+<br />

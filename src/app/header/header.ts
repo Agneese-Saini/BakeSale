@@ -133,7 +133,7 @@ export class SearchBar {
 
 @Component({
   selector: 'app-header',
-  imports: [FormsModule, FontAwesomeModule, KeyValuePipe, DeliverySwitch, RouterModule, DecimalPipe, SearchBar, AddressBook, Logo, CartItemList, EmptyCartLinks],
+  imports: [FormsModule, FontAwesomeModule, DeliverySwitch, RouterModule, SearchBar, AddressBook, Logo],
   templateUrl: './header.html',
   styleUrl: './header.css'
 })

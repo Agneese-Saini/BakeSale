@@ -39,8 +39,8 @@ import { OrderTotal } from "../checkout/order";
                       <b>({{ item.amount }})</b>
                       }
                     </h1>
-                    @if (getAmount(item) > 1) {
-                    <span class="bg-base-100 px-2 border border-base-300">{{ getAmount(item) }}</span>
+                    @if (item.amount > 1) {
+                    <span class="bg-base-100 px-2 border border-base-300">{{ item.amount }}</span>
                     }
                   </div>
 
@@ -98,7 +98,6 @@ export class OrderSummary {
   protected numChoices = Item.numChoices;
   protected getImage = Item.getImage;
   protected getPrice = Item.getPrice;
-  protected getAmount = Item.getAmount;
 };
 
 
@@ -112,14 +111,6 @@ export class ViewReceipt {
   protected deliveryType = DeliveryType;
 
   protected order?: IOrderHistory;
-
-  protected numChoices = Item.numChoices;
-  protected getPrice = Item.getPrice;
-  protected getAmount = Item.getAmount;
-
-  protected get numItems() {
-    return this.order ? CartService.numItems(this.order.cart) : 0;
-  }
 
   protected get totalItems() {
     return this.order ? CartService.totalItems(this.order.cart) : 0;

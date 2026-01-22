@@ -35,7 +35,7 @@
 <div class="drawer lg:drawer-open">
   <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
 
-  <div class="drawer-content flex flex-col px-4 items-center min-h-screen">
+  <div class="drawer-content flex flex-col px-4 items-center">
     @if (deliverySettings.category) {
     <div class="flex justify-start items-center gap-2 overflow-x-auto w-full p-1">
       <button class="btn btn-sm btn-circle lg:hidden" (click)="openDialog()">
@@ -52,8 +52,9 @@
       <select class="select select-sm min-w-28">
         <option selected class="font-bold">Show All Categories</option>
         @for (category of deliverySettings.category.subcats; track category) {
-        <option [class]="category.items ? '' : 'label'">{{ category.name }} ({{ category.items ? category.items.length :
-          0 }})</option>
+        <option [disabled]="!(category.items || category.customizer)">
+          {{ category.name }} {{ (!category.customizer && category.items) ? ('(' + category.items.length + ')') : '' }}
+        </option>
         }
       </select>
 
@@ -102,7 +103,7 @@
 
     <div class="flex justify-end w-full pt-2">
       <a class="link flex items-center gap-2" (click)="showHomepage(false)" style="text-decoration: none;">
-        <p class="font-bold font-mono">BakeSale Feed</p>
+        <p class="font-bold font-mono">BakeSale Socials</p>
         <button class="btn btn-neutral btn-circle shadow-xl"><fa-icon icon="arrow-right"></fa-icon></button>
       </a>
     </div>
@@ -161,7 +162,7 @@
 
       @for (cat of deliverySettings.category.subcats; track cat)
       {
-      <li (click)="focusCategory(cat)">
+      <li (click)="focusCategory(cat)" [class]="(!cat.customizer && !cat.items) ? 'menu-disabled' : ''">
         @if (cat.subcats && cat.subcats.length > 0) {
         <details open>
           <summary>
@@ -175,7 +176,7 @@
 
           <ul>
             @for (subcat of cat.subcats; track subcat) {
-            <li (click)="focusCategory(subcat)">
+            <li (click)="focusCategory(subcat)" [class]="(!subcat.customizer && !subcat.items) ? 'menu-disabled' : ''">
               <span class="flex items-center gap-2">
                 <a [class]="isFocused(subcat) ? 'font-bold text-2xl' : 'font-light text-lg'">{{ subcat.name }}</a>
                 @if (isActive(subcat)) {

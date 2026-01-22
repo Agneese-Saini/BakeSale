@@ -5,8 +5,8 @@
   Pickup Location:
   }
 </h1>
-<div class="bg-base-300 rounded-box overflow-x-auto min-h-46 p-2">
-  <table class="table table-pin-rows bg-base-100">
+<div class="bg-base-300 lg:bg-base-200 rounded-box overflow-x-auto min-h-52 lg:min-h-64 p-2">
+  <table class="table">
     <tbody>
       @if (addressBook && addressBook.length > 0) {
       @for (addy of addressBook; track addy) {
@@ -89,11 +89,11 @@
 
 @if (timeslot == true) {
 <h1 class="text-lg p-2">Time preference:</h1>
-<div class="bg-base-300 rounded-box p-2">
+<div class="bg-base-300 lg:bg-base-200 rounded-box p-2">
   <div class="flex justify-between items-center px-2">
-    <p [class]="settings.timeslot ? '' : 'text-error'">
+    <label [class]="settings.timeslot ? '' : 'text-error'">
       <fa-icon icon="clock"></fa-icon> {{ settings.timeslot ? settings.timeslot.label : 'Select a timeslot' }}
-    </p>
+    </label>
     <button class="btn btn-sm btn-neutral" (click)="openTimeslotsDialog()">Schedule</button>
   </div>
 </div>
