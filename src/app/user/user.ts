@@ -93,50 +93,6 @@ export class UserService {
 
 
 @Component({
-  selector: 'user-card',
-  imports: [FontAwesomeModule],
-  template: `
-<div class="flex justify-between items-center gap-2">
-  <div class="flex gap-4 items-center">
-    <a class="avatar link" style="text-decoration: none;">
-      <div class="w-18 rounded-full ring ring-offset-2">
-        <img src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
-      </div>
-    </a>
-    <div class="flex flex-col">
-      <a class="link text-lg" style="text-decoration: none;">
-        {{ user.name }}
-        @if (user.verified) {
-        <fa-icon class="text-sm text-info tooltip" data-tip="Verified" icon="check-circle"></fa-icon>
-        }
-      </a>
-      <p class="text-xs label text-wrap"><fa-icon class="text-error" icon="star"></fa-icon> Top 20 bakers of 2025</p>
-    </div>
-  </div>
-
-  <div class="flex">
-    <div class="flex flex-col gap-2 items-center">
-      <div class="label text-xs">Posts</div>
-      <a class="link font-bold text-lg" style="text-decoration: none;">102</a>
-    </div>
-    <div class="divider divider-horizontal py-1 m-1"></div>
-    <div class="flex flex-col gap-2 items-center">
-      <div class="label text-xs">Likes</div>
-      <a class="link font-bold text-lg" style="text-decoration: none;">7.5k</a>
-    </div>
-  </div>
-</div>
-`
-})
-export class UserCard {
-
-  @Input({ required: true })
-  public user: IUser = UserService.DefaultUser;
-
-}
-
-
-@Component({
   selector: 'app-user',
   imports: [],
   templateUrl: './user.html',

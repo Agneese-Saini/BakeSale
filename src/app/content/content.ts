@@ -1,19 +1,20 @@
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { AddressBook, DeliveryService, IDeliverySettings } from '../header/delivery';
 import { FormsModule } from '@angular/forms';
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { FontAwesomeModule, FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faYoutube, faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { Category, CategoryService, ICategory } from '../header/category';
 import { ItemList } from './itemList';
 import { Logo, Header } from "../header/header";
 import { ISocialPost, MediaType, SocialPost } from "./socialPost";
-import { IUser, UserRole, UserService, UserCard } from '../user/user';
+import { IUser, UserRole, UserService } from '../user/user';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatBottomSheet, MatBottomSheetModule, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { CartItemsDialog } from '../checkout/cartItemDialog';
 
 @Component({
   selector: 'app-content',
-  imports: [FormsModule, FontAwesomeModule, ItemList, Logo, Header, SocialPost, UserCard],
+  imports: [FormsModule, FontAwesomeModule, ItemList, Logo, Header, SocialPost, MatBottomSheetModule],
   templateUrl: './content.html',
   styleUrl: './content.css'
 })
@@ -58,6 +59,7 @@ export class Content {
     private deliveryService: DeliveryService,
     private categoryService: CategoryService,
     private dialog: MatDialog,
+    private bottomSheet: MatBottomSheet,
     private cdr: ChangeDetectorRef) { }
 
   protected ngOnInit() {
@@ -79,16 +81,6 @@ export class Content {
     this.onSelectCategory(this.deliverySettings.category);
   }
 
-  protected showHomepage(enable: boolean) {
-    this.deliverySettings.showHomepage = enable;
-    this.deliveryService.setDeliverySetting(this.deliverySettings);
-  }
-
-  protected login() {
-    this.userService.login('', '');
-    this.showHomepage(false);
-  }
-
   protected onSelectCategory(category?: ICategory) {
     this.deliverySettings.category = category;
 
@@ -102,6 +94,16 @@ export class Content {
     }
 
     this.deliveryService.setDeliverySetting(this.deliverySettings);
+  }
+
+  protected showHomepage(enable: boolean) {
+    this.deliverySettings.showHomepage = enable;
+    this.deliveryService.setDeliverySetting(this.deliverySettings);
+  }
+
+  protected login() {
+    this.userService.login('', '');
+    this.showHomepage(false);
   }
 
   protected isFocused(category: ICategory): boolean {
@@ -135,6 +137,10 @@ export class Content {
     dialogRef.afterClosed().subscribe(() => {
       this.cdr.detectChanges();
     });
+  }
+
+  protected openBottomSheet() {
+    this.bottomSheet.open(NotificationSheet);
   }
 }
 
@@ -196,5 +202,45 @@ export class JumpToDialog {
     this.deliverySettings.focusedCategory = category;
     this.deliveryService.setDeliverySetting(this.deliverySettings);
     this.closeDialog();
+  }
+}
+
+
+@Component({
+  selector: 'notification-sheet',
+  template: `
+<ul class="list bg-base-100 rounded-box shadow-md min-h-64">
+  <li class="p-4 pb-2 opacity-60 tracking-wide">
+    Notifications
+    <div class="divider m-0 p-0"></div>
+  </li>
+
+  <li class="list-row">
+    <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp"/></div>
+    <div><b>UserName</b> liked your post <b>My Post Tittle...</b></div>
+    <p class="list-col-wrap text-xs opacity-60">
+      22 minutes ago
+    </p>
+    <div class="dropdown dropdown-bottom dropdown-end">
+      <div tabindex="-1" role="button" class="btn btn-ghost text-xl">
+        <fa-icon icon="ellipsis"></fa-icon>
+      </div>
+      <ul tabindex="-1" class="dropdown-content menu bg-base-300 rounded-box z-50 w-44 p-2 shadow">
+        <li><a>Option 1</a></li>
+        <li><a>Option 2</a></li>
+      </ul>
+    </div>
+  </li>
+</ul>
+
+`,
+  imports: [FaIconComponent]
+})
+export class NotificationSheet {
+  constructor(
+    private sheetRef: MatBottomSheetRef<NotificationSheet>) { }
+
+  protected close() {
+    this.sheetRef.dismiss();
   }
 }

@@ -5,7 +5,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { IUser, UserService } from './user';
 import { IItem, Item } from '../content/item';
 import { DatePipe, DecimalPipe, KeyValuePipe } from '@angular/common';
-import { ISubscription, Subscribe, SubscribeItemList } from '../custom/subscribe';
+import { ISubscription, Subscribe, SubscribeItemList, SubscribeOrderSummary } from '../custom/subscribe';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CartItemsDialog } from '../checkout/cartItemDialog';
 import { ICategory } from '../header/category';
@@ -71,63 +71,13 @@ export class Subscriptions {
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, MatDialogModule, DecimalPipe],
+  imports: [FormsModule, FontAwesomeModule, MatDialogModule, SubscribeOrderSummary],
   template: `
 <div class="bg-base-200">
   <div mat-dialog-content>
     <h2 class="font-bold">Order Summary:</h2>
     <div class="bg-base-300 rounded-box p-4">
-      @for (item of selectedItems; track item) {
-      <div class="flex justify-between items-center">
-        <b>{{ item.name }} {{ getAmount(item) > 1 ? ('(' + getAmount(item) + ')') : '' }}</b>
-        <div class="flex gap-2 items-center">
-          @if (item.price.previousPrice) {
-          <p class="label text-xs line-through">{{ '$' }}{{ getPrice(item, item.price.previousPrice) | number: '1.1-2' }}
-          </p>
-          }
-          <p>{{ '$' }}{{ getPrice(item) | number: '1.2-2' }}</p>
-        </div>
-      </div>
-      }
-
-      <div class="divider px-2"></div>
-
-      <div class="flex justify-between items-center">
-        <P>SubTotal:</P>
-        <div class="flex flex-col items-end justify-end">
-          <div class="flex gap-1 items-center">
-            <p>{{ '$' }}{{ getSubTotal() | number: '1.2-2' }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center pt-1">
-        <p>Taxes:</p>
-        <p>{{ '$' }}{{ getTaxes() | number: '1.2-2' }}</p>
-      </div>
-      <div class="flex justify-between items-center">
-        <p>Service Fee:</p>
-        <p>{{ '$' }}{{ getServiceFee() | number: '1.2-2' }}</p>
-      </div>
-      <div class="flex justify-between items-center">
-        <p>Delivery Fee:</p>
-        @if (getDeliveryFee() == 0) {
-        <p class="text-success">Free</p>
-        } @else {
-        <p>{{ '$' }}{{ getDeliveryFee() | number: '1.2-2' }}</p>
-        }
-      </div>
-
-      <div class="divider px-2"></div>
-
-      <div class="flex justify-between gap-4">
-        <b>Total:</b>
-        <b>{{ '$' }}{{ getTotal() | number: '1.2-2' }}</b>
-      </div>
-      @if (getSavings() != 0) {
-      <p class="text-right text-success"> Saving: {{ '$' }}{{ getSavings() | number: '1.2-2' }}</p>
-      }
-      <p class="text-sm text-right text-gray-500">/per delivery</p>
+      <subscribe-order-summary [subscription]="data"></subscribe-order-summary>
     </div>
     <br />
 

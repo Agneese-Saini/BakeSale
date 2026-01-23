@@ -37,6 +37,7 @@ export enum DaysOfWeek {
 
 export type DaysOfWeekSetting = Map<DaysOfWeek, { name: string, checked: boolean, label: string }>;
 
+
 @Component({
   selector: 'subscribe-item-list',
   imports: [FormsModule, FontAwesomeModule, RouterModule, PriceTag, MatDialogModule],
@@ -143,7 +144,7 @@ export type DaysOfWeekSetting = Map<DaysOfWeek, { name: string, checked: boolean
     </tbody>
   </table>
 </div>
- `
+`
 })
 export class SubscribeItemList {
 
@@ -236,6 +237,101 @@ export class SubscribeItemList {
 
 
 @Component({
+  selector: 'subscribe-order-summary',
+  imports: [FormsModule, FontAwesomeModule, DecimalPipe],
+  template: `
+@for (item of selectedItems; track item) {
+<div class="flex justify-between items-center">
+  <b>{{ item.name }} {{ item.amount > 1 ? ('(' + item.amount + ')') : '' }}</b>
+  <div class="flex gap-2 items-center">
+    @if (item.price.previousPrice) {
+    <p class="label line-through">{{ '$' }}{{ getPrice(item, item.price.previousPrice) | number: '1.1-2' }}</p>
+    }
+    <p>{{ '$' }}{{ getPrice(item) | number: '1.2-2' }}</p>
+  </div>
+</div>
+}
+
+<div class="divider px-2"></div>
+
+<div class="flex justify-between">
+  <P>SubTotal:</P>
+  <div class="flex flex-col items-end justify-end">
+    <div class="flex gap-2">
+      <p class="label line-through">{{ '$' }}{{ (getSubTotal() + getSavings()) | number: '1.2-2' }}</p>
+      <b>{{ '$' }}{{ getSubTotal() | number: '1.2-2' }}</b>
+    </div>
+    @if (getSavings() != 0) {
+    <p class="text-right text-success"> Saving: {{ '$' }}{{ getSavings() | number: '1.2-2' }}</p>
+    }
+  </div>
+</div>
+
+<div class="flex justify-between items-center pt-1">
+  <p>Taxes:</p>
+  <p>{{ '$' }}{{ getTaxes() | number: '1.2-2' }}</p>
+</div>
+<div class="flex justify-between items-center">
+  <p>Service Fee:</p>
+  <p>{{ '$' }}{{ getServiceFee() | number: '1.2-2' }}</p>
+</div>
+<div class="flex justify-between items-center">
+  <p>Delivery Fee:</p>
+  @if (getDeliveryFee() == 0) {
+  <p class="text-success">Free</p>
+  } @else {
+  <p>{{ '$' }}{{ getDeliveryFee() | number: '1.2-2' }}</p>
+  }
+</div>
+
+<div class="divider px-2"></div>
+
+<div class="flex justify-between gap-4">
+  <b>Total:</b>
+  <b>{{ '$' }}{{ getTotal() | number: '1.2-2' }}</b>
+</div>
+<p class="text-sm text-right">/per delivery</p>
+`
+})
+export class SubscribeOrderSummary {
+
+  @Input({ required: true })
+  public subscription!: ISubscription;
+
+  protected get selectedItems(): IItem[] {    
+    return SubscribeItemList.getSelectedItems(this.subscription.category);
+  }
+
+  protected getAmount = Item.getAmount;
+  protected getPrice = Item.getPrice;
+
+  protected getSubTotal(): number {
+    return Subscribe.getSubTotal(this.subscription);
+  }
+
+  protected getSavings(): number {
+    return Subscribe.getSavings(this.subscription);
+  }
+
+  protected getTaxes(): number {
+    return Subscribe.getTaxes(this.subscription);
+  }
+
+  protected getServiceFee(): number {
+    return Subscribe.getServiceFee(this.subscription);
+  }
+
+  protected getDeliveryFee(): number {
+    return Subscribe.getDeliveryFee(this.subscription);
+  }
+
+  protected getTotal(): number {
+    return Subscribe.getTotal(this.subscription);
+  }
+}
+
+
+@Component({
   selector: 'subscribe',
   imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, MatDialogModule, SubscribeItemList],
   templateUrl: "subscribe.html"
@@ -265,7 +361,6 @@ export class Subscribe {
   protected selectedItemsError?: string;
   protected selectedDeliveryFrequency: number = this.deliveryFrequencies[0];
   protected selectedDeliveryDaysError?: string;
-  protected setupDelivery: boolean = false;
 
   protected get totalSelectedItems(): number {
     let num: number = 0;
@@ -360,13 +455,6 @@ export class Subscribe {
 
     if (this.totalSelectedItems < Subscribe.MinimumItemCount) {
       this.selectedItemsError = "Minimum of " + Subscribe.MinimumItemCount + " items required";
-    }
-
-    if (!this.setupDelivery) {
-      if (!this.selectedItemsError) {
-        this.setupDelivery = true;
-      }
-      return;
     }
 
     if (this.selectedDeliveryDays.size == 0) {
@@ -501,7 +589,7 @@ export class ItemInfoDialog {
 
 @Component({
   providers: [provideNativeDateAdapter()],
-  imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, DecimalPipe, DatePipe, MatDialogModule, MatFormFieldModule, MatInputModule, MatDatepickerModule],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, DatePipe, MatDialogModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, SubscribeOrderSummary],
   template: `
 <div class="bg-base-200">
   <div mat-dialog-content>
@@ -548,58 +636,8 @@ export class ItemInfoDialog {
     
     <div class="flex flex-col gap-2">
       <h1 class="text-xl font-bold">Order Summary:</h1>
-
       <div class="bg-base-300 rounded-box p-4">
-        @for (item of selectedItems; track item) {
-        <div class="flex justify-between items-center">
-          <b>{{ item.name }} {{ item.amount > 1 ? ('(' + item.amount + ')') : '' }}</b>
-          <div class="flex gap-2 items-center">
-            @if (item.price.previousPrice) {
-            <p class="label text-xs line-through">{{ '$' }}{{ getPrice(item, item.price.previousPrice)  | number: '1.1-2' }}</p>
-            }
-            <p>{{ '$' }}{{ getPrice(item)  | number: '1.2-2' }}</p>
-          </div>
-        </div>
-        }
-        
-        <div class="divider px-2"></div>
-
-        <div class="flex justify-between items-center">
-          <P>SubTotal:</P>
-          <div class="flex flex-col items-end justify-end">
-            <div class="flex gap-1 items-center">
-              <p>{{ '$' }}{{ getSubTotal() | number: '1.2-2' }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex justify-between items-center pt-1">
-          <p>Taxes:</p>
-          <p>{{ '$' }}{{ getTaxes() | number: '1.2-2' }}</p>
-        </div>
-        <div class="flex justify-between items-center">
-          <p>Service Fee:</p>
-          <p>{{ '$' }}{{ getServiceFee() | number: '1.2-2' }}</p>
-        </div>
-        <div class="flex justify-between items-center">
-          <p>Delivery Fee:</p>
-          @if (getDeliveryFee() == 0) {
-          <p class="text-success">Free</p>
-          } @else {
-          <p>{{ '$' }}{{ getDeliveryFee() | number: '1.2-2' }}</p>
-          }
-        </div>
-
-        <div class="divider px-2"></div>
-
-        <div class="flex justify-between gap-4">
-          <b>Total:</b>
-          <b>{{ '$' }}{{ getTotal() | number: '1.2-2' }}</b>
-        </div>
-        @if (getSavings() != 0) {
-        <p class="text-right text-success"> Saving: {{ '$' }}{{ getSavings() | number: '1.2-2' }}</p>
-        }
-        <p class="text-sm text-right text-gray-500">/per delivery</p>
+        <subscribe-order-summary [subscription]="data"></subscribe-order-summary>
       </div>
       <p><b>Payment:</b> The Total amount shown will be deducted on each delivery day. You will be notified via email/message.</p>
       <p><b>Cancelation:</b> You can cancel this subscription whenever you like. The order payment will be deducted if the cancelation is done the day before or the day of delivery. All your Subscriptions are visible in "Subscriptions" category in Homepage side drawer (<fa-icon icon="bars"></fa-icon>).</p>

@@ -30,11 +30,6 @@
     <subscribe-item-list [category]="category" [error]="selectedItemsError" [background]="true" [maxHeight]="156"
       (change)="selectedItemsError=undefined;"></subscribe-item-list>
 
-    @if (!setupDelivery) {
-    <button class="btn btn-neutral w-full" (click)="proceed()">Setup Delivery <fa-icon
-        icon="arrow-down"></fa-icon></button>
-    }
-    @else {
     <div class="divider label">Delivery Settings</div>
     <div [class]="'rounded-box ' + (selectedDeliveryDaysError ? 'border border-error' : '')">
       <table class="table bg-base-200 border border-base-300">
@@ -102,7 +97,6 @@
     </table>
 
     <button class="btn btn-neutral w-full" (click)="proceed()">View Subscription</button>
-    }
   </div>
 </div>
 }

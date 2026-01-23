@@ -124,7 +124,12 @@ export class SocialPost {
         </tr>
         <tr>
           <td class="flex justify-center w-full">
-            <a class="link" style="text-decoration: none;">View Chef's Profile</a>
+            <a class="link" style="text-decoration: none;">View Author's Profile</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="flex justify-center w-full">
+            <a class="link" style="text-decoration: none;">Save Post</a>
           </td>
         </tr>
         <tr>

@@ -117,21 +117,46 @@
           <p class="font-mono">Goto Homepage</p>
         </button>
         } @else {
-        <user-card [user]="user"></user-card>
+        <div class="flex justify-between items-center gap-2">
+          <div class="flex gap-4 items-center">
+            <a class="avatar link" style="text-decoration: none;">
+              <div class="w-18 rounded-full ring ring-offset-2">
+                <img src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
+              </div>
+            </a>
+            <div class="flex flex-col">
+              <a class="link text-lg" style="text-decoration: none;">
+                {{ user.name }}
+                @if (user.verified) {
+                <fa-icon class="text-sm text-info tooltip" data-tip="Verified" icon="check-circle"></fa-icon>
+                }
+              </a>
+              <p class="text-xs label text-wrap"><fa-icon class="text-error" icon="star"></fa-icon> Top 20 bakers of
+                2025</p>
+            </div>
+          </div>
+
+          <button class="btn btn-ghost btn-circle btn-lg" (click)="openBottomSheet()">
+            <span class="text-2xl text-warning font-bold flex items-center">
+              <fa-icon icon="bell"></fa-icon>
+              <p class="text-lg">2</p>
+            </span>
+          </button>
+        </div>
         <div class="divider"></div>
         }
 
         @if (user.userRole != userRole.Guest) {
-        <div class="flex gap-2">
-          <button class="btn btn-lg btn-neutral rounded-box flex-1">
+        <div class="flex gap-2 justify-center items-center">
+          <button class="btn btn-lg btn-neutral rounded-box tooltip" data-tip="New Post">
             <fa-icon icon="plus"></fa-icon>
             <p class="font-mono">Create</p>
           </button>
-          <button class="btn btn-lg btn-neutral rounded-box">
+          <button class="btn btn-lg btn-neutral rounded-box tooltip" data-tip="Post a Video">
             <fa-icon icon="video"></fa-icon>
           </button>
-          <button class="btn btn-lg btn-neutral rounded-box text-warning">
-            <fa-icon icon="bell"></fa-icon><p class="text-sm">2</p>
+          <button class="btn btn-lg btn-neutral rounded-box tooltip" data-tip="Saved Posts">
+            <fa-icon icon="bookmark"></fa-icon>
           </button>
         </div>
         }
@@ -139,7 +164,7 @@
 
       <table class="table">
         <tbody>
-          @for (social of socials; track social) { 
+          @for (social of socials; track social) {
           <tr>
             <td>
               <social-post [social]="social"></social-post>
