@@ -19,19 +19,23 @@
 
 <div class="divider px-4"></div>
 
-<div class="drawer lg:drawer-open">
-  <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
-
-  <div class="drawer-content p-4">
-    <div class="w-full flex flex-col gap-2">
-      <!-- Page content here -->
-      <div class="hidden lg:block">
-        <div class="flex items-center gap-4">
-          <fa-icon class="text-2xl" icon="s"></fa-icon>
-          <h1 class="font-bold text-5xl">Subscriptions</h1>
+<div class="flex flex-col gap-2 p-4 lg:justify-center lg:items-center">
+  <div class="lg:w-[65vw]">
+    <div class="flex flex-col w-full gap-2">
+      <div class="flex flex-col gap-2">
+        <div class="hidden lg:block">
+          <div class="flex items-center gap-2">
+            <fa-icon class="text-2xl" icon="s"></fa-icon>
+            <h1 class="font-bold text-5xl">Subscriptions</h1>
+          </div>
         </div>
-        <div class="divider"></div>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at
+          non
+          dui.
+        </p>
       </div>
+      <br />
 
       @if (user.subscriptions && user.subscriptions.length > 0) {
       <h1 class="text-lg">Upcoming Deliveries:</h1>
@@ -126,27 +130,20 @@
       </div>
       }
       @else {
-      <div class="flex flex-col w-full items-center justify-items-center pt-10">
-        <h1 class="text-2xl">No subscriptions found!</h1>
+      <div class="py-20 px-4 text-center bg-base-200 w-full">
+        <h1 class="text-6xl font-bold text-neutral mb-4"><fa-icon icon="folder-open"></fa-icon> Empty</h1>
+        <p class="text-gray-600 mb-6">
+          Looks like you have no current active Subscriptions.
+        </p>
+        <!-- CTA Button -->
+        <div class="flex flex-wrap gap-2 justify-center">
+          <a class="link text-primary">Bread Shop</a>
+          <a class="link text-primary">Get Fresh Bread Daily</a>
+          <a class="link text-primary">BakeSale Points Program</a>
+          <a class="link text-primary">Contact Us</a>
+        </div>
       </div>
       }
     </div>
-  </div>
-
-  <div class="drawer-side">
-    <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-    <ul class="menu min-h-full w-86 text-base-content text-lg">
-      <!-- Sidebar content here -->
-      <li>
-        <a class="menu-active font-bold">
-          Bread
-        </a>
-      </li>
-      <li>
-        <a class="font-light">
-          Other
-        </a>
-      </li>
-    </ul>
   </div>
 </div>

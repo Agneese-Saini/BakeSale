@@ -109,7 +109,7 @@
     </div>
     }
     @else {
-    <div class="w-full lg:max-w-156">
+    <div class="w-full lg:max-w-185">
       <div class="flex flex-col gap-2">
         @if (user.userRole == userRole.Guest) {
         <button class="btn rounded-box w-full" (click)="showHomepage(true)">
@@ -127,16 +127,27 @@
             <fa-icon icon="plus"></fa-icon>
             <p class="font-mono">Create</p>
           </button>
-          <button class="btn btn-lg btn-neutral rounded-box flex-1">
+          <button class="btn btn-lg btn-neutral rounded-box">
             <fa-icon icon="video"></fa-icon>
-            <p class="font-mono">Reels</p>
+          </button>
+          <button class="btn btn-lg btn-neutral rounded-box text-warning">
+            <fa-icon icon="bell"></fa-icon><p class="text-sm">2</p>
           </button>
         </div>
         }
       </div>
-      <br />
 
-      <social-post></social-post>
+      <table class="table">
+        <tbody>
+          @for (social of socials; track social) { 
+          <tr>
+            <td>
+              <social-post [social]="social"></social-post>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
     </div>
     }
     }

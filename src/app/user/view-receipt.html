@@ -73,7 +73,7 @@
         <div class="flex gap-4 text-lg items-center">
           <fa-icon icon="credit-card"></fa-icon>
           <div class="flex flex-col">
-            <b>Visa **** {{ order.payment }}</b>
+            <b>Visa **** {{ getLastFourDigits(order.payment.cardNumber) }}</b>
             <p class="label text-sm"><i>15 Jan, 2053</i> at <i>12:45pm</i></p>
           </div>
         </div>

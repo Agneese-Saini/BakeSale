@@ -193,7 +193,7 @@ export class CheckoutCoupon {
         <a [class]="'link flex flex-col ' + (deliverySettings.payment ? '' : 'text-error')" style="text-decoration: none;">
           <p [class]="deliverySettings.payment ? 'font-bold' : ''">{{ deliverySettings.payment ? deliverySettings.payment.name : 'Select Payment method' }}</p>
           @if (deliverySettings.payment) {
-          <p class="text-sm">Visa **** **** **** 9609</p>
+          <p class="text-sm">Visa **** **** **** {{ getLastFourDigits(deliverySettings.payment.cardNumber) }}</p>
           }
         </a>
       </div>
@@ -237,6 +237,10 @@ export class CheckoutDetails {
       this.cdr.detectChanges();
     });
   }
+  
+  protected getLastFourDigits(cardNumber: string): string {
+    return cardNumber.slice(-4);
+  }
 
   protected openTimeslotsDialog() {
     const dialogConfig = new MatDialogConfig();
@@ -273,7 +277,7 @@ export class CheckoutDetails {
   }
 
   protected openPaymentMethodDialog() {
-    this.deliverySettings.payment = { name: "TIGHT" };
+    this.deliverySettings.payment = { name: "TIGHT", cardNumber: "0000000000001234" };
     this.deliveryService.setDeliverySetting(this.deliverySettings);
   }
 }

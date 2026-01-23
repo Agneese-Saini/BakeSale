@@ -537,7 +537,7 @@ export class ItemInfoDialog {
           <a [class]="'link flex flex-col ' + (deliverySettings.payment ? '' : 'text-error')" style="text-decoration: none;">
             <p [class]="deliverySettings.payment ? 'font-bold' : ''">{{ deliverySettings.payment ? deliverySettings.payment.name : 'Select Payment method' }}</p>
             @if (deliverySettings.payment) {
-            <p class="text-sm">Visa **** **** **** 9609</p>
+            <p class="text-sm">Visa **** **** **** {{ getLastFourDigits(deliverySettings.payment.cardNumber) }}</p>
             }
           </a>
         </div>
@@ -667,6 +667,10 @@ export class CheckoutDialog {
   protected getTotal(): number {
     return Subscribe.getTotal(this.data);
   }
+  
+  protected getLastFourDigits(cardNumber: string): string {
+    return cardNumber.slice(-4);
+  }
 
   protected ngOnInit() {
     this.deliveryService.deliverySettings$.subscribe(data => {
@@ -676,7 +680,7 @@ export class CheckoutDialog {
   }
 
   protected openPaymentMethodDialog() {
-    this.deliverySettings.payment = { name: "TIGHT" };
+    this.deliverySettings.payment = { name: "TIGHT", cardNumber: "0000000000001234" };
     this.deliveryService.setDeliverySetting(this.deliverySettings);
   }
 

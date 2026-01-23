@@ -6,7 +6,7 @@ import { faYoutube, faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { Category, CategoryService, ICategory } from '../header/category';
 import { ItemList } from './itemList';
 import { Logo, Header } from "../header/header";
-import { SocialPost } from "./socialPost";
+import { ISocialPost, MediaType, SocialPost } from "./socialPost";
 import { IUser, UserRole, UserService, UserCard } from '../user/user';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { CartItemsDialog } from '../checkout/cartItemDialog';
@@ -28,6 +28,22 @@ export class Content {
   protected categories: ICategory[] = [];
   protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
   protected user: IUser = UserService.DefaultUser;
+
+  readonly socials: ISocialPost[] = [
+    {
+      user: { name: 'de Partie', userRole: UserRole.Chef },
+      media: [
+        { type: MediaType.Photo, src: "https://m.media-amazon.com/images/I/81KnMda0d4L._US500_.jpg" }
+      ]
+    },
+    {
+      user: { name: 'Taylor', userRole: UserRole.Customer },
+      media: [
+        { type: MediaType.Photo, src: "https://theovenchef.com/wp-content/uploads/2023/08/WhatsApp-Image-2023-11-01-at-5.39.28-PM-1-scaled-e1698841246352.jpeg" },
+        { type: MediaType.Video, src: "https://i.pinimg.com/736x/04/ae/1a/04ae1a97b1cfa3b227ee73575fcdf706.jpg" }
+      ]
+    }
+  ];
 
   protected get canShowHomepage() {
     return this.user.userRole == UserRole.Guest && (this.deliverySettings.showHomepage == undefined || this.deliverySettings.showHomepage == true);

@@ -18,6 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class Subscriptions {
 
+  protected currentFilter?: string;  
   protected user: IUser = UserService.DefaultUser;
 
   protected getAmount = Item.getAmount;
@@ -36,7 +37,7 @@ export class Subscriptions {
       this.cdr.detectChanges();
     });
   }
-
+  
   protected openOrderSummaryDialog(sub: ISubscription) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
@@ -133,8 +134,13 @@ export class Subscriptions {
     <div class="flex flex-col">
       <h2 class="font-bold">Payment Method:</h2>
       <div class="bg-base-300 rounded-box p-4">
-        <p class="font-bold">{{ data.payment!.name }}</p>
-        <p class="text-sm">Visa **** **** **** 9609</p>
+        <div class="flex gap-2 items-center">
+          <fa-icon icon="credit-card"></fa-icon>
+          <div class="flex flex-col">
+            <p class="font-bold">{{ data.payment!.name }}</p>
+            <p class="text-sm">Visa **** **** **** {{ getLastFourDigits(data.payment!.cardNumber) }}</p>
+          </div>
+        </div>
       </div>
     </div>
   <br /> 
@@ -164,6 +170,9 @@ export class OrderSummaryDialog {
     @Inject(MAT_DIALOG_DATA) protected data: ISubscription,
     private dialogRef: MatDialogRef<CartItemsDialog>) { }
 
+  protected ngOnInit() {
+  }
+
   protected get selectedItems(): IItem[] {
     return SubscribeItemList.getSelectedItems(this.data.category);
   }
@@ -192,7 +201,8 @@ export class OrderSummaryDialog {
     return Subscribe.getTotal(this.data);
   }
 
-  protected ngOnInit() {
+  protected getLastFourDigits(cardNumber: string): string {
+    return cardNumber.slice(-4);
   }
 
   protected closeDialog() {

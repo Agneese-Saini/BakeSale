@@ -138,4 +138,8 @@ export class ViewReceipt {
       this.cdr.detectChanges();
     });
   }
+
+  protected getLastFourDigits(cardNumber: string): string {
+    return cardNumber.slice(-4);
+  }
 }

@@ -9,13 +9,13 @@ export enum UserRole {
   Guest = 0,
   Customer,
   Driver,
-  Seller,
-  Supervisor,
+  Chef,
   Admin
 };
 
 export interface IPayMethod {
-  name: string
+  name: string,
+  cardNumber: string
 };
 
 export interface IUser {
@@ -96,7 +96,7 @@ export class UserService {
   selector: 'user-card',
   imports: [FontAwesomeModule],
   template: `
-<div class="flex justify-between items-center">
+<div class="flex justify-between items-center gap-2">
   <div class="flex gap-4 items-center">
     <a class="avatar link" style="text-decoration: none;">
       <div class="w-18 rounded-full ring ring-offset-2">
@@ -114,15 +114,15 @@ export class UserService {
     </div>
   </div>
 
-  <div class="flex gap-2">
+  <div class="flex">
     <div class="flex flex-col gap-2 items-center">
-      <div class="label text-xs">Followers</div>
-      <a class="link font-bold text-lg" style="text-decoration: none;">2.5k</a>
+      <div class="label text-xs">Posts</div>
+      <a class="link font-bold text-lg" style="text-decoration: none;">102</a>
     </div>
-    <div class="divider divider-horizontal py-2 m-1"></div>
+    <div class="divider divider-horizontal py-1 m-1"></div>
     <div class="flex flex-col gap-2 items-center">
-      <div class="label text-xs">Following</div>
-      <a class="link font-bold text-lg" style="text-decoration: none;">920</a>
+      <div class="label text-xs">Likes</div>
+      <a class="link font-bold text-lg" style="text-decoration: none;">7.5k</a>
     </div>
   </div>
 </div>
