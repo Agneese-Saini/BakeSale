@@ -215,12 +215,29 @@ export class JumpToDialog {
     <div class="divider m-0 p-0"></div>
   </li>
 
-  <li class="list-row">
+  <li class="list-row items-center">
     <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp"/></div>
-    <div><b>UserName</b> liked your post <b>My Post Tittle...</b></div>
-    <p class="list-col-wrap text-xs opacity-60">
-      22 minutes ago
-    </p>
+    <div class="flex flex-col gap-2">
+      <p><b>UserName</b> liked your post <b>My Post Tittle...</b></p>
+      <p class="text-xs opacity-60">22 minutes ago</p>
+    </div>
+    <div class="dropdown dropdown-bottom dropdown-end">
+      <div tabindex="-1" role="button" class="btn btn-ghost text-xl">
+        <fa-icon icon="ellipsis"></fa-icon>
+      </div>
+      <ul tabindex="-1" class="dropdown-content menu bg-base-300 rounded-box z-50 w-44 p-2 shadow">
+        <li><a>Option 1</a></li>
+        <li><a>Option 2</a></li>
+      </ul>
+    </div>
+  </li>
+
+  <li class="list-row items-center">
+    <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp"/></div>
+    <div class="flex flex-col gap-2">
+      <p><b>UserName</b> liked your post <b>My Post Tittle...</b></p>
+      <p class="text-xs opacity-60">22 minutes ago</p>
+    </div>
     <div class="dropdown dropdown-bottom dropdown-end">
       <div tabindex="-1" role="button" class="btn btn-ghost text-xl">
         <fa-icon icon="ellipsis"></fa-icon>
