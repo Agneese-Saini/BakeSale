@@ -1,0 +1,111 @@
+<home-header />
+
+<div class="divider px-4"></div>
+
+<div class="flex flex-col min-h-[100vh] px-4">
+    <section class=" flex flex-col min-h-[100vh] w-full overflow-hidden max-md:min-h-[100dvh] justify-center" id="hero-section"
+        [hidden]="userService.getHomeCategory() != homeCategories.AboutUs">
+
+        <div class="flex max-lg:flex-col gap-2 p-2 h-full justify-between">
+            <div class="flex flex-col w-full lg:max-w-[40vw] h-full place-content-center gap-4 p-2">
+                <div class="flex flex-col max-lg:place-items-center gap-4">
+                    <h1 class="text-7xl font-extrabold max-lg:leading-relaxed max-md:text-center max-md:text-4xl">
+                        Get Fresh Bakery
+                        to your doorstep
+                    </h1>
+                    <p class="max-w-[400px] max-lg:text-center">
+                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dicta error eveniet, fugit numquam
+                        iste dolorum.
+                    </p>
+
+                    <div class="flex gap-2">
+                        <label class="input text-neutral w-full">
+                            <fa-icon icon="location-dot"></fa-icon>
+                            <input type="search" required placeholder="Enter delivery Address" />
+                        </label>
+                    </div>
+                    <div class="flex gap-2 items-center">
+                        <button class="btn btn-primary" routerLink="/content">
+                            Order online
+                        </button>
+                        <p>or</p>
+                        <button class="btn" routerLink="/content">
+                            Order Pickup
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex place-content-center place-items-center w-full lg:max-w-[50vw]">
+                <div class="max-w-[750px] w-full">
+                    <img src="./assets/images/logo.jpeg" alt="food" class="object-contain w-full h-full">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="flex w-full flex-col place-content-center place-items-center p-[5%] max-md:px-[5%]"
+        [hidden]="userService.getHomeCategory() != homeCategories.Partners">
+        <h2 class="text-xl italic text-center">
+            Discover our 2026 Bakery Partners list
+        </h2>
+        <h3 class="primary-text-color text-4xl font-semibold">
+            Manitoba, Canada
+        </h3>
+
+        <div class="mt-[5%] flex w-full place-content-center gap-5 max-md:flex-wrap">
+            <div class="flex flex-wrap max-w-[1200px] gap-10 justify-center">
+                <div class="flex max-md:flex-col gap-10 max-md:gap-2 items-center">
+                    <div class="w-[180px] h-[130px] overflow-hidden">
+                        <img src="https://www.gunnsbakery.com/wp-content/uploads/Gunns-Bakery-Logo-closed-with-white-bg-300x185.png" alt="bakery"
+                            class="h-full w-full" />
+                    </div>
+                    <div class="flex flex-col gap-2 max-md:place-items-center max-w-[200px]">
+                        <h3 class="text-2xl font-semibold">Gunns Bakery</h3>
+                        <p class="max-md:text-center ">
+                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laborum, adipisci.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex max-md:flex-col gap-10 max-md:gap-2 items-center">
+                    <div class="w-[180px] h-[130px] overflow-hidden">
+                        <img src="https://goodiesbakeshop.com/wp-content/uploads/2021/08/Goodies-Logo-e1630347378677.png" alt="bakery"
+                            class="h-full w-full" />
+                    </div>
+                    <div class="flex flex-col gap-2 max-md:place-items-center max-w-[200px]">
+                        <h3 class="text-2xl font-semibold">Goodies</h3>
+                        <p class="max-md:text-center ">
+                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laborum, adipisci.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="flex max-md:flex-col min-h-[70vh] w-full place-content-center place-items-center gap-[10%] p-4 px-[15%] max-md:gap-[4%] max-md:px-[5%]"
+        [hidden]="userService.getHomeCategory() != homeCategories.DailyBread">
+        <div
+            class="flex h-[350px] w-[350px] overflow-hidden rounded-md max-md:mt-[5%] max-md:h-[300px] max-md:w-[300px]">
+            <img src="./assets/images/bread.png" alt="bread" class="w-full" />
+        </div>
+        <div class="flex flex-col h-full gap-4 max-md:text-center">
+            <h2 class="text-5xl font-bold max-md:text-3xl">
+                <span class="text-warning">Fresh Bread everyday</span>
+            </h2>
+            <div class="flex flex-wrap gap-4 text-sm justify-center lg:justify-start">
+                <span class="label"><fa-icon icon="car-side"></fa-icon> Free Delivery</span>
+                <span class="label"><fa-icon icon="bread-slice"></fa-icon> Made fresh everyday</span>
+            </div>
+            <div class="text-lg max-w-[400px]">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam maxime quis placeat assumenda, eligendi
+                incidunt?
+            </div>
+            <a class="btn btn-soft mt-5 gap-1 font-medium transition-transform duration-[0.3s] hover:translate-x-2 max-md:mx-auto">
+                Open Bread shop <fa-icon icon="arrow-up-right-from-square"></fa-icon>
+            </a>
+        </div>
+        <div></div>
+    </section>
+</div>

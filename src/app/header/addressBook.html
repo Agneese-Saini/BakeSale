@@ -51,9 +51,8 @@
       @else {
       <tr>
         <th>
-          <label class="label flex flex-col justify-between text-center">
-            <fa-icon class="text-4xl" icon="xmark"></fa-icon>
-            <span class="font-bold text-xl">No address found!</span>
+          <label class="label flex flex-col justify-between text-center lg:py-10">            
+            <span class="font-bold text-xl"><fa-icon icon="exclamation-circle"></fa-icon> No address found!</span>
             @if (isDelivery) {
             <span class="font-light text-sm">
               Please add an Address<br />

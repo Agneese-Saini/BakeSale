@@ -5,13 +5,6 @@
 <div class="flex justify-center px-4">
   <div class="overflow-x-auto">
     <ul class="menu menu-horizontal min-w-max gap-2">
-      <li>
-        <a [class]="(deliverySettings.category == undefined ? 'menu-active' : '')"
-          (click)="onSelectCategory(undefined)">
-          <fa-icon icon="home" class="text-2xl"></fa-icon>
-        </a>
-      </li>
-
       @for (type of categories; track type) {
       <li>
         <a [class]="(deliverySettings.category == type ? 'menu-active' : '')" (click)="onSelectCategory(type)">
@@ -36,7 +29,6 @@
   <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
 
   <div class="drawer-content flex flex-col px-4 items-center">
-    @if (deliverySettings.category) {
     <div class="flex justify-start items-center gap-2 overflow-x-auto w-full p-1">
       <button class="btn btn-sm btn-circle lg:hidden" (click)="openDialog()">
         <fa-icon icon="bars"></fa-icon>
@@ -68,118 +60,8 @@
       <item-list [category]="subcat"></item-list>
       }
     </div>
-    }
-    @else {
-    @if (canShowHomepage) {
-    <div class="hero"
-      style="background-image: url(https://assets.renderman.pixar.com/Tutorials/french-bakery/french-bakery-sky.jpg);">
-      <div class="hero-content text-neutral-content flex flex-col text-center h-full justify-start py-32">
-        <!-- Your content -->
-        <h1 class="text-2xl">Welcome to,</h1>
-        <p class="text-6xl font-serif">
-          <b>Bake</b>Sale
-        </p>
-        <p class="">
-          We bring fresh bread and pastry to your doorstep.<br />
-          We support local bakeries and independent bakers and chefs.<br />
-          Join us if you're a talented baker or a chef, If you want a job, or you just want some cake!
-        </p>
-
-        <div class="flex gap-3 text-3xl items-center">
-          <a class="link text-error tooltip tooltip-error tooltip-bottom" data-tip="Youtube"><fa-icon
-              [icon]="faYoutube"></fa-icon></a>
-          <a class="link text-error tooltip tooltip-error tooltip-bottom" data-tip="Instagram"><fa-icon
-              [icon]="faInstagram"></fa-icon></a>
-        </div>
-      </div>
-    </div>
-    <br />
-
-    <div class="flex gap-2 flex-wrap justify-center">
-      <button class="btn btn-outline shadow-xl px-4 w-fit" (click)="login()">Sign In</button>
-      <button class="btn btn-outline shadow-xl px-4 w-fit">Sign up for Driver</button>
-      <button class="btn btn-outline shadow-xl px-4 w-fit">Become a Seller</button>
-    </div>
-
-    <div class="flex justify-end w-full pt-2">
-      <a class="link flex items-center gap-2" (click)="showHomepage(false)" style="text-decoration: none;">
-        <p class="font-bold font-mono">BakeSale Socials</p>
-        <button class="btn btn-neutral btn-circle shadow-xl"><fa-icon icon="arrow-right"></fa-icon></button>
-      </a>
-    </div>
-    }
-    @else {
-    <div class="w-full lg:max-w-185">
-      <div class="flex flex-col gap-2">
-        @if (user.userRole == userRole.Guest) {
-        <button class="btn rounded-box w-full" (click)="showHomepage(true)">
-          <fa-icon icon="arrow-left"></fa-icon>
-          <p class="font-mono">Goto Homepage</p>
-        </button>
-        } @else {
-        <div class="flex justify-between items-center gap-2">
-          <div class="flex gap-4 items-center">
-            <a class="avatar link" style="text-decoration: none;">
-              <div class="w-18 rounded-full ring ring-offset-2">
-                <img src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
-              </div>
-            </a>
-            <div class="flex flex-col">
-              <a class="link text-lg" style="text-decoration: none;">
-                {{ user.name }}
-                @if (user.verified) {
-                <fa-icon class="text-sm text-info tooltip" data-tip="Verified" icon="check-circle"></fa-icon>
-                }
-              </a>
-              <p class="text-xs label text-wrap"><fa-icon class="text-error" icon="star"></fa-icon> Top 20 bakers of
-                2025</p>
-            </div>
-          </div>
-
-          <button class="btn btn-ghost btn-circle btn-lg" (click)="openBottomSheet()">
-            <span class="text-2xl text-warning font-bold flex items-center">
-              <fa-icon icon="bell"></fa-icon>
-              <p class="text-lg">2</p>
-            </span>
-          </button>
-        </div>
-        <div class="divider"></div>
-        }
-
-        @if (user.userRole != userRole.Guest) {
-        <div class="flex gap-2 justify-center items-center">
-          <button class="btn btn-lg btn-neutral rounded-box tooltip" data-tip="New Post">
-            <fa-icon icon="plus"></fa-icon>
-            <p class="font-mono">Create</p>
-          </button>
-          <button class="btn btn-lg btn-neutral rounded-box tooltip" data-tip="Post a Video">
-            <fa-icon icon="video"></fa-icon>
-          </button>
-          <button class="btn btn-lg btn-neutral rounded-box tooltip" data-tip="Saved Posts">
-            <fa-icon icon="bookmark"></fa-icon>
-          </button>
-        </div>
-        }
-      </div>
-
-      <table class="table">
-        <tbody>
-          @for (social of socials; track social) {
-          <tr>
-            <td>
-              <social-post [social]="social"></social-post>
-            </td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-    }
-    }
-    <br />
   </div>
 
-  @if (deliverySettings.category) {
   <div class="drawer-side">
     <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
     <ul class="menu min-h-full w-86 text-base-content text-lg">
@@ -236,5 +118,4 @@
       }
     </ul>
   </div>
-  }
 </div>

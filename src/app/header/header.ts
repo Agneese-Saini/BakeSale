@@ -2,14 +2,12 @@ import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angu
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AddressBook, DeliveryService, IDeliverySettings, DeliverySwitch, AddressBookDialog } from './delivery';
-import { CartService, Cart, EmptyCartLinks } from '../checkout/cart';
+import { CartService, Cart } from '../checkout/cart';
 import { Category, CategoryList, CategoryService, ICategory } from './category';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { DecimalPipe, KeyValuePipe } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { SideDrawer } from '../sidedrawer/sidedrawer';
 import { CheckoutDrawer } from '../checkout/checkout-drawer';
-import { CartItemList } from '../checkout/cartItemDialog';
 import { IUser, UserRole, UserService } from '../user/user';
 
 
@@ -30,7 +28,6 @@ import { IUser, UserRole, UserService } from '../user/user';
 </div>
 }
 @default {
-
 }
 }
 `
@@ -205,10 +202,6 @@ export class Header {
   }
 
   protected onClickHome() {
-    this.deliverySettings.category = undefined;
-    this.deliverySettings.showHomepage = true;
-    this.deliveryService.setDeliverySetting(this.deliverySettings);
-
     this.router.navigate(['/']);
   }
 };

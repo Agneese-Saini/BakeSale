@@ -2,7 +2,6 @@ import { Component, Injectable, Input } from '@angular/core';
 import { IRecipe } from '../custom/recipe';
 import { BehaviorSubject } from 'rxjs';
 import { IOrderHistory } from './order-history';
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ISubscription } from '../custom/subscribe';
 
 export enum UserRole {
@@ -11,6 +10,12 @@ export enum UserRole {
   Driver,
   Chef,
   Admin
+};
+
+export enum HomeCategories {
+  AboutUs,
+  Partners,
+  DailyBread
 };
 
 export interface IPayMethod {
@@ -42,6 +47,16 @@ export class UserService {
 
   private _user = new BehaviorSubject<IUser>(UserService.DefaultUser);
   public user$ = this._user.asObservable(); // Expose as Observable
+  
+  private _homeCategory = new BehaviorSubject<HomeCategories>(HomeCategories.AboutUs);
+
+  public setHomeCategory(category: HomeCategories) {
+    this._homeCategory.next(category);
+  }
+
+  public getHomeCategory(): HomeCategories {
+    return this._homeCategory.value;
+  }
 
   public login(name: string, password: string) {
     let value: IUser = {

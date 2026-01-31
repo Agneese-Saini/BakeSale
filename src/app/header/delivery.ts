@@ -6,7 +6,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ITime, ITimeSlot, TimeslotsDialog } from './timeslots';
 import { MatDialog, MatDialogConfig, MatDialogRef, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { AddressBookAction, AddressDialog, IAddress } from './addressDialog';
-import { ICategory } from './category';
+import { Category, ICategory } from './category';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DriverTip } from '../checkout/checkout';
 import { IPayMethod } from '../user/user';
@@ -25,13 +25,12 @@ export enum DeliveryType {
 export interface IDeliverySettings {
   mode: DeliveryMode,
   deliveryType: DeliveryType,
+  category: ICategory,
   address?: IAddress,
   time?: ITime,
   payment?: IPayMethod,
   timeslot?: ITimeSlot,
-  category?: ICategory,
   focusedCategory?: ICategory,
-  showHomepage?: boolean,
   tip?: DriverTip,
   tipAmount?: number,
   deliveryInstructions?: string
@@ -260,7 +259,8 @@ export class AddressBook {
 
   static readonly DefaultSettings: IDeliverySettings = {
     mode: DeliveryMode.Delivery,
-    deliveryType: DeliveryType.MeetAtDoor
+    deliveryType: DeliveryType.MeetAtDoor,
+    category: Category.DefaultCategory
   };
 
   @Input()
@@ -291,18 +291,18 @@ export class AddressBook {
   protected ngOnInit() {
     this.deliveryService.deliverySettings$.subscribe(data => {
       this.settings = data;
-      this.cdr.detectChanges();
 
       // update address selection
       this.selectedAddress = undefined;
       if (this.settings.address) {
         this.selectedAddress = this.addressBook.find(addy => (addy.label == this.settings.address?.label));
       }
+
+      this.cdr.detectChanges();
     });
 
     this.deliveryService.addressBook$.subscribe(data => {
       this.addressBook = data;
-      this.cdr.detectChanges();
 
       if (this.settings.address) {
         this.selectedAddress = data.find(addy => (addy.label == this.settings.address!.label));
@@ -315,6 +315,8 @@ export class AddressBook {
         // update deliverySettings.address
         this.onAddressChange();
       }
+      
+      this.cdr.detectChanges();
     });
 
     this.deliveryService.timeSlots$.subscribe(data => {

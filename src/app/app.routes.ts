@@ -9,10 +9,15 @@ import { RecipeBook } from './user/recipe-book';
 import { ItemPage } from './content/itemPage';
 import { Subscribe } from './custom/subscribe';
 import { Subscriptions } from './user/subscriptions';
+import { Home } from './home/home';
 
 export const routes: Routes = [
     {
         path: '',
+        component: Home
+    },
+    {
+        path: 'content',
         component: Content
     },
     {

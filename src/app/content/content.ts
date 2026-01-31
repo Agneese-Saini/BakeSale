@@ -6,7 +6,7 @@ import { faYoutube, faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { Category, CategoryService, ICategory } from '../header/category';
 import { ItemList } from './itemList';
 import { Logo, Header } from "../header/header";
-import { ISocialPost, MediaType, SocialPost } from "./socialPost";
+import { ISocialPost, MediaType } from "./socialPost";
 import { IUser, UserRole, UserService } from '../user/user';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatBottomSheet, MatBottomSheetModule, MatBottomSheetRef } from '@angular/material/bottom-sheet';
@@ -14,7 +14,7 @@ import { CartItemsDialog } from '../checkout/cartItemDialog';
 
 @Component({
   selector: 'app-content',
-  imports: [FormsModule, FontAwesomeModule, ItemList, Logo, Header, SocialPost, MatBottomSheetModule],
+  imports: [FormsModule, FontAwesomeModule, ItemList, Logo, Header, MatBottomSheetModule],
   templateUrl: './content.html',
   styleUrl: './content.css'
 })
@@ -46,10 +46,6 @@ export class Content {
     }
   ];
 
-  protected get canShowHomepage() {
-    return this.user.userRole == UserRole.Guest && (this.deliverySettings.showHomepage == undefined || this.deliverySettings.showHomepage == true);
-  }
-
   protected get deliveryMode() {
     return AddressBook.DeliveryModes.get(this.deliverySettings.mode);
   }
@@ -70,6 +66,9 @@ export class Content {
 
     this.categoryService.categories$.subscribe(data => {
       this.categories = data;
+      if (this.deliverySettings.category == Category.DefaultCategory) {
+        this.onSelectCategory(data[0]);
+      }
       this.cdr.detectChanges();
     });
 
@@ -78,10 +77,9 @@ export class Content {
       this.cdr.detectChanges();
     });
 
-    this.onSelectCategory(this.deliverySettings.category);
   }
 
-  protected onSelectCategory(category?: ICategory) {
+  protected onSelectCategory(category: ICategory) {
     this.deliverySettings.category = category;
 
     if (category && category.subcats) {
@@ -96,14 +94,8 @@ export class Content {
     this.deliveryService.setDeliverySetting(this.deliverySettings);
   }
 
-  protected showHomepage(enable: boolean) {
-    this.deliverySettings.showHomepage = enable;
-    this.deliveryService.setDeliverySetting(this.deliverySettings);
-  }
-
   protected login() {
     this.userService.login('', '');
-    this.showHomepage(false);
   }
 
   protected isFocused(category: ICategory): boolean {
