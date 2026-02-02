@@ -22,31 +22,6 @@
 
     <div class="divider"></div>
 
-    @if (user.userRole != userRole.Guest) {
-    <div class="flex flex-col gap-6 px-4">
-        <div class="flex gap-4 items-center text-lg">
-            <fa-icon icon="receipt"></fa-icon>
-            <a class="link" style="text-decoration: none;" routerLink="/order-history">Order History</a>
-        </div>
-        <div class="flex gap-4 items-center text-lg">
-            <fa-icon icon="book"></fa-icon>
-            <a class="link" style="text-decoration: none;" routerLink="/recipe-book">
-                Recipe Book {{ user.recipeBook ? ('(' + user.recipeBook.length + ')') : '' }}
-            </a>
-        </div>
-        <div class="flex gap-4 items-center text-lg">
-            <fa-icon icon="s"></fa-icon>
-            <a class="link" style="text-decoration: none;" routerLink="/subscriptions">Subscriptions</a>
-        </div>
-        <div class="flex gap-4 items-center text-lg">
-            <fa-icon icon="credit-card"></fa-icon>
-            <a class="link" style="text-decoration: none;">Payment Methods</a>
-        </div>
-    </div>
-
-    <div class="divider"></div>
-    }
-
     <div class="flex flex-col gap-6 px-4">
         <div class="flex gap-4 text-lg">
             <fa-icon icon="briefcase"></fa-icon>

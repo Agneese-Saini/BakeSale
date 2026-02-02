@@ -13,38 +13,32 @@
       <div class="flex items-center gap-2">
         <app-logo firstName="Bake" lastName="Sale" (click)="onClickHome()" />
 
-        <delivery-switch class="hidden lg:block" />
+        <delivery-switch class="px-4 hidden lg:block" />
 
-        <div class="dropdown dropdown-bottom dropdown-start z-50 py-2 hidden lg:block">
+        <div class="dropdown dropdown-bottom dropdown-start z-50 hidden lg:block">
           <div tabindex="0" role="button" class="link px-4 py-2" style="text-decoration: none;">
             <div class="flex items-center justify-between">
-              @if (deliverySettings.address) {
-              <div class="flex text-left items-center">
-                <fa-icon class="text-xl rounded-full mr-4" icon="location-dot"></fa-icon>
+              <div class="flex items-center gap-2">
+                <fa-icon class="text-xl rounded-full" icon="location-dot"></fa-icon>
 
-                <div class="flex flex-col text-left">
-                  <p class="text-lg font-medium">{{ deliverySettings.address.addressLine }}</p>
-                  @if (deliveryMode && deliverySettings.timeslot) {
-                  <p class="text-xs font-thin">{{ deliveryMode.label }} Time: <b>{{ deliverySettings.timeslot.label
-                      }}</b></p>
+                <div class="flex flex-col">
+                  @if (deliverySettings.address) {
+                  <p class="font-bold">{{ deliverySettings.address.addressLine }}</p>
+                  @if (deliverySettings.timeslot) {
+                  <p class="text-xs">{{ deliveryMode?.label }} Time: <b>{{ deliverySettings.timeslot.label }}</b></p>
+                  }
+                  }
+                  @else {
+                  <p class="font-medium">Enter Address</p>
                   }
                 </div>
               </div>
 
               <fa-icon icon="angle-down" class="pl-5"></fa-icon>
-              }
-              @else {
-              <div class="flex text-left">
-                <fa-icon class="text-xl rounded-full mr-4" icon="location-dot"></fa-icon>
-                <p class="text-lg font-medium">Enter Address</p>
-              </div>
-
-              <fa-icon icon="angle-down" class="pl-5"></fa-icon>
-              }
             </div>
           </div>
 
-          <ul tabindex="0" class="dropdown-content menu bg-base-300 rounded-box z-1 w-100 p-2 shadow-2xl">
+          <ul tabindex="0" class="dropdown-content menu bg-base-200 rounded-box z-1 w-100 p-2 shadow-2xl border border-base-300">
             <address-book [timeslot]="true" />
           </ul>
         </div>
@@ -96,29 +90,23 @@
   <div class="flex justify-between items-center pb-2">
     <div class="flex-1">
       <a class="link flex items-center justify-between w-fit" style="text-decoration: none;" (click)="openDialog()">
-        @if (deliverySettings.address) {
-        <div class="flex text-left items-center">
-          <fa-icon class="text-xl rounded-full mr-4" icon="location-dot"></fa-icon>
+        <div class="flex items-center gap-2">
+          <fa-icon class="text-xl rounded-full" icon="location-dot"></fa-icon>
 
-          <div class="flex flex-col text-left">
-            <p class="text-lg font-medium">{{ deliverySettings.address.addressLine }}</p>
+          <div class="flex flex-col">
+            @if (deliverySettings.address) {
+            <p class="font-bold">{{ deliverySettings.address.addressLine }}</p>
             @if (deliverySettings.timeslot) {
-            <p class="text-xs font-thin">{{ deliveryMode?.label }} Time: <b>{{
-                deliverySettings.timeslot.label }}</b></p>
+            <p class="text-xs">{{ deliveryMode?.label }} Time: <b>{{ deliverySettings.timeslot.label }}</b></p>
+            }
+            }
+            @else {
+            <p class="font-medium">Enter Address</p>
             }
           </div>
         </div>
 
-        <fa-icon icon="angle-down" class="pl-2"></fa-icon>
-        }
-        @else {
-        <div class="flex text-left">
-          <fa-icon class="text-xl rounded-full mr-4" icon="location-dot"></fa-icon>
-          <p class="text-lg font-medium">Enter Address</p>
-        </div>
-
-        <fa-icon icon="angle-down" class="pl-2"></fa-icon>
-        }
+        <fa-icon icon="angle-down" class="pl-2"></fa-icon>       
       </a>
     </div>
 

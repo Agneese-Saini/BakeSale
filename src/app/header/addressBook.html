@@ -5,7 +5,7 @@
   Pickup Location:
   }
 </h1>
-<div class="bg-base-300 lg:bg-base-200 rounded-box overflow-x-auto min-h-52 lg:min-h-64 p-2">
+<div class="bg-base-300 rounded-box overflow-x-auto min-h-52 lg:min-h-64 p-2">
   <table class="table">
     <tbody>
       @if (addressBook && addressBook.length > 0) {
@@ -20,7 +20,7 @@
                 <span class="flex items-center">
                   <b>{{ addy.label }}</b>
                   @if (addy.isTemp) {
-                  <a class="badge badge-xs badge-secondary ml-2 tooltip tooltip-right"
+                  <a class="badge badge-xs badge-secondary ml-2 tooltip tooltip-bottom"
                     data-tip="Temporary Address">Temp</a>
                   }
                 </span>
@@ -51,7 +51,7 @@
       @else {
       <tr>
         <th>
-          <label class="label flex flex-col justify-between text-center lg:py-10">            
+          <label class="label flex flex-col justify-between text-center py-10">
             <span class="font-bold text-xl"><fa-icon icon="exclamation-circle"></fa-icon> No address found!</span>
             @if (isDelivery) {
             <span class="font-light text-sm">
@@ -88,7 +88,7 @@
 
 @if (timeslot == true) {
 <h1 class="text-lg p-2">Time preference:</h1>
-<div class="bg-base-300 lg:bg-base-200 rounded-box p-2">
+<div class="bg-base-300 rounded-box p-2">
   <div class="flex justify-between items-center px-2">
     <label [class]="settings.timeslot ? '' : 'text-error'">
       <fa-icon icon="clock"></fa-icon> {{ settings.timeslot ? settings.timeslot.label : 'Select a timeslot' }}

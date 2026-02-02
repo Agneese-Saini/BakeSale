@@ -115,82 +115,71 @@ export class ItemChoice {
   selector: 'item-choice-list',
   imports: [FormsModule, FontAwesomeModule, ItemChoice],
   template: `
+<div class="flex justify-between items-center gap-2">
+  <div class="flex flex-col">
+    <p class="text-xl font-bold">
+      @if (type.required == true) {
+      Choose {{ type.name }}
+      } @else {
+      Add {{ type.name }}
+      }
+    </p>
 
-<div tabindex="0" [class]="'collapse collapse-open bg-base-100 rounded-box border ' + (type.error ? 'border-error' : 'border-base-300')">
-     <div class="collapse-title">
-      <div class="flex justify-between items-center gap-2">
-        <div class="flex flex-col">
-          <p class="text-xl">
-            @if (type.required == true) {
-            Choose {{ type.name }}
-            } @else {
-            Add {{ type.name }}
-            }
-          </p>
+    @if (type.description) {
+    <i class="text-gray-500 text-sm pb-1"><fa-icon icon="info-circle"></fa-icon> {{ type.description }}</i>
+    }
 
-          @if (type.description) {
-          <i class="text-gray-500 text-xs pb-1"><fa-icon icon="info-circle"></fa-icon> {{ type.description }}</i>
-          }
+    @if (type.limit) {
+    @let selections = getSelections(choices);
+    @let selection = getSelection(choices);
+    @if (selections.length == 1 && selection) {
+    <label class="text-sm font-bold">
+      {{ selection.name }}
+      @if (selection.amount && selection.amount > 1) {
+      ({{ selection.amount }})
+      }
+    </label>
+    }
+    @else if (selections.length > 0) {
+    <label [class]="'text-sm font-bold ' + (hasError(type, choices) ? 'text-error' : '')">
+      Multiple selected ({{ numSelection(choices) }}/{{ type.limit }})
+    </label>
+    }
+    @else {
+    <label class="text-sm label">
+      @if (type.required) {
+      Please choose {{ type.limit }}
+      } @else {
+      Choose upto {{ type.limit }} (optional)
+      }
+    </label>
+    }
+    }
+  </div>
 
-          @if (type.limit) {
-          @let selections = getSelections(choices);
-          @let selection = getSelection(choices);
-          @if (selections.length == 1 && selection) {
-          <label class="text-sm font-bold">
-            {{ selection.name }}
-            @if (selection.amount && selection.amount > 1) {
-            ({{ selection.amount }})
-            }
-          </label>
-          }
-          @else if (selections.length > 0) {
-          <label [class]="'text-sm font-bold ' + (hasError(type, choices) ? 'text-error' : '')">
-            Multiple selected ({{ numSelection(choices) }}/{{ type.limit }})
-          </label>
-          }
-          @else {
-          <label class="text-sm label">
-          @if (type.required) {
-          Please choose {{ type.limit }}
-          } @else {
-          Choose upto {{ type.limit }} (optional)
-          }
-          </label>
-          }
-          }
-        </div>
+  @if (type.error) {
+  <p class="text-error font-semibold text-nowrap"><fa-icon icon="exclamation-circle"></fa-icon> {{ type.error }}</p>
+  } @else {
+  @if (type.required && (numSelection(choices) < 1 || (type.limit && numSelection(choices) < type.limit))) { <label
+    class="badge badge-soft px-1">Required</label>
+    }
+    }
+</div>
 
-        @if (type.error) {
-        <p class="text-error text-sm">{{ type.error }}</p>
-        } @else {
-        @if (type.required && (numSelection(choices) < 1 || (type.limit && numSelection(choices) < type.limit))) {
-        <label>Required</label>
+<div class="">
+  <div class="max-h-64 overflow-y-auto">
+    <table class="table w-full">
+      <tbody>
+        @for (choice of choices; track choice) {
+        <tr>
+          <td>
+            <item-choice [value]="choice" [type]="type" [limit]="type.limit" (change)="onChange(choice)" />
+          </td>
+        </tr>
         }
-        }
-      </div>
-    </div>
-
-    <div class="collapse-content bg-base-300">
-      <div class="">      
-        <div class="max-h-64 overflow-y-auto">
-          <table class="table w-full">
-            <tbody>
-              @for (choice of choices; track choice) {
-              <tr>
-                <td>
-                  <item-choice 
-                      [value]="choice" 
-                      [type]="type" 
-                      [limit]="type.limit" 
-                      (change)="onChange(choice)" />
-                </td>
-              </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+      </tbody>
+    </table>
+  </div>
 </div>
 `
 })

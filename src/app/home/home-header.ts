@@ -5,14 +5,13 @@ import { Router, RouterModule } from '@angular/router';
 import { SideDrawer } from '../sidedrawer/sidedrawer';
 import { CheckoutDrawer } from '../checkout/checkout-drawer';
 import { HomeCategories, IUser, UserRole, UserService } from '../user/user';
-import { Logo } from './header';
+import { Logo } from '../header/header';
 import { KeyValuePipe } from '@angular/common';
 
 @Component({
   selector: 'home-header',
   imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, Logo],
-  templateUrl: './home-header.html',
-  styleUrl: './header.css'
+  templateUrl: './home-header.html'
 })
 export class HomeHeader {
 

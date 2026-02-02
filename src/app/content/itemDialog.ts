@@ -8,7 +8,7 @@ import { IItem, Item } from "./item";
 import { CustomizerType, ICategory, ICustomizer } from "../header/category";
 import { CartService } from "../checkout/cart";
 import { RouterModule } from "@angular/router";
-import { ItemChoiceList } from "./itemChoice";
+import { ChoiceList, ItemChoiceList } from "./itemChoice";
 import { Recipe } from "../custom/recipe";
 
 @Component({
@@ -273,7 +273,7 @@ export class ItemDialog {
 
   protected removeFromCart() {
     // remove from cart
-    this.cartService.removeFromCart(this.item);
+    this.cartService.removeFromCart(this.data);
 
     const message = this.item.name + ": was removed from your cart.";
     const snackBarRef = this.snackBar.open(message, "Undo", {
@@ -281,14 +281,14 @@ export class ItemDialog {
     });
 
     snackBarRef.onAction().subscribe(action => {
-      this.cartService.addToCart(this.item);
+      this.cartService.addToCart(this.data);
     });
 
     this.dialogRef.close();
   }
 
   protected duplicate() {
-    let newItem = structuredClone(this.item);
+    let newItem = structuredClone(this.data);
     newItem.id = undefined;
     this.cartService.addToCart(newItem);
 

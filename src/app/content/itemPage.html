@@ -3,7 +3,7 @@
 <div class="divider px-4"></div>
 
 <div class="px-4">
-  <a class="link text-lg font-mono" style="text-decoration: none" routerLink="/content">
+  <a class="link text-lg font-mono" style="text-decoration: none" routerLink="/shop">
     <fa-icon icon="arrow-left"></fa-icon> Back to {{ item ? item.parent : 'Store' }}
   </a>
 </div>
@@ -80,9 +80,14 @@
     }
 
     @if (item.choices) {
-    <div class="flex flex-col gap-2">
+    <div class="divider"></div>
+    <div class="flex flex-col">
+      @let last = getLastChoice(item.choices);
       @for (entry of item.choices | keyvalue; track entry.key) {
       <item-choice-list class="w-full" [type]="entry.key" [choices]="entry.value"></item-choice-list>
+      @if (entry.key != last) {
+      <div class="divider"></div>
+      }
       }
     </div>
     <br />

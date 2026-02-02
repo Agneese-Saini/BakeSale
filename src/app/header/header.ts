@@ -83,7 +83,7 @@ export class SearchBar {
   protected categories: ICategory[] = [];
 
   @Input()
-  protected categoryMenu: boolean = true;
+  public categoryMenu: boolean = true;
 
   constructor(
     private categoryService: CategoryService,

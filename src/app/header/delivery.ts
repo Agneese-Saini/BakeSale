@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ITime, ITimeSlot, TimeslotsDialog } from './timeslots';
 import { MatDialog, MatDialogConfig, MatDialogRef, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
-import { AddressBookAction, AddressDialog, IAddress } from './addressDialog';
+import { AddressBookAction, AddressDialog, IAddress, Province } from './addressDialog';
 import { Category, ICategory } from './category';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DriverTip } from '../checkout/checkout';
@@ -114,14 +114,13 @@ export class DeliveryService {
     // Delivery
     if (mode == DeliveryMode.Delivery) {
       book = [
-        { label: "Test", addressLine: "123 Manitoba ave." },
-        { label: "Test 2", addressLine: "999 Ottawa ave." }
+        { label: "Home", addressLine: "123 Manitoba ave.", city: "Winnipeg", province: Province.MB, postal: "R1W 2G3" }
       ];
     }
     // Pickup
     else if (mode == DeliveryMode.Pickup) {
       book = [
-        { label: "Test", addressLine: "123 Manitoba ave." }
+        { label: "BakeSale", addressLine: "Area 51", city: "Winnipeg", province: Province.MB, postal: "R1W 2G3" }
       ];
     }
 

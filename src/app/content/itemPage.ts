@@ -8,11 +8,10 @@ import { IUser, UserService } from '../user/user';
 import { IItem, Item } from './item';
 import { Category, CategoryService, ICategory } from '../header/category';
 import { ItemDetails, ItemDialog, PriceTag, TextReadMore } from "./itemDialog";
-import { ItemChoiceList } from './itemChoice';
+import { ChoiceList, ItemChoiceList } from './itemChoice';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CartService } from '../checkout/cart';
 import { Header } from "../header/header";
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-item',
@@ -28,8 +27,6 @@ export class ItemPage {
   protected user: IUser = UserService.DefaultUser;
   protected categories: ICategory[] = [];
   protected displayImage?: string;
-  
-  private routeSubscription?: Subscription;
 
   protected get isCartItem(): boolean {
     return this.item ? (this.cartService.getCartItem(this.item) != undefined) : false;
@@ -37,6 +34,10 @@ export class ItemPage {
 
   protected get hasChoices(): boolean {
     return this.item ? (this.item.choices != undefined && this.item.choices.size > 0) : false;
+  }
+
+  protected getLastChoice(choiceList: ChoiceList) {
+    return [...choiceList.keys()].at(-1);
   }
 
   protected list(limit: number): number[] {
@@ -61,7 +62,7 @@ export class ItemPage {
       this.cdr.detectChanges();
     });
 
-    this.routeSubscription = this.route.paramMap.subscribe((params: ParamMap) => {
+    this.route.paramMap.subscribe((params: ParamMap) => {
       const categoryName = params.get('category');
       const itemName = params.get('item');
 

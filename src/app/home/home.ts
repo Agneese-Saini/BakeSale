@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { HomeHeader } from "../header/home-header";
+import { HomeHeader } from "./home-header";
 import { HomeCategories, UserService } from '../user/user';
 
 @Component({

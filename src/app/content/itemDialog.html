@@ -48,13 +48,13 @@
       </div>
       <br />
 
-      @if (item.choices) {      
-      <div class="flex flex-col gap-2">
+      @if (item.choices) {
+      <div class="flex flex-col">
         @for (entry of item.choices | keyvalue; track entry.key) {
         <item-choice-list class="w-full" [type]="entry.key" [choices]="entry.value"></item-choice-list>
+        <div class="divider"></div>
         }
       </div>
-      <br />
       }
     </div>
 
@@ -123,13 +123,13 @@
         }
       </div>
 
-        <button class="btn bg-base-100" (click)="removeFromCart()">
-          <p class="text-error">Remove Item</p>
-        </button>
+      <button class="btn bg-base-100" (click)="removeFromCart()">
+        <p class="text-error">Remove Item</p>
+      </button>
 
-        <button class="btn bg-base-100" (click)="cancel()">
-          Cancel
-        </button>
+      <button class="btn bg-base-100" (click)="cancel()">
+        Cancel
+      </button>
     </div>
   </div>
 </div>
