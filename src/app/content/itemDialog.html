@@ -49,10 +49,9 @@
       <br />
 
       @if (item.choices) {
-      <div class="flex flex-col">
+      <div class="flex flex-col gap-2">
         @for (entry of item.choices | keyvalue; track entry.key) {
-        <item-choice-list class="w-full" [type]="entry.key" [choices]="entry.value"></item-choice-list>
-        <div class="divider"></div>
+        <item-choice-list class="rounded-box bg-base-300 w-full p-4" [type]="entry.key" [choices]="entry.value"></item-choice-list>
         }
       </div>
       }

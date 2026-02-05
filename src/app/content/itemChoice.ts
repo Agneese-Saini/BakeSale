@@ -158,7 +158,7 @@ export class ItemChoice {
   </div>
 
   @if (type.error) {
-  <p class="text-error font-semibold text-nowrap"><fa-icon icon="exclamation-circle"></fa-icon> {{ type.error }}</p>
+  <p class="badge badge-soft text-error text-nowrap px-1"><fa-icon icon="exclamation-circle"></fa-icon> {{ type.error }}</p>
   } @else {
   @if (type.required && (numSelection(choices) < 1 || (type.limit && numSelection(choices) < type.limit))) { <label
     class="badge badge-soft px-1">Required</label>
@@ -234,7 +234,7 @@ export class ItemChoiceList {
     }
 
     if (type.required && (ItemChoiceList.NumSelection(choices) < (type.limit ? type.limit : 1))) {
-      type.error = "Please select " + type.limit;
+      type.error = "Required " + type.limit;
       return true;
     }
 
