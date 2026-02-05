@@ -123,7 +123,7 @@ export type DaysOfWeekSetting = Map<DaysOfWeek, { name: string, checked: boolean
 
           <div class="flex items-center gap-2">
             @if (item.amount > 0) {
-            <button class="btn btn-ghost btn-circle" (click)="decrease(item)">
+            <button class="btn btn-sm btn-ghost btn-circle" (click)="decrease(item)">
               @if (item.amount == 1) {
               <fa-icon class="text-error" icon="trash"></fa-icon>
               } @else {
@@ -134,7 +134,7 @@ export type DaysOfWeekSetting = Map<DaysOfWeek, { name: string, checked: boolean
             <b class="text-lg">{{ item.amount }}</b>
             }
 
-            <button [class]="'btn btn-ghost btn-circle ' + (item.amount == 0 ? 'btn-soft' : '')" (click)="increase(item)">
+            <button [class]="'btn btn-sm btn-ghost btn-circle ' + (item.amount == 0 ? 'btn-soft' : '')" (click)="increase(item)">
               <fa-icon icon="plus"></fa-icon>
             </button>
           </div>

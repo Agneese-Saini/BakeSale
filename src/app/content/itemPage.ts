@@ -153,14 +153,16 @@ export class ItemPage {
     // add to cart
     this.cartService.addToCart(item);
 
-    const message = item.name + " added to cart.";
+    let message : string;
+    if (this.cartService.getCartItem(item) != undefined && (item.choices == undefined || item.choices.size == 0)) {
+      message = item.name + " was changed in your cart.";
+    } else {
+      message = item.name + " was added to cart.";
+    }
+
     this.snackBar.open(message, "Close", {
       duration: 2500
     });
-
-    if (this.hasChoices) {
-      this.itemOnInit();
-    }
   }
 
   protected removeFromCart() {
@@ -172,7 +174,7 @@ export class ItemPage {
     this.cartService.removeFromCart(this.item);
     this.itemOnInit(); 
 
-    const message = this.item.name + ": was removed from your cart.";
+    const message = this.item.name + " was removed from your cart.";
     const snackBarRef = this.snackBar.open(message, "Undo", {
       duration: 2500
     });

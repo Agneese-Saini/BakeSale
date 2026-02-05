@@ -174,7 +174,7 @@ export class Item {
   protected getLikePercentage = Item.getLikePercentage;
 
   static getAmount(item: IItem): number {
-    return item.amount * (item.price.buyOneGetOne ? 2 : 1);
+    return Number(item.amount * (item.price.buyOneGetOne ? 2 : 1));
   }
 
   static getPrice(item: IItem, rate?: number, amount?: number): number {

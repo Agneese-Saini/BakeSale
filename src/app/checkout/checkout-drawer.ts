@@ -3,8 +3,8 @@ import { Component, ChangeDetectorRef } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { Cart, CartService, EmptyCartLinks } from "./cart";
-import { CartItemList } from "./cartItemDialog";
 import { CheckoutCoupon } from "./checkout";
+import { CartItemList } from "./cartItemList";
 
 @Component({
   selector: 'app-checkout-drawer',

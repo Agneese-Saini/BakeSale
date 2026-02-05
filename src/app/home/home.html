@@ -27,11 +27,11 @@
                         </label>
                     </div>
                     <div class="flex gap-2 items-center">
-                        <button class="btn btn-primary" routerLink="/content">
+                        <button class="btn btn-primary" routerLink="/shop">
                             Order online
                         </button>
                         <p>or</p>
-                        <button class="btn btn-soft" routerLink="/content">
+                        <button class="btn btn-soft" routerLink="/shop">
                             Order Pickup
                         </button>
                     </div>
@@ -106,7 +106,8 @@
                 incidunt?
             </div>
             <a
-                class="btn btn-soft mt-5 gap-1 font-medium transition-transform duration-[0.3s] hover:translate-x-2 max-md:mx-auto">
+                class="btn btn-soft mt-5 gap-1 font-medium transition-transform duration-[0.3s] hover:translate-x-2 max-md:mx-auto"
+                [routerLink]="['/subscribe', { type: 'Bread' }]">
                 Open Bread shop <fa-icon icon="arrow-up-right-from-square"></fa-icon>
             </a>
         </div>

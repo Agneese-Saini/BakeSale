@@ -263,7 +263,7 @@ export class ItemDialog {
     // add or update cart
     this.cartService.addToCart(this.item);
 
-    const message = this.item.name + " updated in cart.";
+    const message = this.item.name + " was changed in your cart.";
     this.snackBar.open(message, "Close", {
       duration: 2500
     });
@@ -275,7 +275,7 @@ export class ItemDialog {
     // remove from cart
     this.cartService.removeFromCart(this.data);
 
-    const message = this.item.name + ": was removed from your cart.";
+    const message = this.item.name + " was removed from your cart.";
     const snackBarRef = this.snackBar.open(message, "Undo", {
       duration: 2500
     });

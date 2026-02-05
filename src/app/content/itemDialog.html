@@ -1,8 +1,9 @@
 <div class="bg-base-200">
   <div mat-dialog-content>
     @if (item.company) {
-    <span class="label text-sm font-bold"><fa-icon class="text-info" icon="check-circle"></fa-icon> {{ item.company
-      }}</span>
+    <span class="label text-sm font-bold">
+      <fa-icon class="text-info" icon="check-circle"></fa-icon> {{ item.company }}
+    </span>
     }
 
     <h1 class="flex items-center gap-2 text-4xl font-bold">
@@ -51,7 +52,8 @@
       @if (item.choices) {
       <div class="flex flex-col gap-2">
         @for (entry of item.choices | keyvalue; track entry.key) {
-        <item-choice-list class="rounded-box bg-base-300 w-full p-4" [type]="entry.key" [choices]="entry.value"></item-choice-list>
+        <item-choice-list class="rounded-box bg-base-300 w-full p-4" [type]="entry.key"
+          [choices]="entry.value"></item-choice-list>
         }
       </div>
       }

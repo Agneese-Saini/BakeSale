@@ -9,11 +9,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { TimeslotsDialog } from '../header/timeslots';
 import { Router, RouterModule } from '@angular/router';
-import { CartItemList } from './cartItemDialog';
 import { IOrderHistory } from '../user/order-history';
 import { UserService } from '../user/user';
 import { ItemChoiceList } from '../content/itemChoice';
 import { OrderTotal, Tip } from "./order";
+import { CartItemList } from './cartItemList';
 
 export enum DriverTip {
   Tip_10 = 10,

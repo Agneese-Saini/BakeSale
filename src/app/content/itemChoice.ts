@@ -39,7 +39,7 @@ export type ChoiceList = Map<IChoiceType, IChoice[]>;
   @if (limit && limit > 1) {
   <div class="flex justify-center items-center gap-2">
     @if (value.amount != undefined && value.amount > 0) {
-    <button class="btn btn-circle btn-ghost" (click)="decrease()">
+    <button class="btn btn-sm btn-circle btn-ghost" (click)="decrease()">
       @if (value.amount == 1) {
       <fa-icon class="text-error" icon="trash"></fa-icon>
       } @else {
@@ -50,19 +50,19 @@ export type ChoiceList = Map<IChoiceType, IChoice[]>;
     <b class="text-lg">{{ value.amount }}</b>
     }
 
-    <button [class]="'btn btn-circle ' + (value.amount ? 'btn-ghost' : '')" (click)="increase()">
+    <button [class]="'btn btn-sm btn-circle ' + (value.amount ? 'btn-ghost' : '')" (click)="increase()">
       <fa-icon icon="plus"></fa-icon>
     </button>
   </div>
   }
   @else {
   @if (!value.amount) {
-  <button [class]="'btn btn-circle ' + (value.amount ? 'btn-ghost' : '')" (click)="increase()">
+  <button [class]="'btn btn-sm btn-circle ' + (value.amount ? 'btn-ghost' : '')" (click)="increase()">
     <fa-icon icon="plus"></fa-icon>
   </button>
   }
   @else {
-  <button class="btn btn-ghost btn-circle text-2xl" (click)="decrease()">
+  <button class="btn btn-sm btn-circle btn-ghost text-lg" (click)="decrease()">
     <fa-icon icon="check"></fa-icon>
   </button>
   }
@@ -126,7 +126,7 @@ export class ItemChoice {
     </p>
 
     @if (type.description) {
-    <i class="text-gray-500 text-sm pb-1"><fa-icon icon="info-circle"></fa-icon> {{ type.description }}</i>
+    <i class="text-gray-500 text-xs pb-1"><fa-icon icon="info-circle"></fa-icon> {{ type.description }}</i>
     }
 
     @if (type.limit) {
@@ -160,10 +160,15 @@ export class ItemChoice {
   @if (type.error) {
   <p class="badge badge-soft text-error text-nowrap px-1"><fa-icon icon="exclamation-circle"></fa-icon> {{ type.error }}</p>
   } @else {
-  @if (type.required && (numSelection(choices) < 1 || (type.limit && numSelection(choices) < type.limit))) { <label
-    class="badge badge-soft px-1">Required</label>
-    }
-    }
+  @if (type.required) { 
+  @if (numSelection(choices) < 1 || (type.limit && numSelection(choices) < type.limit)) {
+  <label class="badge badge-soft px-1">Required</label>
+  }
+  @else {
+  <label class="badge badge-soft text-success px-1"><fa-icon icon="check"></fa-icon> Required</label>
+  }
+  }
+  }
 </div>
 
 <div class="">
@@ -229,7 +234,7 @@ export class ItemChoiceList {
 
   static ShowError(type: IChoiceType, choices: IChoice[]): boolean {
     if (type.limit && ItemChoiceList.NumSelection(choices) > type.limit) {
-      type.error = "Only select " + type.limit;
+      type.error = "Max Limit " + type.limit;
       return true;
     }
 

@@ -16,7 +16,7 @@ export class SideDrawer {
   readonly userRole = UserRole;
 
   protected user: IUser = UserService.DefaultUser;
-  
+
   constructor(
     private userService: UserService,
     private cdr: ChangeDetectorRef) { }

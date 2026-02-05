@@ -1,8 +1,12 @@
-import { Component, Injectable } from "@angular/core";
+import { ChangeDetectorRef, Component, Injectable, Input } from "@angular/core";
 import { IItem, Item } from "../content/item";
 import { BehaviorSubject } from "rxjs";
 import { FormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { ItemChoiceSummary } from "../content/itemChoice";
+import { PriceTag, ItemDialog } from "../content/itemDialog";
 
 export type Cart = Map<string, IItem[]>;
 
@@ -127,7 +131,7 @@ export class CartService {
     let num: number = 0;
     for (let [key, value] of cart) {
       for (let item of value) {
-        num += item.amount;
+        num += Number(item.amount);
       }
     }
 
