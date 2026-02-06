@@ -1,12 +1,8 @@
-import { ChangeDetectorRef, Component, Injectable, Input } from "@angular/core";
+import { Component, Injectable } from "@angular/core";
 import { IItem, Item } from "../content/item";
 import { BehaviorSubject } from "rxjs";
 import { FormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { ItemChoiceSummary } from "../content/itemChoice";
-import { PriceTag, ItemDialog } from "../content/itemDialog";
 
 export type Cart = Map<string, IItem[]>;
 

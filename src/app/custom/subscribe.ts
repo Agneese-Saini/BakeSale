@@ -15,13 +15,14 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { IPayMethod, UserService } from "../user/user";
 import { IDeliverySettings, AddressBook, DeliveryService } from "../header/delivery";
 import { OrderTotal } from "../checkout/order";
+import { CdkAriaLive } from "../../../node_modules/@angular/cdk/types/_a11y-module-chunk";
 
 export interface ISubscription {
   category: ICategory,
   freq: number,
   days: DaysOfWeekSetting,
   canceledDays?: Date[],
-  date?: Date, 
+  date?: Date,
   payment?: IPayMethod
 };
 
@@ -42,42 +43,40 @@ export type DaysOfWeekSetting = Map<DaysOfWeek, { name: string, checked: boolean
   selector: 'subscribe-item-list',
   imports: [FormsModule, FontAwesomeModule, RouterModule, PriceTag, MatDialogModule],
   template: `
-<div [class]="'overflow-y-auto rounded-box w-full' + ' ' + (maxHeight ? ('max-h-' + maxHeight) : '') + ' ' + (error && background ? 'border border-error' : '')">
-  <table [class]="'table' + ' ' + (background ? 'bg-base-200 border border-base-300' : '')">
-    <thead>
-      <tr [class]="background ? 'bg-base-100' : ''">
-        <th>
-          <div class="flex justify-between items-center">
-            <p class="text-xl">Select items:</p>
-            @if (totalItems > 0) {
-            <p class="text-neutral">
-              {{ totalItems }} {{ totalItems == 1 ? 'item' : 'items'}} - <b>{{ '$' }}{{ itemsPrice }}</b>
-            </p>
-            }
-          </div>
-          @if (error) {
-          <span class="flex gap-1 items-center text-xs text-error">
-            <fa-icon icon="exclamation-circle"></fa-icon>
-            <p>{{ error }}</p>
-          </span>
-          }
-        </th>
-      </tr>
-    </thead>
+<div class="flex flex-col">
+  <label class="input w-full">
+    <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </g>
+    </svg>
+    <input type="search" class="grow placeholder-gray-500 input-lg" placeholder="Search" />
+  </label>
+</div>
+<br />
+
+<div class="flex justify-between items-center gap-2 pb-1">
+  <h1 class="text-lg font-semibold">Select items:</h1>
+   
+  @if (error) {
+  <p class="badge badge-soft badge-error px-1">
+    <fa-icon icon="exclamation-circle"></fa-icon> {{ error }}
+  </p>
+  }
+  @else if (totalItems > 0) {
+  <p class="text-neutral text-lg">
+    {{ totalItems }} {{ totalItems == 1 ? 'item' : 'items'}} - <b>{{ '$' }}{{ itemsPrice }}</b>
+  </p>
+  }
+  @else {
+  <i class="label">Minimum Required {{ minimumItemCount }}</i>
+  }
+</div>
+
+<div [class]="'overflow-y-auto rounded-box w-full' + ' ' + (maxHeight ? ('max-h-' + maxHeight) : '')">
+  <table class="table table-zebra">
     <tbody>
-      <tr>
-        <td>
-          <label class="input w-full">
-            <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.3-4.3"></path>
-              </g>
-            </svg>
-            <input type="search" class="grow placeholder-gray-500 input-lg" placeholder="Search" />
-          </label>
-        </td>
-      </tr>
       @for (item of category.items; track item) {
       <tr>
         <td class="flex justify-between items-center">
@@ -148,6 +147,8 @@ export type DaysOfWeekSetting = Map<DaysOfWeek, { name: string, checked: boolean
 })
 export class SubscribeItemList {
 
+  protected readonly minimumItemCount: number = Subscribe.MinimumItemCount;
+  
   @Input({ required: true })
   public category!: ICategory;
 
@@ -155,15 +156,12 @@ export class SubscribeItemList {
   public error?: string;
 
   @Input()
-  public background?: boolean;
-
-  @Input()
   public maxHeight?: number;
 
   @Output()
   public change = new EventEmitter<void>();
 
-  protected get selectedItems(): IItem[] {    
+  protected get selectedItems(): IItem[] {
     return SubscribeItemList.getSelectedItems(this.category);
   }
 
@@ -194,6 +192,7 @@ export class SubscribeItemList {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
     dialogConfig.data = item;
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(ItemInfoDialog, dialogConfig);
 
@@ -298,7 +297,7 @@ export class SubscribeOrderSummary {
   @Input({ required: true })
   public subscription!: ISubscription;
 
-  protected get selectedItems(): IItem[] {    
+  protected get selectedItems(): IItem[] {
     return SubscribeItemList.getSelectedItems(this.subscription.category);
   }
 
@@ -361,6 +360,10 @@ export class Subscribe {
   protected selectedItemsError?: string;
   protected selectedDeliveryFrequency: number = this.deliveryFrequencies[0];
   protected selectedDeliveryDaysError?: string;
+
+  protected get customizer(): ICustomizer {
+    return this.category!.customizer!;
+  }
 
   protected get totalSelectedItems(): number {
     let num: number = 0;
@@ -454,11 +457,11 @@ export class Subscribe {
     if (!this.category) return;
 
     if (this.totalSelectedItems < Subscribe.MinimumItemCount) {
-      this.selectedItemsError = "Minimum of " + Subscribe.MinimumItemCount + " items required";
+      this.selectedItemsError = "Minimum Required " + Subscribe.MinimumItemCount;
     }
 
     if (this.selectedDeliveryDays.size == 0) {
-      this.selectedDeliveryDaysError = "Please select delivery days";
+      this.selectedDeliveryDaysError = "Required";
     }
 
     if (this.selectedItemsError || this.selectedDeliveryDaysError) {
@@ -477,6 +480,7 @@ export class Subscribe {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
     dialogConfig.data = data;
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(CheckoutDialog, dialogConfig);
     dialogRef.afterClosed().subscribe(() => {
@@ -657,7 +661,7 @@ export class CheckoutDialog {
 
   protected selectedDate: Date = new Date();
 
-  protected get selectedItems(): IItem[] {    
+  protected get selectedItems(): IItem[] {
     return SubscribeItemList.getSelectedItems(this.data.category);
   }
 
@@ -705,7 +709,7 @@ export class CheckoutDialog {
   protected getTotal(): number {
     return Subscribe.getTotal(this.data);
   }
-  
+
   protected getLastFourDigits(cardNumber: string): string {
     return cardNumber.slice(-4);
   }

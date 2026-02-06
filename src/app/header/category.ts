@@ -279,7 +279,7 @@ export class CategoryService {
 				name: 'Bread 1',
 				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt",
 				price: { value: 4.5, previousPrice: 5.0 },
-				image: ["https://www.sixsistersstuff.com/wp-content/uploads/2022/08/Cheesy-Garlic-Texas-Toast-1.jpg"],
+				image: ["https://thatovenfeelin.com/wp-content/uploads/2024/10/Cheesy-Texas-Toast-1.png"],
 				amount: 0
 			});
 
@@ -287,7 +287,7 @@ export class CategoryService {
 				name: 'Bread 2',
 				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt",
 				price: { value: 2.75, previousPrice: 3.0 },
-				image: ["https://www.sixsistersstuff.com/wp-content/uploads/2022/08/Cheesy-Garlic-Texas-Toast-1.jpg"],
+				image: ["https://www.kingarthurbaking.com/sites/default/files/styles/featured_image/public/2019-08/jewish-rye.jpg?itok=8XgYYHcA"],
 				amount: 0
 			});
 
@@ -295,7 +295,7 @@ export class CategoryService {
 				name: 'Bread 3',
 				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt",
 				price: { value: 4.0, previousPrice: 5.0 },
-				image: ["https://www.sixsistersstuff.com/wp-content/uploads/2022/08/Cheesy-Garlic-Texas-Toast-1.jpg"],
+				image: ["https://www.seasonsandsuppers.ca/wp-content/uploads/2022/09/sub-rolls-1200.jpg"],
 				amount: 0
 			});
 		}

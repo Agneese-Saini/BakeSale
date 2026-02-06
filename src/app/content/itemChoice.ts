@@ -239,7 +239,7 @@ export class ItemChoiceList {
     }
 
     if (type.required && (ItemChoiceList.NumSelection(choices) < (type.limit ? type.limit : 1))) {
-      type.error = "Required " + type.limit;
+      type.error = "Required";
       return true;
     }
 

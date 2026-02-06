@@ -56,6 +56,7 @@ export class CartItemsDialog {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
     dialogConfig.data = item;
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(ItemDialog, dialogConfig);
 

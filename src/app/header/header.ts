@@ -193,6 +193,7 @@ export class Header {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
     dialogConfig.data = undefined;
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(AddressBookDialog, dialogConfig);
 

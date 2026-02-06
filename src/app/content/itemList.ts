@@ -203,6 +203,7 @@ export class ItemList {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
     dialogConfig.data = category;
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(ItemCreateDialog, dialogConfig);
 

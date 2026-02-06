@@ -6,6 +6,7 @@ import { Router, RouterModule } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { IUser, UserService } from '../user/user';
+import { ICustomizer } from '../header/category';
 
 export enum ButtonType {
   Finish,
@@ -173,6 +174,10 @@ export class Recipe {
       : undefined;
   }
 
+  protected getLastChoice(choiceList: ChoiceList) {
+    return [...choiceList.keys()].at(-1);
+  }
+
   protected getSelection = ItemChoiceList.GetSelection;
 
   constructor(
@@ -190,7 +195,7 @@ export class Recipe {
 
   protected initLayers() {
     this.layers.clear();
- 
+
     for (let i: number = 1; i <= this.numLayers; i++) {
       this.layers.set(i, structuredClone(Recipe.LayerChoices));
     }
@@ -222,7 +227,7 @@ export class Recipe {
 
     const choiceList = this.layers.get(this.selectedLayer);
     if (choiceList) {
-       // Set selected choice to 1st
+      // Set selected choice to 1st
       this.selectedChoice = [...choiceList.keys()].at(0);
     }
   }

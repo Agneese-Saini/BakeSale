@@ -101,6 +101,7 @@ export class SocialPost {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
     dialogConfig.data = this.social;
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(OptionsDialog, dialogConfig);
     dialogRef.afterClosed().subscribe(() => {

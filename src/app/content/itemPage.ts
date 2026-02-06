@@ -150,11 +150,14 @@ export class ItemPage {
       return;
     }
 
+    // this checks if the item already exists in your cart
+    const exists = this.cartService.getCartItem(item) != undefined;
+
     // add to cart
     this.cartService.addToCart(item);
 
     let message : string;
-    if (this.cartService.getCartItem(item) != undefined && (item.choices == undefined || item.choices.size == 0)) {
+    if (exists && (item.choices == undefined || item.choices.size == 0)) {
       message = item.name + " was changed in your cart.";
     } else {
       message = item.name + " was added to cart.";

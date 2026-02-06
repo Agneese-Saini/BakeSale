@@ -143,7 +143,7 @@ export class CartItemList {
       // remove from cart
       this.cartService.removeFromCart(item);
 
-      const message = item.name + ": was removed from your cart.";
+      const message = item.name + " was removed from your cart.";
       const snackBarRef = this.snackBar.open(message, "Undo", {
         duration: 2500
       });
@@ -163,6 +163,7 @@ export class CartItemList {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
     dialogConfig.data = item;
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(ItemDialog, dialogConfig);
 

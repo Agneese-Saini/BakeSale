@@ -1,12 +1,14 @@
 <div class="navbar">
   <div class="navbar-start">
-    <div class="flex flex-col p-4 gap-2">
-      <a class="link text-lg font-mono px-2" style="text-decoration: none" routerLink="/shop">
-        <fa-icon icon="arrow-left"></fa-icon> Back to store
-      </a>
-      <label class="flex items-center gap-2 text-4xl font-mono lg:hidden">
-        <fa-icon icon="cake-candles"></fa-icon> Customs Cake
-      </label>
+    <div class="flex justify-between items-center gap-2">
+      <fa-icon class="text-2xl" icon="cake-candles"></fa-icon>
+    
+      <div class="flex flex-col">
+        <label class="text-gray-500 font-serif text-xs lg:hidden"><b>Bake</b>Sale</label>
+        <p class="font-mono text-xl text-nowrap">
+          Customs Cake
+        </p>
+      </div>
     </div>
   </div>
 
@@ -14,6 +16,12 @@
     <a class="link text-4xl font-serif p-2" style="text-decoration: none" routerLink="/">
       <b>Bake</b>Sale
     </a>
+  </div>
+
+  <div class="navbar-end lg:hidden">
+    <button class="btn btn-xs tooltip tooltip-left" routerLink="/" data-tip="Goto Homepage">
+      <fa-icon icon="home"></fa-icon> 
+    </button>
   </div>
 </div>
 
@@ -153,8 +161,12 @@
       <!-- Choice list -->
       @if (selectedCategory != category.Layering) {
       <div class="flex flex-col gap-2">
+        @let last = getLastChoice(currentCategory.choices);
         @for (entry of currentCategory.choices | keyvalue; track entry.key) {
         <item-choice-list class="w-full" [type]="entry.key" [choices]="entry.value"></item-choice-list>
+        @if (entry.key != last) {
+        <div class="divider px-4"></div>
+        }
         }
       </div>
       <br />

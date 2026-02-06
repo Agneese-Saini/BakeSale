@@ -123,6 +123,7 @@ export class Content {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
     dialogConfig.data = this.deliverySettings.category;
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(JumpToDialog, dialogConfig);
 

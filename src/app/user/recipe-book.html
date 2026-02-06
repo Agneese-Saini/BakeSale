@@ -1,12 +1,14 @@
 <div class="navbar">
   <div class="navbar-start">
-    <div class="flex flex-col p-4 gap-2">
-      <a class="link text-lg font-mono px-2" style="text-decoration: none" routerLink="/">
-        <fa-icon icon="arrow-left"></fa-icon> Back to store
-      </a>
-      <label class="flex items-center gap-2 text-4xl font-mono lg:hidden">
-        <fa-icon icon="book"></fa-icon> Recipe Book
-      </label>
+    <div class="flex justify-between items-center gap-2 lg:hidden">
+      <fa-icon class="text-2xl" icon="book"></fa-icon>
+
+      <div class="flex flex-col">
+        <label class="text-gray-500 font-serif text-xs"><b>Bake</b>Sale</label>
+        <p class="font-mono text-xl text-nowrap">
+          Recipe Book
+        </p>
+      </div>
     </div>
   </div>
 
@@ -14,6 +16,12 @@
     <a class="link text-4xl font-serif p-2" style="text-decoration: none" routerLink="/">
       <b>Bake</b>Sale
     </a>
+  </div>
+
+  <div class="navbar-end lg:hidden">
+    <button class="btn btn-xs tooltip tooltip-left" routerLink="/" data-tip="Goto Homepage">
+      <fa-icon icon="home"></fa-icon> 
+    </button>
   </div>
 </div>
 

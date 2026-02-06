@@ -245,6 +245,7 @@ export class CheckoutDetails {
   protected openTimeslotsDialog() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(TimeslotsDialog, dialogConfig);
 
@@ -257,6 +258,7 @@ export class CheckoutDetails {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
     dialogConfig.data = undefined;
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(AddressBookDialog, dialogConfig);
 
@@ -268,6 +270,7 @@ export class CheckoutDetails {
   protected openDeliveryInstructionsDialog() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(DeliveryInstructionsDialog, dialogConfig);
 

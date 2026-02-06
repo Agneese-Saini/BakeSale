@@ -332,6 +332,7 @@ export class AddressBook {
   protected openTimeslotsDialog() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(TimeslotsDialog, dialogConfig);
 
@@ -344,6 +345,7 @@ export class AddressBook {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
     dialogConfig.data = address;
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(AddressDialog, dialogConfig);
 

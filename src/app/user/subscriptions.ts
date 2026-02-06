@@ -42,6 +42,7 @@ export class Subscriptions {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
     dialogConfig.data = sub;
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(OrderSummaryDialog, dialogConfig);
     dialogRef.afterClosed().subscribe(() => {
@@ -164,7 +165,7 @@ export class OrderSummaryDialog {
 @Component({
   imports: [FormsModule, FontAwesomeModule, MatDialogModule, SubscribeItemList],
   template: `
-<div class="bg-base-200">
+<div class="bg-base-100">
   <subscribe-item-list mat-dialog-content [category]="category" [error]="error" (change)="error=undefined;"></subscribe-item-list>
 
   <div mat-dialog-actions class="grid gap-2">
@@ -189,9 +190,10 @@ export class SubscriptionItemsDialog {
   protected save() {
     const selectedItems = SubscribeItemList.getSelectedItems(this.category);
     if (Subscribe.getTotalItems(selectedItems) < Subscribe.MinimumItemCount) {
-      this.error = "Minimum of " + Subscribe.MinimumItemCount + " items required";
+      this.error = "Minimum Required " + Subscribe.MinimumItemCount;
 
-      this.snackBar.open(this.error, "Close", {
+      const message = "Minimum of " + Subscribe.MinimumItemCount + " items required";
+      this.snackBar.open(message, "Close", {
         duration: 2500
       });
       return;
@@ -266,6 +268,7 @@ export class ChangeSubscriptionDialog {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
     dialogConfig.data = this.data;
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(SubscriptionItemsDialog, dialogConfig);
     dialogRef.afterClosed().subscribe(() => {

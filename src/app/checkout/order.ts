@@ -93,6 +93,7 @@ export class Tip {
   protected openTipAmountDialog() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
+    dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(TipAmountDialog, dialogConfig);
 

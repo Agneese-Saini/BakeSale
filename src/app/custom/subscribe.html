@@ -1,9 +1,14 @@
 <div class="navbar">
   <div class="navbar-start">
-    <div class="flex flex-col p-4 gap-2">
-      <a class="link text-lg font-mono px-2" style="text-decoration: none" routerLink="/shop">
-        <fa-icon icon="arrow-left"></fa-icon> Back to Store
-      </a>
+    <div class="flex justify-between items-center gap-2">
+      <fa-icon class="text-2xl" icon="bread-slice"></fa-icon>
+    
+      <div class="flex flex-col">
+        <label class="text-gray-500 font-serif text-xs lg:hidden"><b>Bake</b>Sale</label>
+        <p class="font-mono text-xl text-nowrap">
+          Daily Bread
+        </p>
+      </div>
     </div>
   </div>
 
@@ -12,91 +17,101 @@
       <b>Bake</b>Sale
     </a>
   </div>
+
+  <div class="navbar-end lg:hidden">
+    <button class="btn btn-xs tooltip tooltip-left" routerLink="/" data-tip="Goto Homepage">
+      <fa-icon icon="home"></fa-icon> 
+    </button>
+  </div>
 </div>
 
 <div class="divider px-4"></div>
 
 @if (category) {
-<div class="flex justify-center w-full p-4">
-  <div class="flex flex-col gap-4 w-full lg:w-auto lg:max-w-168">
-    <h1 class="text-xl font-bold">Subscribe for fresh Bread Delivery</h1>
-    <p class="">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non
-      dui.
-      Aenean tempus ligula nec suscipit venenatis. Fusce luctus ipsum diam, aliquet dictum ligula imperdiet et.
-      In lectus velit, semper ut iaculis vel, congue nec ipsum.
-    </p>
+<div class="flex flex-col items-center">
+  <div class="flex flex-col items-center w-full lg:w-auto lg:max-w-168 lg:shadow-2xl">
+    <div class="flex flex-col gap-4 p-4">
+      <h1 class="text-xl font-bold">Subscribe for fresh Bread Delivery</h1>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at
+        non
+        dui.
+        Aenean tempus ligula nec suscipit venenatis. Fusce luctus ipsum diam, aliquet dictum ligula imperdiet et.
+        In lectus velit, semper ut iaculis vel, congue nec ipsum.
+      </p>
 
-    <subscribe-item-list [category]="category" [error]="selectedItemsError" [background]="true" [maxHeight]="156"
-      (change)="selectedItemsError=undefined;"></subscribe-item-list>
-
-    <div class="divider label">Delivery Settings</div>
-    <div [class]="'rounded-box ' + (selectedDeliveryDaysError ? 'border border-error' : '')">
-      <table class="table bg-base-200 border border-base-300">
-        <thead>
-          <tr class="bg-base-100 text-wrap">
-            <th>
-              <p class="text-xl">Select delivery days:</p>
-              @if (selectedDeliveryDaysError) {
-              <span class="flex gap-1 items-center text-xs text-error">
-                <fa-icon icon="exclamation-circle"></fa-icon>
-                <p>{{ selectedDeliveryDaysError }}</p>
-              </span>
-              }
-              @else {
-              <p class="label text-xs">Choose upto {{ numDaysLimit }} days</p>
-              }
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <div class="flex flex-wrap gap-2">
-                @for (day of daysOfWeekSetting | keyvalue; track day.key) {
-                <div class="rounded-box bg-base-100 border border-base-300 p-4">
-                  <label class="cursor-pointer flex items-center gap-2">
-                    <input type="checkbox" class="checkbox"
-                      [disabled]="day.value.checked == false && numDays >= numDaysLimit" [(ngModel)]="day.value.checked"
-                      (change)="onDaysChange()" />
-                    <span
-                      [class]="(day.value.checked == false && numDays >= numDaysLimit) ? 'text-gray-300' : (day.value.checked == true ? 'font-bold' : '')">
-                      {{ day.value.name }}
-                    </span>
-                  </label>
-                </div>
-                }
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <subscribe-item-list [category]="category" [error]="selectedItemsError" [maxHeight]="156"
+        (change)="selectedItemsError=undefined;"></subscribe-item-list>
     </div>
 
-    <table class="table bg-base-200 border border-base-300">
-      <thead>
-        <tr class="bg-base-100 text-wrap">
-          <th>
-            <p class="text-xl">Select frequency of deliveries:</p>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (freq of deliveryFrequencies; track freq) {
-        <tr>
-          <td>
-            <label class="cursor-pointer flex justify-between items-center gap-2">
-              <span class="label-text font-normal">Every {{ freq }} week</span>
-              <input type="radio" name="type" class="radio" checked="false" [value]="freq"
-                [(ngModel)]="selectedDeliveryFrequency" />
-            </label>
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
+    <div class="bg-base-300 h-2 w-full"></div>
 
-    <button class="btn btn-neutral w-full" (click)="proceed()">View Subscription</button>
+    <div class="flex flex-col gap-4 w-full p-4">
+      <div class="flex flex-col">
+        <div class="flex justify-between items-center gap-2 pb-1">
+          <h1 class="text-lg font-semibold">Select delivery days:</h1>
+
+          @if (selectedDeliveryDaysError) {
+          <p class="badge badge-soft badge-error px-1">
+            <fa-icon icon="exclamation-circle"></fa-icon> {{ selectedDeliveryDaysError }}
+          </p>
+          }
+          @else {
+          <i class="label">Choose upto {{ numDaysLimit }} days</i>
+          }
+        </div>
+
+        <table class="table">
+          <tbody>
+            @for (day of daysOfWeekSetting | keyvalue; track day.key) {
+            <tr>
+              <td>
+                <label class="cursor-pointer flex justify-between items-center gap-2">
+                  <span
+                    [class]="(day.value.checked == false && numDays >= numDaysLimit) ? 'text-gray-300' : (day.value.checked == true ? 'font-bold' : '')">
+                    {{ day.value.name }}
+                  </span>
+                  <input type="checkbox" class="checkbox"
+                    [disabled]="day.value.checked == false && numDays >= numDaysLimit" [(ngModel)]="day.value.checked"
+                    (change)="onDaysChange()" />
+                </label>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="bg-base-300 h-2 w-full"></div>
+
+    <div class="flex flex-col gap-4 w-full p-4">
+      <div class="flex flex-col">
+        <div class="flex justify-between items-center gap-2 pb-1">
+          <h1 class="text-lg font-semibold">Get it Every:</h1>
+
+          <i class="label">Choose delivery frequency</i>
+        </div>
+
+        <table class="table">
+          <tbody>
+            @for (freq of deliveryFrequencies; track freq) {
+            <tr>
+              <td>
+                <label class="cursor-pointer flex justify-between items-center gap-2">
+                  <span class="label-text font-normal">{{ freq }} {{ freq > 1 ? 'weeks' : 'week' }}</span>
+                  <input type="radio" name="type" class="radio" checked="false" [value]="freq"
+                    [(ngModel)]="selectedDeliveryFrequency" />
+                </label>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <button class="btn btn-lg btn-neutral w-full" (click)="proceed()">View Subscription</button>
+    </div>
   </div>
 </div>
 }
