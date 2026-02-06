@@ -51,7 +51,7 @@ export type DaysOfWeekSetting = Map<DaysOfWeek, { name: string, checked: boolean
         <path d="m21 21-4.3-4.3"></path>
       </g>
     </svg>
-    <input type="search" class="grow placeholder-gray-500 input-lg" placeholder="Search" />
+    <input tabindex="-1" type="search" class="grow placeholder-gray-500 input-lg" placeholder="Search" />
   </label>
 </div>
 <br />

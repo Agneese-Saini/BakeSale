@@ -17,7 +17,7 @@ import { CartItemList } from "./cartItemList";
   <div mat-dialog-content>
     <h1>Your shopping cart ({{ data.name }}):</h1>
 
-    <div class="bg-base-100 rounded-box h-94 overflow-y-auto p-2">
+    <div class="flex flex-col gap-1 rounded-box overflow-y-auto h-94 p-2">
       <cart-item-list [items]="items" />    
     </div>
   </div>

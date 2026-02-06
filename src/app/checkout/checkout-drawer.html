@@ -20,7 +20,7 @@
     </header>
 
     <!-- Main Content Area (stretches) -->
-    <main class="rounded-box bg-base-100 overflow-y-auto">
+    <main class="flex flex-col gap-1 rounded-box overflow-y-auto">
       @for (cartItem of shoppingCart | keyvalue; track cartItem.key) {
       <cart-item-list [items]="cartItem.value" />
       }

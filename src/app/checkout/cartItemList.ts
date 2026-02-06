@@ -12,9 +12,9 @@ import { CartService } from "./cart";
   selector: 'cart-item-list',
   imports: [FormsModule, FontAwesomeModule, ItemChoiceSummary, PriceTag],
   template: `
-<div class="flex flex-col">
+<div class="flex flex-col gap-1">
     @for (item of items; track item) {
-    <div class="flex justify-between items-center p-2">
+    <div [class]="'flex justify-between items-center p-2' + ' ' + background">
       <div class="flex gap-2 items-center w-full">
 
         <div class="flex-1">
@@ -88,8 +88,6 @@ import { CartService } from "./cart";
         </button>
       </div>
     </div>
-
-    <div class="divider m-0 px-12"></div>
   }
 </div>
 `
@@ -98,6 +96,9 @@ export class CartItemList {
 
   @Input({ required: true })
   public items?: IItem[];
+
+  @Input()
+  public background: string = "bg-base-100";
 
   constructor(
     private dialog: MatDialog,

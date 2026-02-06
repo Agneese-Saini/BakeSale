@@ -18,10 +18,14 @@
     </a>
   </div>
 
-  <div class="navbar-end lg:hidden">
-    <button class="btn btn-xs tooltip tooltip-left" routerLink="/" data-tip="Goto Homepage">
-      <fa-icon icon="home"></fa-icon> 
-    </button>
+  <div class="navbar-end">
+    <div class="dropdown dropdown-bottom dropdown-end">
+      <div tabindex="0" role="button" class="btn btn-xs m-1"><fa-icon icon="home"></fa-icon></div>
+      <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box w-32 z-50 p-2 shadow-xl">
+        <li><a routerLink="/">Home</a></li>
+        <li><a routerLink="/shop">Shop</a></li>
+      </ul>
+    </div>
   </div>
 </div>
 

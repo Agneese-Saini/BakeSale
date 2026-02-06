@@ -238,8 +238,13 @@ export class ItemChoiceList {
       return true;
     }
 
-    if (type.required && (ItemChoiceList.NumSelection(choices) < (type.limit ? type.limit : 1))) {
-      type.error = "Required";
+    const limit = type.limit ? type.limit : 1;
+    if (type.required && ItemChoiceList.NumSelection(choices) < limit) {
+      if (limit > 1) {
+        type.error = "Required: " + limit;
+      } else {
+        type.error = "Required";
+      }
       return true;
     }
 
@@ -310,30 +315,33 @@ export class ItemChoiceList {
   selector: 'item-choice-catalog',
   imports: [FormsModule, FontAwesomeModule, KeyValuePipe],
   template: `
-<div class="flex flex-wrap gap-0">
+<div class="flex flex-wrap gap-2">
   @let list = getChoiceList();
   @for (entry of list | keyvalue; track entry.key) {
   @let selection = getSelection(entry.value);
   @let lastSelection = selection.at(selection.length - 1);
-  <label class="flex gap-0 label text-xs">
+  <div class="flex text-xs">    
     @for (choice of selection; track choice) {
-    @if (choice.icon) {
-    <fa-icon [icon]="choice.icon"></fa-icon>
-    } @else {
-    <fa-icon icon="bowl-food"></fa-icon>
+    <span>
+      @if (choice.icon) {
+      <fa-icon [icon]="choice.icon"></fa-icon>
+      } @else {
+      <fa-icon icon="bowl-food"></fa-icon>
+      }
+      &nbsp;{{ choice.name }}
+      @if (choice.amount && choice.amount > 1) {
+      &nbsp;({{ choice.amount }})
+      }
+      @if (choice != lastSelection) {
+      {{ ',' }}
+      }
+    </span>
     }
-    {{ choice.name }}
-    @if (choice.amount && choice.amount > 1) {
-    <b>({{ choice.amount }})</b>
+    
+    @if (entry.key != lastChoice) {
+    {{ ',' }}
     }
-    @if (choice != lastSelection) {
-    {{ ', '}}
-    }
-    }
-  </label>
-  @if (entry.key != lastChoice) {
-  <label class="label text-xs">{{ ', ' }}</label>
-  }
+  </div>
   }
 </div>
 `

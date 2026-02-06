@@ -303,12 +303,10 @@ export class CheckoutDetails {
     </div>
   </div>
 
-  <div class="collapse-content">
-    <div class="rounded-box bg-base-100">
-      @for (cartItem of shoppingCart | keyvalue; track cartItem.key) {
-      <cart-item-list [items]="cartItem.value" />
-      }
-    </div>
+  <div class="collapse-content flex flex-col gap-1">
+    @for (cartItem of shoppingCart | keyvalue; track cartItem.key) {
+    <cart-item-list [items]="cartItem.value" />
+    }
   </div>
 </div>
 `

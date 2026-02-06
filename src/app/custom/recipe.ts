@@ -85,8 +85,8 @@ export class Recipe {
   protected categories: RecipeGroup = new Map([
     [Category.Setup, {
       name: "Cake Setup",
-      instructions: "To start building, choose a theme for your cake. This will help us in designing and layering your cake accordingly.\n\
-        You will have the option to select how many layers of cake you want and style each layer in the next steps.",
+      instructions: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui. \
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui.",
       choices:
         new Map([
           [{ name: "Theme", limit: 1, required: true }, [{ name: "Birthday" }, { name: "Office Party" }, { name: "Drunk Fest" }, { name: "Cartoon" }, { name: "Christmas" }]],

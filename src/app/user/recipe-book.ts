@@ -1,14 +1,12 @@
-import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { IUser, UserService } from './user';
 import { Cart, CartService } from '../checkout/cart';
 import { DecimalPipe } from '@angular/common';
-import { IItem, Item } from '../content/item';
+import { IItem } from '../content/item';
 import { DeliveryType } from '../header/delivery';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { CartItemsDialog } from '../checkout/cartItemDialog';
 import { IAddress } from '../header/addressDialog';
 import { ITime } from '../header/timeslots';
 import { Category, Recipe, IRecipe, RecipeGroup } from '../custom/recipe';
