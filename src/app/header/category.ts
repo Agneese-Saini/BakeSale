@@ -65,9 +65,9 @@ export class CategoryService {
 
 	private categoryList: ICategory[] = [
 		{
-			name: "Cakes", hidden: true, subcats:
+			name: "Cake", hidden: true, subcats:
 				[{ name: "Create Your Own", fontSize: 2, customizer: this.customCake },
-				{ name: "Cake", fontSize: 2 },
+				{ name: "Cakes", fontSize: 2 },
 				{ name: "Cheesecake", fontSize: 2 },
 				{
 					name: "Local Bakery", fontSize: 2, pages:
@@ -161,22 +161,30 @@ export class CategoryService {
 	}
 
 	public loadCategories() {
-		let category = Category.findCategory("Cake", this.categoryList, "Cakes");
+		let category = Category.findCategory("Cakes", this.categoryList, "Cake");
 		if (category) {
 			Category.addItem(category, {
 				name: 'Chocolate Cake',
-				label: "Some long text for this long text for something.",
+				about: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui. \
+						Aenean tempus ligula nec suscipit venenatis. Fusce luctus ipsum diam, aliquet dictum ligula imperdiet et. \
+						In lectus velit, semper ut iaculis vel, congue nec ipsum.",
+				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt, and flavor (vanilla extract)",
 				company: "BakeSale",
 				image: [
 					"https://tatyanaseverydayfood.com/wp-content/uploads/2022/03/The-Best-Dark-Chocolate-Cake-Recipe-3.jpg",
 					"https://thescranline.com/wp-content/uploads/2025/02/VANILLA-CAKE-25-WEB-04-768x1024.jpg"
 				],
-				price: { value: 2 },
+				details: [
+					{ header: 'Gluten Free', detail: 'Yes' },
+					{ header: 'Dairy Free', detail: 'No' },
+					{ header: 'Flavors', detail: 'Vanila, Candy, Butterscotch' }
+				],
+				price: { value: 19.99 },
 				amount: 0
 			});
 		}
 
-		category = Category.findCategory("Local Bakery", this.categoryList, "Cakes");
+		category = Category.findCategory("Local Bakery", this.categoryList, "Cake");
 		if (category) {
 			Category.addItem(category, {
 				name: 'Sprinkle Cake',
@@ -186,23 +194,21 @@ export class CategoryService {
 						vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
 						 posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i",
 				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt, and flavor (vanilla extract)",
-				label: "THC: 12%\nCBD: < 1%",
+				details: [
+					{ header: 'Gluten Free', detail: 'Yes' },
+					{ header: 'Dairy Free', detail: 'No' },
+					{ header: 'Flavors', detail: 'Vanila, Candy, Butterscotch' }
+				],
 				company: "Gunns Bakery",
 				image: ["https://thescranline.com/wp-content/uploads/2025/02/VANILLA-CAKE-25-WEB-04-768x1024.jpg"],
-				price: { value: 4.99 },
+				price: { value: 23.50 },
 				amount: 0,
 				stockAmount: 1,
-				notify: "CHANGED",
-				details: [
-					{ header: 'THC', detail: '12%' },
-					{ header: 'CBD', detail: '< 1%' },
-					{ header: 'X Component', detail: 'less than 1g' },
-					{ header: 'BullShit', detail: '100%' }
-				]
+				notify: "Hey, you might like this one!",
 			});
 		}
 
-		category = Category.findCategory("User Creations", this.categoryList, "Cakes");
+		category = Category.findCategory("User Creations", this.categoryList, "Cake");
 		if (category) {
 			Category.addItem(category, {
 				name: 'Red Velvet',
@@ -211,15 +217,16 @@ export class CategoryService {
 						In lectus velit, semper ut iaculis vel, congue nec ipsum. Cras ultrices eros elit, gravida euismod mi lobortis \
 						vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
 						 posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i",
-				label: "Best Selling",
-				image: ["https://cdn.prod.website-files.com/614a379840dbad1848e598c2/679906d29abceb2bbceb0696_679905de4268ad4dc4eae460_IMG_1630.jpeg"],
-				price: { value: 5, previousPrice: 15.0, label: "Clearance Sale" },
+				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt, and flavor (vanilla extract)",
+				image: [ "https://cdn.prod.website-files.com/614a379840dbad1848e598c2/679906d29abceb2bbceb0696_679905de4268ad4dc4eae460_IMG_1630.jpeg" ],
 				amount: 0,
 				author: "MyNameIsShady",
-				choices: new Map([
-					[{ name: "Long side name", limit: 1, required: true, description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." }, [{ name: "Potatoes" }, { name: "Mash Potatoes" }]],
-					[{ name: "Other Side", limit: 1, description: "this is test" }, [{ name: "Potatoes" }, { name: "Mash Potatoes" }]]
-				])
+				details: [
+					{ header: 'Gluten Free', detail: 'Yes' },
+					{ header: 'Dairy Free', detail: 'No' },
+					{ header: 'Flavors', detail: 'Vanila, Candy, Butterscotch' }
+				],
+				price: { value: 19.99 }
 			});
 
 			Category.addItem(category, {
@@ -229,13 +236,20 @@ export class CategoryService {
 						In lectus velit, semper ut iaculis vel, congue nec ipsum. Cras ultrices eros elit, gravida euismod mi lobortis \
 						vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
 						 posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i",
+				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt, and flavor (vanilla extract)",
 				label: "Best Selling",
+				details: [
+					{ header: 'THC', detail: '12%' },
+					{ header: 'CBD', detail: '< 1%' },
+					{ header: 'X Component', detail: 'less than 1g' },
+					{ header: 'BullShit', detail: '100%' }
+				],
 				price: { value: 5, previousPrice: 15.0 },
 				image: ["https://www.piesandtacos.com/wp-content/uploads/2023/06/pistachio-cake-19-683x1024.jpg"],
 				amount: 0,
 				author: "MyNameIsShady",
 				isChef: true,
-				notify: "New trending item recommended!",
+				notify: "New trending you might like!",
 				choices: new Map([
 					[{ name: "Side", limit: 5 }, [{ name: "Potatoes" }, { name: "Mash Potatoes" }]],
 					[{ name: "Other Side", limit: 5 }, [{ name: "Potatoes" }, { name: "Mash Potatoes" }]]

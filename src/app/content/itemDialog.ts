@@ -65,13 +65,13 @@ export class TextReadMore {
 <div class="flex flex-col p-1">  
   <div class="flex items-center gap-2">
     @if (value.price.value > 0) {
-    <label [class]="'font-mono font-bold text-neutral' + textSize">{{ currency }}{{ value.price.value | number: '1.0-2' }}</label>
+    <label [class]="'font-mono font-semibold text-neutral' + textSize">{{ currency }}{{ value.price.value | number: '1.0-2' }}</label>
     } @else {
-    <label [class]="'font-mono font-bold text-error' + textSize">FREE</label>
+    <label [class]="'font-mono font-semibold text-error' + textSize">FREE</label>
     }
 
     @if (!value.price.buyOneGetOne && value.price.previousPrice) {
-    <label [class]="'font-mono font-bold text-gray-500 line-through' + textSize">
+    <label [class]="'font-mono font-semibold text-gray-500 line-through' + textSize">
       {{ currency }}{{ value.price.previousPrice | number: '1.0-2' }}
     </label>
     }
@@ -96,7 +96,7 @@ export class TextReadMore {
   </span>
   }
   @else if (value.price.previousPrice) {
-  <span [class]="'badge badge-success badge-soft px-1 text-nowrap font-bold font-mono' + badgeSize">
+  <span [class]="'badge badge-success badge-soft px-1 text-nowrap font-semibold font-mono' + badgeSize">
     SAVE {{ '$' }}{{ (value.price.previousPrice - value.price.value) | number: '1.1-2' }}
   </span>
   }
@@ -170,9 +170,9 @@ export class PriceTag {
         }
         {{ detail.header }}
       </th>
-      <th class="label">
+      <td>
         {{ detail.detail }}
-      </th>
+      </td>
     </tr>
     }
   </tbody>

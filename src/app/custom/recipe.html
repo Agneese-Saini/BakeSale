@@ -1,14 +1,11 @@
 <div class="navbar">
   <div class="navbar-start">
-    <div class="flex justify-between items-center gap-2">
-      <fa-icon class="text-2xl" icon="cake-candles"></fa-icon>
-
-      <div class="flex flex-col">
-        <label class="text-gray-500 font-serif text-xs lg:hidden"><b>Bake</b>Sale</label>
-        <p class="font-mono text-xl text-nowrap">
-          Custom Cake
-        </p>
-      </div>
+    <div class="dropdown dropdown-bottom dropdown-start">
+      <div tabindex="0" role="button" class="btn btn-sm m-1"><fa-icon icon="arrow-left"></fa-icon></div>
+      <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box w-32 z-50 p-2 shadow-xl">
+        <li><a routerLink="/">Home</a></li>
+        <li><a routerLink="/shop">Shop</a></li>
+      </ul>
     </div>
   </div>
 
@@ -19,12 +16,15 @@
   </div>
 
   <div class="navbar-end">
-    <div class="dropdown dropdown-bottom dropdown-end">
-      <div tabindex="0" role="button" class="btn btn-xs m-1"><fa-icon icon="home"></fa-icon></div>
-      <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box w-32 z-50 p-2 shadow-xl">
-        <li><a routerLink="/">Home</a></li>
-        <li><a routerLink="/shop">Shop</a></li>
-      </ul>
+    <div class="flex justify-between items-center gap-2">    
+      <div class="flex flex-col items-end">
+        <label class="text-gray-500 font-serif text-xs lg:hidden"><b>Bake</b>Sale</label>
+        <p class="font-mono text-xl text-nowrap">
+          Custom Cake
+        </p>
+      </div>
+
+      <fa-icon class="text-2xl" icon="cake-candles"></fa-icon>
     </div>
   </div>
 </div>
