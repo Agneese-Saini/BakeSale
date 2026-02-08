@@ -357,12 +357,10 @@ export class AddressBook {
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, AddressBook, MatDialogContent],
+  imports: [FormsModule, FontAwesomeModule, AddressBook],
   template: `
-<div class="bg-base-200">
-  <div mat-dialog-content>
-    <address-book [timeslot]="true" />
-  </div>
+<div class="bg-base-200 p-4">
+  <address-book [timeslot]="true" />
 </div>
 `
 })
