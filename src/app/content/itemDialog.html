@@ -27,7 +27,7 @@
       <br />
       }
 
-      <a class="link" [routerLink]="['/item', {category: item.parent, item: item.name}]" (click)="cancel()">
+      <a class="link flex justify-end" [routerLink]="['/item', {category: item.parent, item: item.name}]" (click)="closeAll()">
         <fa-icon icon="arrow-up-right-from-square"></fa-icon> View Full Item Description
       </a>
 
@@ -41,11 +41,6 @@
             (click)="selectImage(img)" />
           }
         </div>
-      </div>
-      <br />
-
-      <div class="flex justify-center">
-        <item-details [item]="item"></item-details>
       </div>
       <br />
 

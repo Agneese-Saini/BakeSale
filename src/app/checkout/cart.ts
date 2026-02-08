@@ -17,33 +17,33 @@ export class CartService {
   private _coupon = new BehaviorSubject<number>(0);
   public coupon$ = this._coupon.asObservable();
 
-  public getCartItem(item: IItem) {
-    const itemName = item.name;
-    const itemID = item.id;
+  public getCartItem(name: string, id?: number): IItem[] | undefined {
+    const cart = this._shoppingCart.value;
+    const cartItems = cart.get(name);
 
-    let cart = this._shoppingCart.value;
-    let cartItems = cart.get(itemName);
-    
+    // Item doesn't exist
     if (!cartItems || cartItems.length == 0) {
       return undefined;
     }
 
-    if (item.choices && item.choices.size > 0 && itemID != undefined) {
-      const index = cartItems.findIndex(value => (value.id == itemID));
-      // Existing item
-      if (index != -1) {
-        return cartItems[index];
+    // Fetch the first item
+    const item = cartItems[0];
+
+    if (item.choices && item.choices.size > 0) {
+      if (id != undefined) {
+        const index = cartItems.findIndex(value => (value.id == id));
+        // Existing item
+        if (index != -1) {
+          return [cartItems[index]];
+        }
+
+        return undefined;
       }
 
-      return undefined;
+      return cartItems;
     }
 
-    // Item with no choices only have one instance
-    if (cartItems) {
-      return cartItems[0];
-    }
-
-    return undefined;
+    return [item];
   }
 
   public addToCart(item: IItem) {

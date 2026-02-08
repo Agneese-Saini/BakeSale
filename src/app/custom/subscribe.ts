@@ -114,8 +114,12 @@ export type DaysOfWeekSetting = Map<DaysOfWeek, { name: string, checked: boolean
               <item-price-tag [value]="item" size="sm" [showSale]="true" saleSize="sm"></item-price-tag>
 
               <!-- Label -->
-              @if (item.label) {
-              <span class="text-xs px-2 pb-2 whitespace-pre-line">{{ item.label }}</span>
+              @if (item.tags) {
+              <div class="flex flex-wrap gap-1">
+                @for (tag of item.tags; track tag) {
+                <span class="badge badge-soft badge-xs font-semibold px-2">{{ tag }}</span>
+                }
+              </div>
               }
             </div>
           </div>

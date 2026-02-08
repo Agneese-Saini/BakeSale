@@ -241,10 +241,6 @@ export class AddressBook {
       icon: "car"
     }]
   ]);
-  
-  get deliveryModes() {
-    return Array.from(AddressBook.DeliveryModes.entries());
-  }
 
   static readonly TimeNow: ITimeSlot = {
     label: "Now",
@@ -273,6 +269,10 @@ export class AddressBook {
 
   protected addressBookAction = AddressBookAction;
   protected currentLocation = AddressBook.CurrentLocation;
+
+  protected get deliveryModes() {
+    return Array.from(AddressBook.DeliveryModes.entries());
+  }
 
   protected get deliveryMode() {
     return AddressBook.DeliveryModes.get(this.settings.mode);
@@ -357,29 +357,14 @@ export class AddressBook {
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, AddressBook, MatDialogContent, MatDialogActions],
+  imports: [FormsModule, FontAwesomeModule, AddressBook, MatDialogContent],
   template: `
 <div class="bg-base-200">
   <div mat-dialog-content>
     <address-book [timeslot]="true" />
   </div>
-
-  <div mat-dialog-actions>
-    <div class="grid w-full">
-      <button class="btn bg-base-100" (click)="onClose()">
-        Done
-      </button>
-    </div>
-  </div>
 </div>
 `
 })
 export class AddressBookDialog {
-
-  constructor(
-    private dialogRef: MatDialogRef<AddressDialog>) { }
-
-  protected onClose() {
-    this.dialogRef.close();
-  }
 };

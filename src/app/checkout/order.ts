@@ -197,6 +197,11 @@ export class Tip {
     <b>Total:</b>
     <b class="font-mono text-right">{{ '$' }}{{ checkoutPrice | number: '1.2-2' }}</b>
   </div>
+  <div class="flex justify-end">
+    @if (getLastFourDigits != undefined) {
+    <label class="label">VISA **** {{ getLastFourDigits }}</label>
+    }
+  </div>
 </div>
 `
 })
@@ -249,6 +254,15 @@ export class OrderTotal {
 
   protected get checkoutPrice(): number {
     return this.subTotal + this.deliveryFee + this.GST + this.PST - this.couponDiscount + this.tipAmount;
+  }
+
+  protected get getLastFourDigits(): string | undefined {
+    if (this.deliverySettings.payment) {
+      const cardNumber = this.deliverySettings.payment.cardNumber;
+      return cardNumber.slice(-4);
+    }
+
+    return undefined;
   }
 
   constructor(

@@ -51,7 +51,8 @@ export interface IAddress {
   instruction?: string,
   //country?: string // For now only in Canada!
   map?: IGoogleMap,
-  isTemp?: boolean
+  isTemp?: boolean,
+  isFavourite?: boolean
 };
 
 @Component({

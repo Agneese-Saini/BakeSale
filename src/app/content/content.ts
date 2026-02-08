@@ -12,6 +12,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef, MatDialogMod
 import { MatBottomSheet, MatBottomSheetModule, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { CartItemsDialog } from '../checkout/cartItemDialog';
 
+
 @Component({
   selector: 'app-content',
   imports: [FormsModule, FontAwesomeModule, ItemList, Logo, Header, MatBottomSheetModule],

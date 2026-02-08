@@ -12,15 +12,11 @@ export enum UserRole {
   Admin
 };
 
-export enum HomeCategories {
-  AboutUs,
-  Partners,
-  DailyBread
-};
-
 export interface IPayMethod {
   name: string,
-  cardNumber: string
+  cardNumber: string,
+  icon?: string,
+  type?: string
 };
 
 export interface IUser {
@@ -47,16 +43,6 @@ export class UserService {
 
   private _user = new BehaviorSubject<IUser>(UserService.DefaultUser);
   public user$ = this._user.asObservable(); // Expose as Observable
-  
-  private _homeCategory = new BehaviorSubject<HomeCategories>(HomeCategories.AboutUs);
-
-  public setHomeCategory(category: HomeCategories) {
-    this._homeCategory.next(category);
-  }
-
-  public getHomeCategory(): HomeCategories {
-    return this._homeCategory.value;
-  }
 
   public login(name: string, password: string) {
     let value: IUser = {

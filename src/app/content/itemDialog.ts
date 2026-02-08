@@ -1,14 +1,14 @@
 import { Component, Inject, Input } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { DecimalPipe, KeyValuePipe } from "@angular/common";
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule, MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { IItem, Item } from "./item";
 import { CustomizerType, ICategory, ICustomizer } from "../header/category";
 import { CartService } from "../checkout/cart";
 import { RouterModule } from "@angular/router";
-import { ChoiceList, ItemChoiceList } from "./itemChoice";
+import { ItemChoiceList } from "./itemChoice";
 import { Recipe } from "../custom/recipe";
 
 @Component({
@@ -192,7 +192,7 @@ export class ItemDetails {
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, RouterModule, ItemChoiceList, KeyValuePipe, DecimalPipe, TextReadMore, PriceTag, ItemDetails, MatDialogModule],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, ItemChoiceList, KeyValuePipe, DecimalPipe, TextReadMore, PriceTag, MatDialogModule],
   templateUrl: './itemDialog.html'
 })
 export class ItemDialog {
@@ -206,10 +206,11 @@ export class ItemDialog {
   protected getPrice = Item.getPrice;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) protected data: IItem,
-    protected dialogRef: MatDialogRef<ItemDialog>,
-    protected snackBar: MatSnackBar,
-    protected cartService: CartService) {
+    @Inject(MAT_DIALOG_DATA) private data: IItem,
+    private dialog: MatDialog,
+    private dialogRef: MatDialogRef<ItemDialog>,
+    private snackBar: MatSnackBar,
+    private cartService: CartService) {
 
     this.item = structuredClone(data);
   }
@@ -302,6 +303,10 @@ export class ItemDialog {
 
   protected cancel() {
     this.dialogRef.close();
+  }
+
+  protected closeAll() {
+    this.dialog.closeAll();
   }
 
   protected list(limit: number): number[] {

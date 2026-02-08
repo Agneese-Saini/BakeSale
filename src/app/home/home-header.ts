@@ -1,12 +1,13 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, Injectable } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Router, RouterModule } from '@angular/router';
 import { SideDrawer } from '../sidedrawer/sidedrawer';
 import { CheckoutDrawer } from '../checkout/checkout-drawer';
-import { HomeCategories, IUser, UserRole, UserService } from '../user/user';
+import { IUser, UserRole, UserService } from '../user/user';
 import { Logo } from '../header/header';
 import { KeyValuePipe } from '@angular/common';
+import { HomeCategories, HomeService } from './home';
 
 @Component({
   selector: 'home-header',
@@ -15,10 +16,13 @@ import { KeyValuePipe } from '@angular/common';
 })
 export class HomeHeader {
 
+  protected readonly homeCategories = HomeCategories;
+
   protected readonly categories: Map<HomeCategories, string> = new Map([
-    [HomeCategories.AboutUs, "Home"],    
-    [HomeCategories.Partners, "Partners List"],
-    [HomeCategories.DailyBread, "Daily Bread"]
+    [HomeCategories.AboutUs, "Home"],
+    [HomeCategories.Shop, "Shop"],
+    [HomeCategories.DailyBread, "Daily Bread"],
+    [HomeCategories.Partners, "Partners List"]
   ]);
 
   protected appDrawer = SideDrawer.name;
@@ -29,14 +33,29 @@ export class HomeHeader {
 
   constructor(
     private router: Router,
-    protected userService: UserService,
+    private homeService: HomeService,
+    private userService: UserService,
     private cdr: ChangeDetectorRef) { }
 
-  protected ngOnInit() {
+  protected ngOnInit() {    
+    this.setHomeCategory(HomeCategories.AboutUs);
+
     this.userService.user$.subscribe(data => {
       this.user = data;
       this.cdr.detectChanges();
     });
+  }
+
+  protected getHomeCategory(): HomeCategories {
+    return this.homeService.getCategory();
+  }
+
+  protected setHomeCategory(category: HomeCategories) {
+    this.homeService.setCategory(category);
+
+    if (category == HomeCategories.Shop) {
+      this.router.navigate(['/shop']);
+    }
   }
 
   protected onClickHome() {

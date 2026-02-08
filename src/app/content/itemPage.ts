@@ -12,6 +12,8 @@ import { ChoiceList, ItemChoiceList } from './itemChoice';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CartService } from '../checkout/cart';
 import { Header } from "../header/header";
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { CartItemsDialog } from '../checkout/cartItemDialog';
 
 @Component({
   selector: 'app-item',
@@ -28,8 +30,18 @@ export class ItemPage {
   protected categories: ICategory[] = [];
   protected displayImage?: string;
 
+  protected get numCartItems(): number {
+    if (this.item) {
+      const cartItems = this.cartService.getCartItem(this.item.name);
+      if (cartItems) {
+        return cartItems.length;
+      }
+    }
+    return 0;
+  }
+
   protected get isCartItem(): boolean {
-    return this.item ? (this.cartService.getCartItem(this.item) != undefined) : false;
+    return this.item ? (this.cartService.getCartItem(this.item.name) != undefined) : false;
   }
 
   protected get hasChoices(): boolean {
@@ -52,6 +64,7 @@ export class ItemPage {
     private categoryService: CategoryService,
     private userService: UserService,
     private cartService: CartService,
+    private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef) { }
 
@@ -100,9 +113,9 @@ export class ItemPage {
     this.item.amount = Item.DefaultItem.amount;
 
     if (!this.item.choices) {
-      const cartItem = this.cartService.getCartItem(this.item);
+      const cartItem = this.cartService.getCartItem(this.item.name);
       if (cartItem != undefined) {
-        this.item.amount = cartItem.amount;
+        this.item.amount = cartItem[0].amount;
       }
     }
     else {
@@ -151,12 +164,12 @@ export class ItemPage {
     }
 
     // this checks if the item already exists in your cart
-    const exists = this.cartService.getCartItem(item) != undefined;
+    const exists = this.cartService.getCartItem(item.name) != undefined;
 
     // add to cart
     this.cartService.addToCart(item);
 
-    let message : string;
+    let message: string;
     if (exists && (item.choices == undefined || item.choices.size == 0)) {
       message = item.name + " was changed in your cart.";
     } else {
@@ -175,7 +188,7 @@ export class ItemPage {
 
     // remove from cart
     this.cartService.removeFromCart(this.item);
-    this.itemOnInit(); 
+    this.itemOnInit();
 
     const message = this.item.name + " was removed from your cart.";
     const snackBarRef = this.snackBar.open(message, "Undo", {
@@ -186,6 +199,19 @@ export class ItemPage {
       this.cartService.addToCart(oldItem);
       this.itemOnInit();
       this.cdr.detectChanges();
-    });   
+    });
+  }
+
+  protected openCartItemsDialog() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = "";
+    dialogConfig.data = this.item;
+    dialogConfig.width = '90%';
+
+    const dialogRef = this.dialog.open(CartItemsDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cdr.detectChanges();
+    });
   }
 };

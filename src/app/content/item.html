@@ -86,8 +86,12 @@
     <item-price-tag [value]="value" size="lg"></item-price-tag>
 
     <!-- Label -->
-    @if (value.label) {
-    <span class="font-mono text-neutral-500 text-sm px-2 pb-2 whitespace-pre-line">{{ value.label }}</span>
+    @if (value.tags) {
+    <div class="flex flex-wrap gap-1 justify-end">
+      @for (tag of value.tags; track tag) {
+      <span class="badge badge-soft badge-sm font-semibold px-2">{{ tag }}</span>
+      }
+    </div>
     }
   </div>
 </div>

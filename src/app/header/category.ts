@@ -65,7 +65,7 @@ export class CategoryService {
 
 	private categoryList: ICategory[] = [
 		{
-			name: "Cake", hidden: true, subcats:
+			name: "Cake", icon: "cake-candles", hidden: true, subcats:
 				[{ name: "Create Your Own", fontSize: 2, customizer: this.customCake },
 				{ name: "Cakes", fontSize: 2 },
 				{ name: "Cheesecake", fontSize: 2 },
@@ -84,7 +84,7 @@ export class CategoryService {
 				]
 		},
 		{
-			name: "Baked Goods", hidden: true, subcats:
+			name: "Baked Goods", icon: "cookie", hidden: true, subcats:
 				[{ name: "Cookies", fontSize: 2 },
 				{ name: "Brownies", fontSize: 2 },
 				{ name: "Pastry", fontSize: 2 },
@@ -95,7 +95,7 @@ export class CategoryService {
 				]
 		},
 		{
-			name: "Bread", hidden: true, subcats:
+			name: "Bread", icon: "bread-slice", hidden: true, subcats:
 				[{ name: "Daily Bread", fontSize: 0, customizer: this.subscribeBread },
 				{ name: "Sandwich Loaves", fontSize: 2 },
 				{ name: "Buns & Doughs", fontSize: 2 },
@@ -107,7 +107,7 @@ export class CategoryService {
 				]
 		},
 		{
-			name: "Cheese", hidden: true, subcats:
+			name: "Cheese", icon: "cheese", hidden: true, subcats:
 				[{ name: "Cheese Blocks", fontSize: 2 },
 				{ name: "Shredded Cheese", fontSize: 2 },
 				{ name: "Sliced Cheese", fontSize: 2 },
@@ -118,7 +118,7 @@ export class CategoryService {
 				]
 		},
 		{
-			name: "Canna Bakery", hidden: true, subcats:
+			name: "Canna Bakery", icon: "cannabis", hidden: true, subcats:
 				[{ name: "Canna Pies", fontSize: 2 },
 				{ name: "Canna Cookies", fontSize: 2 },
 				{ name: "Canna Brownies", fontSize: 2 },
@@ -127,7 +127,7 @@ export class CategoryService {
 				]
 		},
 		{
-			name: "Canna Bar", hidden: true, subcats:
+			name: "Canna Bar", icon: "blender", hidden: true, subcats:
 				[{ name: "Canna Milkshakes", fontSize: 2 },
 				{ name: "Kombucha", fontSize: 2 },
 				{ name: "Wake'n'Bake", fontSize: 2 },
@@ -135,13 +135,13 @@ export class CategoryService {
 				]
 		},
 		{
-			name: "Canna Butter", hidden: true, subcats:
+			name: "Canna Butter", icon: "cow", hidden: true, subcats:
 				[{ name: "Unsalted & Unflavored", fontSize: 2 },
 				{ name: "Flavored Butter", fontSize: 2 }
 				]
 		},
 		{
-			name: "Canna Cigars", hidden: true, subcats:
+			name: "Canna Cigars", icon: "smoking", hidden: true, subcats:
 				[{ name: "Premium Canna Cigars", fontSize: 2 },
 				{ name: "10 Packs", fontSize: 2 }
 				]
@@ -237,7 +237,7 @@ export class CategoryService {
 						vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
 						 posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i",
 				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt, and flavor (vanilla extract)",
-				label: "Best Selling",
+				tags: ["Best Selling"],
 				details: [
 					{ header: 'THC', detail: '12%' },
 					{ header: 'CBD', detail: '< 1%' },
@@ -261,7 +261,7 @@ export class CategoryService {
 		if (category) {
 			Category.addItem(category, {
 				name: 'Strawberry Blast',
-				label: "THC: 12%\nCBD: < 1%",
+				tags: ["THC: 12%", "CBD: < 1%"],
 				price: { value: 5, buyOneGetOne: true },
 				image: ["https://www.oliviascuisine.com/wp-content/uploads/2021/06/strawberry-milkshake-recipe-720x1080.jpg"],
 				amount: 0,
@@ -276,7 +276,7 @@ export class CategoryService {
 		if (category) {
 			Category.addItem(category, {
 				name: 'Canna Kombucha',
-				label: "THC: 12%\nCBD: < 1%",
+				tags: ["THC: 12%", "CBD: < 1%"],
 				price: { value: 5 },
 				image: ["https://wellnessmama.com/wp-content/uploads/How-to-make-Kombucha-recipe-and-tutorial.jpg"],
 				amount: 0,
@@ -291,6 +291,7 @@ export class CategoryService {
 		if (category) {
 			Category.addItem(category, {
 				name: 'Bread 1',
+				tags: ["Gluten Free"],
 				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt",
 				price: { value: 4.5, previousPrice: 5.0 },
 				image: ["https://thatovenfeelin.com/wp-content/uploads/2024/10/Cheesy-Texas-Toast-1.png"],

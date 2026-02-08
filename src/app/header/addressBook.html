@@ -1,11 +1,39 @@
-<h1 class="text-lg p-2">
+@if (isDelivery) {
+<div class="flex flex-col gap-2">
+  <input type="search" tabindex="-1" class="input input-bordered placeholder-gray-350 w-full" placeholder="Enter an address" />
+  
+  <div class="flex gap-2 overflow-x-auto p-1">
+    <button class="btn btn-soft rounded-full h-14">
+      <span class="flex flex-col">
+        <span>
+          <fa-icon icon="home"></fa-icon> Set Home
+        </span>
+      </span>
+    </button>
+    <button class="btn btn-soft rounded-full h-14">
+      <span class="flex flex-col">
+        <span>
+          <fa-icon icon="suitcase"></fa-icon> Work
+        </span>
+        <i class="text-xs text-gray-500">123 Manitoba av...</i>
+      </span>
+    </button>
+    <button class="btn btn-soft rounded-full h-14">
+      <fa-icon icon="star"></fa-icon> Add Favourite
+    </button>
+  </div>
+</div>
+<br />
+}
+
+<h1 class="font-medium">
   @if (isDelivery) {
-  Delivery Address:
+  Saved Address:
   } @else {
-  Pickup Location:
+  Pickup Locations:
   }
 </h1>
-<div class="bg-base-300 rounded-box overflow-x-auto min-h-52 lg:min-h-64 p-2">
+<div class="bg-base-100 border border-base-300 rounded-box overflow-x-auto min-h-52 lg:min-h-64">
   <table class="table">
     <tbody>
       @if (addressBook && addressBook.length > 0) {
@@ -16,7 +44,7 @@
             <label class="label cursor-pointer">
               <input type="radio" class="radio" [value]="addy" [(ngModel)]="selectedAddress"
                 (change)="onAddressChange()" />
-              <span class="label-text text-md">
+              <span class="flex flex-col">
                 <span class="flex items-center">
                   <b>{{ addy.label }}</b>
                   @if (addy.isTemp) {
@@ -75,25 +103,21 @@
 </div>
 
 @if (isDelivery) {
-<div class="flex gap-1 my-2">
-  <button class="flex-1 btn btn-neutral" (click)="openAddressBookDialog()">
-    <fa-icon icon="plus-circle"></fa-icon> Add Address
-  </button>
-
-  <button class="btn btn-neutral" (click)="openAddressBookDialog(currentLocation)">
-    <fa-icon icon="location-dot"></fa-icon>
-  </button>
-</div>
+<button class="btn btn-neutral w-full my-2" (click)="openAddressBookDialog()">
+  <fa-icon icon="plus-circle"></fa-icon> Add Address
+</button>
 }
 
 @if (timeslot == true) {
-<h1 class="text-lg p-2">Time preference:</h1>
-<div class="bg-base-300 rounded-box p-2">
-  <div class="flex justify-between items-center px-2">
-    <label [class]="settings.timeslot ? '' : 'text-error'">
-      <fa-icon icon="clock"></fa-icon> {{ settings.timeslot ? settings.timeslot.label : 'Select a timeslot' }}
-    </label>
-    <button class="btn btn-sm btn-neutral" (click)="openTimeslotsDialog()">Schedule</button>
+<div class="flex flex-col my-2">
+  <h1 class="font-medium">Time preference:</h1>
+  <div class="bg-base-100 border border-base-300 rounded-box p-2">
+    <div class="flex justify-between items-center px-2">
+      <label [class]="settings.timeslot ? '' : 'text-error'">
+        <fa-icon icon="clock"></fa-icon> {{ settings.timeslot ? settings.timeslot.label : 'Select a timeslot' }}
+      </label>
+      <button class="btn btn-sm btn-neutral" (click)="openTimeslotsDialog()">Schedule</button>
+    </div>
   </div>
 </div>
 }

@@ -29,7 +29,7 @@ export interface IItem {
   stockAmount?: number,
   notify?: string,
   image?: string[],
-  label?: string,
+  tags?: string[],
   about?: string,
   likes?: number,
   dislikes?: number,
@@ -43,7 +43,6 @@ export interface IItem {
   isChef?: boolean,
   company?: string,
   id?: number,
-  tags?: string[],
   parent?: string
 };
 
@@ -117,7 +116,7 @@ export class Item {
   protected openCartItemDialog() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
-    dialogConfig.data = this.shoppingCart.get(this.value.name)?.at(0);
+    dialogConfig.data = this.shoppingCart.get(this.value.name)!.at(0);
     dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(ItemDialog, dialogConfig);

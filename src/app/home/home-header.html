@@ -10,12 +10,15 @@
       <app-logo firstName="Bake" lastName="Sale" (click)="onClickHome()" />
 
       <div class="hidden lg:block">
-        <ul class="menu menu-horizontal text-lg">
+        <ul class="menu menu-horizontal lg:text-lg">
           @for (entry of categories | keyvalue; track entry.key) {
-          <li><a [class]="userService.getHomeCategory() == entry.key ? 'menu-active' : ''"
-              (click)="userService.setHomeCategory(entry.key);">{{ entry.value }}</a></li>
+          <li>
+            <a [class]="getHomeCategory() == entry.key ? 'menu-active' : ''"
+              (click)="setHomeCategory(entry.key);">
+              {{ entry.value }}@if (entry.key == homeCategories.Shop){ <fa-icon icon="arrow-up-right-from-square"></fa-icon> }
+            </a>
+          </li>
           }
-          <li><a routerLink="/shop">Shop <fa-icon icon="arrow-up-right-from-square"></fa-icon></a></li>
         </ul>
       </div>
 
@@ -44,10 +47,13 @@
   <div class="flex justify-center">
     <ul class="menu menu-horizontal justify-center">
       @for (entry of categories | keyvalue; track entry.key) {
-      <li><a [class]="userService.getHomeCategory() == entry.key ? 'menu-active' : ''"
-          (click)="userService.setHomeCategory(entry.key);">{{ entry.value }}</a></li>
+      <li>
+        <a [class]="getHomeCategory() == entry.key ? 'menu-active' : ''"
+          (click)="setHomeCategory(entry.key);">
+          {{ entry.value }}@if (entry.key == homeCategories.Shop){ <fa-icon icon="arrow-up-right-from-square"></fa-icon> }
+        </a>
+      </li>
       }
-      <li><a routerLink="/shop">Shop <fa-icon icon="arrow-up-right-from-square"></fa-icon></a></li>
     </ul>
   </div>
 </div>
