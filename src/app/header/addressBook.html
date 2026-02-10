@@ -1,23 +1,49 @@
 @if (isDelivery) {
 <div class="flex flex-col gap-2">
-  <input type="search" tabindex="-1" class="input input-bordered placeholder-gray-350 w-full" placeholder="Enter an address" />
-  
+  <input type="search" tabindex="-1" class="input input-bordered placeholder-gray-350 w-full"
+    placeholder="Enter an address" />
+
   <div class="flex gap-2 overflow-x-auto p-1">
+    @for (addy of addressBook; track addy) {
+    @if (addy.isFavourite) {
+    <button class="btn btn-soft rounded-full h-14" (click)="onAddressChange(addy, true)">
+      <span class="flex flex-col">
+        <span>
+          @if (addy.label.toLowerCase() == "home") {
+          <fa-icon class="text-primary" icon="home"></fa-icon>
+          } @else if (addy.label.toLowerCase() == "work") {
+          <fa-icon class="text-secondary" icon="suitcase"></fa-icon>
+          } @else {
+          <fa-icon icon="star"></fa-icon>
+          }
+          {{ addy.label }}
+        </span>
+        <i class="text-xs text-gray-500 font-medium">{{ addy.addressLine | truncate: 24 }}</i>
+      </span>
+    </button>
+    }
+    }
+    
+    @if (!homeAddressExist) {
     <button class="btn btn-soft rounded-full h-14">
       <span class="flex flex-col">
         <span>
-          <fa-icon icon="home"></fa-icon> Set Home
+          <fa-icon class="text-primary" icon="home"></fa-icon> Set Home
         </span>
       </span>
     </button>
+    }
+    
+    @if (!workAddressExist) {
     <button class="btn btn-soft rounded-full h-14">
       <span class="flex flex-col">
         <span>
-          <fa-icon icon="suitcase"></fa-icon> Work
+          <fa-icon class="text-secondary" icon="suitcase"></fa-icon> Set Work
         </span>
-        <i class="text-xs text-gray-500">123 Manitoba av...</i>
       </span>
     </button>
+    }
+
     <button class="btn btn-soft rounded-full h-14">
       <fa-icon icon="star"></fa-icon> Add Favourite
     </button>
@@ -33,85 +59,60 @@
   Pickup Locations:
   }
 </h1>
-<div class="bg-base-100 border border-base-300 rounded-box overflow-x-auto min-h-52 lg:min-h-64">
-  <table class="table">
-    <tbody>
-      @if (addressBook && addressBook.length > 0) {
-      @for (addy of addressBook; track addy) {
-      <tr>
-        <td>
-          <div class="flex justify-between gap-8">
-            <label class="label cursor-pointer">
-              <input type="radio" class="radio" [value]="addy" [(ngModel)]="selectedAddress"
-                (change)="onAddressChange()" />
-              <span class="flex flex-col">
-                <span class="flex items-center">
-                  <b>{{ addy.label }}</b>
-                  @if (addy.isTemp) {
-                  <a class="badge badge-xs badge-secondary ml-2 tooltip tooltip-bottom"
-                    data-tip="Temporary Address">Temp</a>
-                  }
-                </span>
-                <p>{{ addy.addressLine | truncate:35 }}</p>
-              </span>
-            </label>
-            <span class="flex items-center">
-              @if (isDelivery) {
-              <span class="label tooltip tooltip-left" data-tip="Edit Address">
-                <a class="btn btn-ghost btn-circle p-1 text-xl" (click)="openAddressBookDialog(addy)">
-                  <fa-icon icon="pencil"></fa-icon>
-                </a>
-              </span>
-              }
-              @else {
-              <span class="label tooltip tooltip-left" data-tip="View on Map">
-                <a class="btn btn-ghost btn-circle p-1 text-xl">
-                  <fa-icon icon="map-location-dot"></fa-icon>
-                </a>
-              </span>
-              }
-            </span>
-          </div>
-        </td>
-      </tr>
-      }
-      }
-      @else {
-      <tr>
-        <th>
-          <label class="label flex flex-col justify-between text-center py-10">
-            <span class="font-bold text-xl"><fa-icon icon="exclamation-circle"></fa-icon> No address found!</span>
-            @if (isDelivery) {
-            <span class="font-light text-sm">
-              Please add an Address<br />
-              or use your <fa-icon class="ml-1" icon="location-dot"></fa-icon><a
-                class="link font-medium no-underline ml-1" (click)="openAddressBookDialog(currentLocation)">Current
-                location</a>
-            </span>
-            }
-            @else {
-            <span class="font-light text-sm">
-              No pickup location found, please <a class="font-medium" href="">Contact Us</a> for further help!
-            </span>
-            }
-          </label>
-        </th>
-      </tr>
-      }
-    </tbody>
-  </table>
+<div class="bg-base-100 border border-neutral-300 rounded-box overflow-x-auto min-h-52 lg:min-h-64 p-2">
+  <div class="flex flex-col gap-1">
+    @if (isDelivery) {
+    <button class="btn p-4" (click)="openAddressBookDialog()">
+      <fa-icon icon="plus-circle"></fa-icon> Add Address
+    </button>
+    }
+
+    @if (addressBook.length > 0) {
+    @for (addy of addressBook; track addy) {
+    <div [class]="'rounded-box p-2' + ' ' + (selectedAddress == addy ? 'bg-base-300' : 'bg-base-200')">
+      <div class="flex justify-between gap-8">
+        <label class="label cursor-pointer">
+          <input type="radio" class="radio radio-neutral" [value]="addy" [(ngModel)]="selectedAddress"
+            (change)="onAddressChange(addy)" />
+          <span class="flex flex-col">
+            <b>{{ addy.label }} @if (addy.isFavourite) { <fa-icon class="opacity-65 text-xs" icon="star"></fa-icon>}</b>
+            <p>{{ addy.addressLine }}</p>
+            <p>{{ addy.city }}, {{ addy.province }} {{ addy.postal }}</p>
+          </span>
+        </label>
+        <span class="flex items-center">
+          @if (isDelivery) {
+          <span class="label tooltip tooltip-left" data-tip="Edit Address">
+            <a class="btn btn-ghost btn-circle p-1 text-xl" (click)="openAddressBookDialog(addy)">
+              <fa-icon icon="pencil"></fa-icon>
+            </a>
+          </span>
+          }
+          @else {
+          <span class="label tooltip tooltip-left" data-tip="View on Map">
+            <a class="btn btn-ghost btn-circle p-1 text-xl">
+              <fa-icon icon="map-location-dot"></fa-icon>
+            </a>
+          </span>
+          }
+        </span>
+      </div>
+    </div>
+    }
+    }
+    @else {
+    <div class="flex justify-center p-4">
+      <i>No address found!</i>
+    </div>
+    }
+  </div>
 </div>
 
-@if (isDelivery) {
-<button class="btn btn-neutral w-full my-2" (click)="openAddressBookDialog()">
-  <fa-icon icon="plus-circle"></fa-icon> Add Address
-</button>
-}
-
 @if (timeslot == true) {
-<div class="flex flex-col my-2">
+<br />
+<div class="flex flex-col">
   <h1 class="font-medium">Time preference:</h1>
-  <div class="bg-base-100 border border-base-300 rounded-box p-2">
+  <div class="bg-base-100 border border-neutral-300 rounded-box p-2">
     <div class="flex justify-between items-center px-2">
       <label [class]="settings.timeslot ? '' : 'text-error'">
         <fa-icon icon="clock"></fa-icon> {{ settings.timeslot ? settings.timeslot.label : 'Select a timeslot' }}

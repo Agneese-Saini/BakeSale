@@ -232,7 +232,7 @@ export class SubscriptionItemsDialog {
         </tr>
         <tr>
           <td class="flex justify-center w-full">
-            <a class="link" style="text-decoration: none;">Change Delivery Frequency</a>
+            <a class="link" style="text-decoration: none;">Change Delivery Address</a>
           </td>
         </tr>
         <tr>

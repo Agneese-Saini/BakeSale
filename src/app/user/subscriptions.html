@@ -120,6 +120,12 @@
               </div>
               <br />
 
+              <h2 class="font-bold">Delivery Address:</h2>
+              <div class="bg-base-200 rounded-box flex flex-col p-2">
+                <p>{{ sub.address!.addressLine }}, {{ sub.address!.province }} {{ sub.address!.postal }}</p>
+              </div>
+              <br />
+
               <h2 class="font-bold">Upcoming delivery dates:</h2>
               <div class="bg-base-200 rounded-box flex flex-col p-2">
                 <div class="flex flex-col gap-2 font-mono">

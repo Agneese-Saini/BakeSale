@@ -111,7 +111,7 @@ import { Recipe } from '../custom/recipe';
   <div #widgetsContent (scroll)="onScroll()" [class]="wrap ? 'overflow-none' : 'overflow-x-auto'">
     <div [class]="'flex ' + (wrap ? 'flex-wrap' : 'flex-nowrap')">
       @for (item of getItems(category); track item) {
-      <div class="flex-shrink-0 ml-2.5">
+      <div class="flex-shrink-0 ml-2.5 pb-2">
         <item [value]="item"></item>
       </div>
       }

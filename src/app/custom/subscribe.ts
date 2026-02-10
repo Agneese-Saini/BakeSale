@@ -13,14 +13,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { IPayMethod, UserService } from "../user/user";
-import { IDeliverySettings, AddressBook, DeliveryService } from "../header/delivery";
+import { IDeliverySettings, AddressBook, DeliveryService, AddressBookDialog } from "../header/delivery";
 import { OrderTotal } from "../checkout/order";
-import { CdkAriaLive } from "../../../node_modules/@angular/cdk/types/_a11y-module-chunk";
+import { IAddress } from "../header/addressDialog";
 
 export interface ISubscription {
   category: ICategory,
   freq: number,
   days: DaysOfWeekSetting,
+  address?: IAddress,
   canceledDays?: Date[],
   date?: Date,
   payment?: IPayMethod
@@ -152,7 +153,7 @@ export type DaysOfWeekSetting = Map<DaysOfWeek, { name: string, checked: boolean
 export class SubscribeItemList {
 
   protected readonly minimumItemCount: number = Subscribe.MinimumItemCount;
-  
+
   @Input({ required: true })
   public category!: ICategory;
 
@@ -600,13 +601,31 @@ export class ItemInfoDialog {
   imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, DatePipe, MatDialogModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, SubscribeOrderSummary],
   template: `
 <div class="bg-base-200">
-  <div mat-dialog-content>
+  <div mat-dialog-content>    
+    <div class="flex flex-col gap-2">
+      <h1 class="text-xl font-bold">Delivery Address:</h1>
+
+      <div class="bg-base-300 rounded-box flex justify-between items-center gap-2 p-2">
+        <div class="flex gap-2 p-2 items-center">
+          <fa-icon [class]="deliverySettings.address ? '' : 'text-error'" icon="home"></fa-icon>
+          <a [class]="'link flex flex-col ' + (deliverySettings.address ? '' : 'text-error')" style="text-decoration: none;">
+            <p [class]="deliverySettings.address ? 'font-bold' : ''">{{ deliverySettings.address ? deliverySettings.address.addressLine : 'Add delivery address' }}</p>
+            @if (deliverySettings.address) {
+            <p class="text-sm">{{ deliverySettings.address.province }}, {{ deliverySettings.address.postal }}</p>
+            }
+          </a>
+        </div>
+        <button [class]="'btn btn-sm shadow ' + (!deliverySettings.address ? 'btn-outline btn-error' : '')" (click)="openAddressBookDialog()">Edit</button>
+      </div>
+    </div>
+    <br />
+
     <div class="flex flex-col gap-2">
       <h1 class="text-xl font-bold">Delivery Dates:</h1>
 
       <mat-form-field class="w-full">
         <mat-label>Start date</mat-label>
-        <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate">
+        <input tabindex="-1" matInput [matDatepicker]="picker" [(ngModel)]="selectedDate">
         <mat-hint class="text-gray-500 font-mono">MM/DD/YYYY</mat-hint>
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker touchUi #picker></mat-datepicker>
@@ -679,6 +698,7 @@ export class CheckoutDialog {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) protected data: ISubscription,
+    private dialog: MatDialog,
     private dialogRef: MatDialogRef<CheckoutDialog>,
     private deliveryService: DeliveryService,
     private userService: UserService,
@@ -725,6 +745,19 @@ export class CheckoutDialog {
     });
   }
 
+  protected openAddressBookDialog() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = "";
+    dialogConfig.data = { timeslot: false };
+    dialogConfig.width = '90%';
+
+    const dialogRef = this.dialog.open(AddressBookDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cdr.detectChanges();
+    });
+  }
+
   protected openPaymentMethodDialog() {
     this.deliverySettings.payment = { name: "TIGHT", cardNumber: "0000000000001234" };
     this.deliveryService.setDeliverySetting(this.deliverySettings);
@@ -740,6 +773,7 @@ export class CheckoutDialog {
 
     this.data.date = this.selectedDate;
     this.data.payment = this.deliverySettings.payment;
+    this.data.address = this.deliverySettings.address;
     this.userService.addSubscription(this.data);
 
     this.snackBar.open("Subscription added successfully.", "Close", {

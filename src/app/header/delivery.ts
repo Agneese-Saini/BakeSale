@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { Pipe, PipeTransform, Injectable } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ITime, ITimeSlot, TimeslotsDialog } from './timeslots';
-import { MatDialog, MatDialogConfig, MatDialogRef, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA, MatDialogClose } from '@angular/material/dialog';
 import { AddressBookAction, AddressDialog, IAddress, Province } from './addressDialog';
 import { Category, ICategory } from './category';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -132,6 +132,7 @@ export class DeliveryService {
     address.map = {};
 
     let book = this._addressBook.value;
+    address.label = address.label.trim();
     book.push(address);
     this._addressBook.next(book);
   }
@@ -150,9 +151,16 @@ export class DeliveryService {
 
   public deleteAddress(label: string) {
     let book = this._addressBook.value;
+    let deliverySettings = this._deliverySettings.value;
 
     const index = book.findIndex(addy => (addy.label == label));
     if (index != -1) {
+      // Reset delivery settings address if current selection
+      if (deliverySettings.address == book[index]) {
+        deliverySettings.address = undefined;
+        this.setDeliverySetting(deliverySettings);
+      }
+
       book.splice(index, 1);
       this._addressBook.next(book);
     }
@@ -261,6 +269,12 @@ export class AddressBook {
   @Input()
   public timeslot: boolean = false;
 
+  @Output()
+  public change = new EventEmitter<void>();
+
+  @Output()
+  public clickFavourite = new EventEmitter<void>();
+
   protected settings: IDeliverySettings = AddressBook.DefaultSettings;
   protected addressBook: IAddress[] = [];
   protected timeSlots: ITimeSlot[] = [];
@@ -280,6 +294,16 @@ export class AddressBook {
 
   protected get isDelivery() {
     return (this.settings.mode == DeliveryMode.Delivery);
+  }
+
+  protected get homeAddressExist() {
+    const ret = this.addressBook.filter(value => (value.isFavourite && value.label.toLowerCase() == "home"));
+    return ret.length != 0;
+  }
+
+  protected get workAddressExist() {
+    const ret = this.addressBook.filter(value => (value.isFavourite && value.label.toLowerCase() == "work"));
+    return ret.length != 0;
   }
 
   constructor(
@@ -306,15 +330,17 @@ export class AddressBook {
       if (this.settings.address) {
         this.selectedAddress = data.find(addy => (addy.label == this.settings.address!.label));
         // update deliverySettings.address
-        this.onAddressChange();
+        if (this.selectedAddress) {
+          this.onAddressChange(this.selectedAddress);
+        }
       }
 
       if (data && data.length > 0 && !this.selectedAddress) {
         this.selectedAddress = data[0];
         // update deliverySettings.address
-        this.onAddressChange();
+        this.onAddressChange(this.selectedAddress);
       }
-      
+
       this.cdr.detectChanges();
     });
 
@@ -324,9 +350,15 @@ export class AddressBook {
     });
   }
 
-  protected onAddressChange() {
-    this.settings.address = this.selectedAddress;
+  protected onAddressChange(address: IAddress, favourite?: boolean) {
+    this.settings.address = address;
     this.deliveryService.setDeliverySetting(this.settings);
+
+    this.change.emit();
+
+    if (favourite) {
+      this.clickFavourite.emit();
+    }
   }
 
   protected openTimeslotsDialog() {
@@ -357,12 +389,32 @@ export class AddressBook {
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, AddressBook],
+  imports: [FormsModule, FontAwesomeModule, AddressBook, MatDialogClose],
   template: `
 <div class="bg-base-200 p-4">
-  <address-book [timeslot]="true" />
+  <address-book [timeslot]="showTimeslots" (clickFavourite)="onClickFavourite()" />
+  <br />
+
+  <div mat-dialog-actions>
+    <button mat-dialog-close class="btn btn-soft w-full">
+        Close
+    </button>
+  </div>
 </div>
 `
 })
 export class AddressBookDialog {
+  protected showTimeslots: boolean = true;
+
+  constructor(
+    private dialogRef: MatDialogRef<AddressBookDialog>,
+    @Inject(MAT_DIALOG_DATA) private data: { timeslot: boolean }) {
+    if (data) {
+      this.showTimeslots = data.timeslot;
+    }
+  }
+
+  protected onClickFavourite() {
+    this.dialogRef.close();
+  }
 };

@@ -2,9 +2,6 @@
   <div mat-dialog-title>
     @if (isValidAddress) {
     <h1 class="text-4xl font-bold">Edit Address</h1>
-    @if (address.isTemp) {
-    <p class="badge badge-sm badge-secondary font-mono">Temporary Address</p>
-    }
     }
     @else {
     <h1 class="text-4xl font-bold lg:w-128">Add an Address</h1>
@@ -135,23 +132,10 @@
           }
         </button>
       </div>
+      @if (address.isFavourite) {
+      <i>Marked as Favourite</i>
+      }
     </fieldset>
-    <br />
-
-    <label class="flex gap-2 text-lg">
-      <input type="checkbox" class="checkbox" [(ngModel)]="temporaryAddress" (change)="updateTemporaryAddress()" />
-      <div class="flex flex-col">
-        @if (isValidAddress && address.isTemp) {
-        <p>Temporary Address</p>
-        } @else {          
-        <p>Add as Temporary Address</p>
-        }
-        <i class="font-thin text-xs px-1">
-          Temporary address gets deleted after 24 Hours.
-          This can be useful when you are ordering from somewhere you are temporarly staying like a Hotel!
-        </i>
-      </div> 
-    </label>
     }
   </div>
 
@@ -159,16 +143,16 @@
     <div class="flex justify-between w-full">
       <div class="flex gap-2">
         @if (isValidAddress) {
-        <button class="btn btn-neutral" (click)="onSaveAddress(temporaryAddress)">
+        <button class="btn btn-neutral" (click)="saveAddress()">
           Save
         </button>
-        <button class="btn bg-base-100 text-error" (click)="onDeleteAddress(address.label)">
+        <button class="btn bg-base-100 text-error" (click)="deleteAddress(address.label)">
           Delete
         </button>
         }
         @else {
         @if (showAddressInfo) {
-        <button class="btn btn-neutral" (click)="onSaveAddress()">
+        <button class="btn btn-neutral" (click)="saveAddress()">
           Add Address
         </button>
         }
@@ -180,7 +164,7 @@
         }
       </div>
 
-      <button class="btn btn-soft" (click)="onCancel()">
+      <button class="btn btn-soft" (click)="cancel()">
         Cancel
       </button>
     </div>

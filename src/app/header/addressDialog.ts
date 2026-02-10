@@ -51,7 +51,6 @@ export interface IAddress {
   instruction?: string,
   //country?: string // For now only in Canada!
   map?: IGoogleMap,
-  isTemp?: boolean,
   isFavourite?: boolean
 };
 
@@ -72,7 +71,6 @@ export class AddressDialog {
   protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
 
   protected showAddressInfo: boolean = false;
-  protected temporaryAddress: boolean = false;
 
   private errors: Map<ErrorTypes, { value: boolean, message?: string }> = new Map();
 
@@ -112,10 +110,6 @@ export class AddressDialog {
         // We are trying to Edit an existing address
         this.address.map = {};
       }
-
-      if (this.address.isTemp) {
-        this.temporaryAddress = true;
-      }
     }
     else {
       this.address = {
@@ -147,7 +141,7 @@ export class AddressDialog {
     });
   }
 
-  protected onSaveAddress(tempAddress?: boolean) {
+  protected saveAddress() {
     if (this.checkAddressForErrors()) {
       const message = "Address entered doesn't appear to exist.";
       this.snackBar.open(message, "Close", {
@@ -156,8 +150,6 @@ export class AddressDialog {
 
       return;
     }
-
-    this.address.isTemp = tempAddress;
 
     // Save address
     if (this.isValidAddress) {
@@ -174,10 +166,10 @@ export class AddressDialog {
     this.dialogRef.close();
   }
 
-  protected onDeleteAddress(label: string) {
+  protected deleteAddress(label: string) {
     this.deliveryService.deleteAddress(label);
 
-    const message = this.address.label + ": was removed from your address book.";
+    const message = this.address.label + " was removed from your address book.";
     const snackBarRef = this.snackBar.open(message, "Undo", {
       duration: 2500
     });
@@ -189,19 +181,8 @@ export class AddressDialog {
     this.dialogRef.close();
   }
 
-  protected onCancel() {
+  protected cancel() {
     this.dialogRef.close();
-  }
-
-  protected updateTemporaryAddress() {
-    if (!this.temporaryAddress) {
-      const message = "Address will be saved in your Address Book.";
-      this.snackBar.open(message, "Close", {
-        duration: 2500
-      });
-    } else {
-      this.snackBar.dismiss();
-    }
   }
 
   private checkAddressForErrors() {
