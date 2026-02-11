@@ -13,7 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { IPayMethod, UserService } from "../user/user";
-import { IDeliverySettings, AddressBook, DeliveryService, AddressBookDialog } from "../header/delivery";
+import { IDeliverySettings, AddressBook, DeliveryService, AddressBookDialog } from "../header/addressBook";
 import { OrderTotal } from "../checkout/order";
 import { IAddress } from "../header/addressDialog";
 

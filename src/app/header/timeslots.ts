@@ -3,7 +3,7 @@ import { FormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { IDeliverySettings, AddressBook, DeliveryService } from "./delivery";
+import { IDeliverySettings, AddressBook, DeliveryService } from "./addressBook";
 import { MatDialogModule } from "@angular/material/dialog";
 
 export interface ITime {

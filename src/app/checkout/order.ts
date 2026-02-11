@@ -3,7 +3,7 @@ import { Component, ChangeDetectorRef, Input } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { IDeliverySettings, AddressBook, DeliveryService, DeliveryMode } from "../header/delivery";
+import { IDeliverySettings, AddressBook, DeliveryService, DeliveryMode } from "../header/addressBook";
 import { Cart, CartService } from "./cart";
 import { DriverTip, TipAmountDialog } from "./checkout";
 import { IOrderHistory } from "../user/order-history";

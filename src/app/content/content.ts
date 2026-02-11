@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
-import { AddressBook, DeliveryService, IDeliverySettings } from '../header/delivery';
+import { AddressBook, DeliveryService, IDeliverySettings } from '../header/addressBook';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule, FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faYoutube, faInstagram } from '@fortawesome/free-brands-svg-icons';

@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { AddressBook, DeliveryService, IDeliverySettings, DeliverySwitch, AddressBookDialog } from './delivery';
+import { AddressBook, DeliveryService, IDeliverySettings, DeliverySwitch, AddressBookDialog } from './addressBook';
 import { CartService, Cart } from '../checkout/cart';
 import { Category, CategoryList, CategoryService, ICategory } from './category';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';

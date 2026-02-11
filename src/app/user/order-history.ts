@@ -6,7 +6,7 @@ import { IPayMethod, IUser, UserService } from './user';
 import { Cart, CartService } from '../checkout/cart';
 import { DecimalPipe } from '@angular/common';
 import { Item } from '../content/item';
-import { DeliveryType } from '../header/delivery';
+import { DeliveryType } from '../header/addressBook';
 import { OrderSummary } from "./view-receipt";
 import { IAddress } from '../header/addressDialog';
 import { ITime } from '../header/timeslots';

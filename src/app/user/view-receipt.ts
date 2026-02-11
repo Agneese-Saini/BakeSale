@@ -8,7 +8,7 @@ import { UserService } from "./user";
 import { IOrderHistory } from "./order-history";
 import { Item } from "../content/item";
 import { CartService } from "../checkout/cart";
-import { DeliveryType } from "../header/delivery";
+import { DeliveryType } from "../header/addressBook";
 import { OrderTotal } from "../checkout/order";
 
 @Component({

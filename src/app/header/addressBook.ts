@@ -275,14 +275,18 @@ export class AddressBook {
   @Output()
   public clickFavourite = new EventEmitter<void>();
 
+  protected readonly addressBookAction = AddressBookAction;
+  protected readonly currentLocation = AddressBook.CurrentLocation;
+
   protected settings: IDeliverySettings = AddressBook.DefaultSettings;
   protected addressBook: IAddress[] = [];
   protected timeSlots: ITimeSlot[] = [];
 
   protected selectedAddress: IAddress | undefined = undefined;
 
-  protected addressBookAction = AddressBookAction;
-  protected currentLocation = AddressBook.CurrentLocation;
+  // TRUE if user is in selecting mode; for picking a favourite address
+  protected isSelecting: boolean = false;
+  protected selectingForLabel?: string;
 
   protected get deliveryModes() {
     return Array.from(AddressBook.DeliveryModes.entries());
@@ -304,6 +308,15 @@ export class AddressBook {
   protected get workAddressExist() {
     const ret = this.addressBook.filter(value => (value.isFavourite && value.label.toLowerCase() == "work"));
     return ret.length != 0;
+  }
+
+  protected get hasFavouritesToAdd() {
+    for (let addy of this.addressBook) {
+      if (this.selectingForLabel != undefined || !addy.isFavourite) {
+        return true;
+      }
+    }
+    return false;
   }
 
   constructor(
@@ -384,6 +397,24 @@ export class AddressBook {
     dialogRef.afterClosed().subscribe(() => {
       this.cdr.detectChanges();
     });
+  }
+
+  protected setSelectLabel(label?: string) {
+    this.selectingForLabel = label;
+    this.isSelecting = true;
+  }
+
+  protected closeSelectLabel() {
+    this.isSelecting = false;
+  }
+
+  protected selectLabelAddress(address: IAddress) {
+    address.isFavourite = true;
+    if (this.selectingForLabel != undefined) {
+      address.label = this.selectingForLabel;
+    }
+
+    this.isSelecting = false;
   }
 };
 

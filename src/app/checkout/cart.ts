@@ -183,13 +183,13 @@ export class CartService {
   selector: 'empty-cart-links',
   imports: [FormsModule, FontAwesomeModule],
   template: `
-<div class="flex flex-wrap gap-4 m-2 justify-center">
-  <a class="link text-lg font-thin">Find Deals</a>
-  <a class="link text-lg font-thin">Weekly Flyers</a>
-  <a class="link text-lg font-thin">Cannabis Deals</a>
-  <a class="link text-lg font-thin">Buy One Get One</a>
-  <a class="link text-lg font-thin">Order Snacks</a>
-  <a class="link text-lg font-thin">Your Order History</a>
+<div class="flex flex-wrap gap-2 m-2 justify-center">
+  <a class="link">Find Deals</a>
+  <a class="link">Weekly Flyers</a>
+  <a class="link">Cannabis Deals</a>
+  <a class="link">Buy One Get One</a>
+  <a class="link">Order Snacks</a>
+  <a class="link">Your Order History</a>
 </div>
 `
 })

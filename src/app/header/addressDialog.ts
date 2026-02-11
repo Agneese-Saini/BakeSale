@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component, Inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogActions, MatDialogContent, MatDialogModule } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AddressBook, DeliveryService, IDeliverySettings } from "./delivery";
+import { AddressBook, DeliveryService, IDeliverySettings } from "./addressBook";
 
 export enum BuildingType {
   House = 'House',

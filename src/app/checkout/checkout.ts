@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { AddressBook, AddressBookDialog, DeliveryService, DeliveryType, IDeliverySettings } from '../header/delivery';
+import { AddressBook, AddressBookDialog, DeliveryService, DeliveryType, IDeliverySettings } from '../header/addressBook';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { DeliveryMode } from '../header/delivery';
+import { DeliveryMode } from '../header/addressBook';
 import { CartService, Cart, EmptyCartLinks } from './cart';
 import { KeyValuePipe } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';

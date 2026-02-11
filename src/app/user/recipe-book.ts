@@ -6,7 +6,7 @@ import { IUser, UserService } from './user';
 import { Cart, CartService } from '../checkout/cart';
 import { DecimalPipe } from '@angular/common';
 import { IItem } from '../content/item';
-import { DeliveryType } from '../header/delivery';
+import { DeliveryType } from '../header/addressBook';
 import { IAddress } from '../header/addressDialog';
 import { ITime } from '../header/timeslots';
 import { Category, Recipe, IRecipe, RecipeGroup } from '../custom/recipe';

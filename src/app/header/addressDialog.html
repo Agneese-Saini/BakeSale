@@ -4,7 +4,7 @@
     <h1 class="text-4xl font-bold">Edit Address</h1>
     }
     @else {
-    <h1 class="text-4xl font-bold lg:w-128">Add an Address</h1>
+    <h1 class="text-4xl font-bold">Add an Address</h1>
     }
   </div>
 
@@ -113,14 +113,13 @@
     <fieldset class="fieldset w-full">
       <legend class="fieldset-legend text-lg">Label:</legend>
 
-      <div class="flex gap-2">
+      <div class="join">
         @if (error(errorTypes.Label)) {
-        <input type="search" placeholder="e.g. Home" class="input placeholder-gray-350 outline outline-error w-full"
+        <input type="search" placeholder="e.g. Home" class="input placeholder-gray-350 outline outline-error w-full join-item"
           [(ngModel)]="address.label" (change)="clearError(errorTypes.Label)" />
-        <p class="font-mono text-sm text-error pb-2">{{ error(errorTypes.Label)?.message }}</p>
         }
         @else {
-        <input type="search" placeholder="e.g. Home" class="input placeholder-gray-350 w-full"
+        <input type="search" placeholder="e.g. Home" class="input placeholder-gray-350 w-full join-item"
           [(ngModel)]="address.label" />
         }
 
@@ -132,8 +131,11 @@
           }
         </button>
       </div>
-      @if (address.isFavourite) {
-      <i>Marked as Favourite</i>
+
+      @if (error(errorTypes.Label)) {
+      <p class="justify-end w-full font-mono text-sm text-error">{{ error(errorTypes.Label)?.message }}</p>
+      } @else if (address.isFavourite) {
+      <p class="label justify-end w-full">Marked as Favourite</p>
       }
     </fieldset>
     }

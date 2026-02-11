@@ -16,7 +16,7 @@ export enum HomeCategories {
   providedIn: 'root' // Makes the service a singleton and available throughout the app
 })
 export class HomeService {
-    
+
   private _category = new BehaviorSubject<HomeCategories>(HomeCategories.AboutUs);
 
   public setCategory(category: HomeCategories) {
@@ -36,6 +36,19 @@ export class HomeService {
 })
 export class Home {
 
+  protected readonly PartnersList: { img: string, label: string, about: string }[] = [
+    {
+      img: "https://www.gunnsbakery.com/wp-content/uploads/Gunns-Bakery-Logo-closed-with-white-bg-300x185.png", 
+      label: "Gunns Bakery", 
+      about: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laborum, adipisci."
+    }, 
+    {
+      img: "https://goodiesbakeshop.com/wp-content/uploads/2021/08/Goodies-Logo-e1630347378677.png", 
+      label: "Goodies", 
+      about: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laborum, adipisci."
+    }
+  ];
+
   protected homeCategories = HomeCategories;
 
   constructor(
@@ -44,7 +57,7 @@ export class Home {
 
   protected ngOnInit() {
   }
-  
+
   protected getHomeCategory(): HomeCategories {
     return this.homeService.getCategory();
   }
