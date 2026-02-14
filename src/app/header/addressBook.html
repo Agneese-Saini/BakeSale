@@ -1,6 +1,6 @@
 @if (isDelivery) {
 <div class="flex flex-col gap-2">
-  <input type="search" tabindex="-1" class="input input-bordered placeholder-gray-350 w-full" [disabled]="isSelecting"
+  <input type="search" tabindex="-1" class="input input-bordered rounded-full placeholder-gray-350 w-full" [disabled]="isSelecting"
     placeholder="Enter an address" />
 
   <div class="flex gap-2 overflow-x-auto py-2">
@@ -28,7 +28,7 @@
 
     @if (!homeAddressExist) {
     <button
-      [class]="'btn btn-soft rounded-full h-14 ' + (isSelecting && selectingForLabel==='Home' ? 'btn-primary' : '')"
+      [class]="'btn rounded-full h-14 ' + (isSelecting && selectingForLabel==='Home' ? 'btn-outline btn-primary' : 'btn-soft')"
       (click)="setSelectLabel('Home')">
       <span>
         <fa-icon class="text-primary" icon="home"></fa-icon> Set Home
@@ -38,7 +38,7 @@
 
     @if (!workAddressExist) {
     <button
-      [class]="'btn btn-soft rounded-full h-14 ' + (isSelecting && selectingForLabel==='Work' ? 'btn-secondary' : '')"
+      [class]="'btn rounded-full h-14 ' + (isSelecting && selectingForLabel==='Work' ? 'btn-outline btn-secondary' : 'btn-soft')"
       (click)="setSelectLabel('Work')">
       <span>
         <fa-icon class="text-secondary" icon="suitcase"></fa-icon> Set Work
@@ -46,7 +46,9 @@
     </button>
     }
 
-    <button class="btn btn-soft rounded-full h-14" (click)="setSelectLabel(undefined)">
+    <button
+      [class]="'btn rounded-full h-14 ' + (isSelecting && selectingForLabel===undefined ? 'btn-outline' : 'btn-soft')"
+      (click)="setSelectLabel(undefined)">
       <fa-icon icon="star"></fa-icon> Add Favourite
     </button>
   </div>
@@ -55,20 +57,16 @@
 }
 
 @if (isSelecting == true) {
-<h1>
-  @if (selectingForLabel == undefined) {
-  Add an Address to your favourites:
-  } @else {
-  Select an Address to set as <b>{{ selectingForLabel.toLocaleUpperCase() }}</b>:
-  }
+<h1 class="text-lg">
+  Select an address to add as favourite:
 </h1>
-<div class="bg-base-100 border border-neutral-300 rounded-box overflow-x-auto min-h-64 lg:min-h-72 p-2">
-  <ul class="menu px-1 w-full">
+<div class="bg-base-100 border border-neutral-300 rounded-box overflow-x-auto min-h-64 lg:min-h-72 ">
+  <ul class="menu w-full">
     @if (addressBook.length > 0 && hasFavouritesToAdd) {
     @for (addy of addressBook; track addy) {
     @if (selectingForLabel != undefined || !addy.isFavourite) {
     <div class="bg-base-200 flex justify-between items-center">
-      <li class="flex-1 p-2" (click)="selectLabelAddress(addy)">
+      <li class="flex-1 " (click)="selectLabelAddress(addy)">
         <span class="flex flex-col text-wrap gap-0 items-start">
           <b>{{ addy.label }} @if (addy.isFavourite) { <fa-icon class="opacity-65 text-xs" icon="star"></fa-icon>}</b>
           <p class="text-xs">{{ addy.addressLine }}, {{ addy.city }}</p>

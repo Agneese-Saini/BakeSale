@@ -16,7 +16,7 @@
   </div>
 
   <div class="navbar-end">
-    <div class="flex justify-between items-center gap-2">    
+    <div class="flex justify-between items-center gap-2">
       <div class="flex flex-col items-end">
         <label class="text-gray-500 font-serif text-xs lg:hidden"><b>Bake</b>Sale</label>
         <p class="font-mono text-xl text-nowrap">
@@ -32,7 +32,7 @@
 <div class="bg-base-300 h-2 my-2"></div>
 
 @if (selectedCategory != category.Setup) {
-<div class="flex justify-center">
+<div class="flex justify-center py-4">
   <ul class="timeline overflow-x-auto">
     @for (cat of categories | keyvalue; track cat.key) {
     <li>
@@ -42,7 +42,7 @@
 
       <div class="timeline-start">
         <button
-          [class]="'btn ' + (selectedCategory == cat.key ? 'btn-neutral btn-active btn-lg' : (((cat.key == lastCategory && hasErrors(false))) ? 'btn-disabled' : (hasError(cat.key, cat.value.skipNonSelection) ? 'outline outline-error text-error' : '')))"
+          [class]="'btn btn-sm lg:btn-lg ' + (selectedCategory == cat.key ? 'btn-neutral btn-active' : (((cat.key == lastCategory && hasErrors(false))) ? 'btn-disabled' : (hasError(cat.key, cat.value.skipNonSelection) ? 'outline outline-error text-error' : '')))"
           (click)="onSelectCategory(cat.key)">
           {{ cat.value.name }}
         </button>
@@ -64,157 +64,157 @@
 }
 
 <div class="flex flex-col lg:flex-row flex-col-reverse gap-4 justify-center py-4">
-    <div class="w-full lg:max-w-164 lg:shadow-2xl">
-      <div class="flex flex-col gap-2 p-4">        
-        @if (selectedCategory == category.Setup) {
-        <div class="flex justify-center">
-          <h1 class="italic text-2xl">Cake Design v1.0</h1>
-        </div>
-        }
-
-        @if (currentCategory.instructions) {
-        <p class="whitespace-pre-line">{{ currentCategory.instructions }}</p>
-        <br />
-        }
-
-        <!-- Cake type -->
-        @if (selectedCategory == category.Setup) {
-        <div class="flex flex-col items-center p-4 rounded-box bg-base-300">
-          <h1 class="font-bold">Select the type of Cake you want to build:</h1>
-          <div class="overflow-x-auto">
-            <ul class="menu menu-horizontal gap-2">
-              @for (type of customTypes | keyvalue; track type.key) {
-              <li [class]="selectedType != type.key ? 'menu-disabled' : ''">
-                <a [class]="selectedType == type.key ? 'menu-active' : ''" (click)="onCustomTypeChange(type.key)">
-                  <fa-icon [icon]="type.value.icon" class="text-2xl"></fa-icon>
-                  <span>{{ type.value.label }}</span>
-                </a>
-              </li>
-              }
-            </ul>
-          </div>
-        </div>
-        }
-      </div>
-
-      <div class="bg-base-300 h-2"></div>
-
-      <!-- Layering -->
-      @if (selectedCategory == category.Layering) {
-      <div class="flex flex-col gap-2 p-4">
-        @if (numLayers > 1) {
-        <div class="tabs tabs-box tabs-lg justify-center">
-          @for (layer of layers | keyvalue; track layer.key) {
-          <a role="tab"
-            [class]="'tab ' + (selectedLayer==layer.key ? 'tab-active bg-primary text-white font-bold' : '') + ' ' + (hasError(selectedCategory, currentCategory.skipNonSelection, undefined, layer.key) ? 'text-error' : '')"
-            (click)="onSelectLayer(layer.key)">
-            Layer {{ layer.key }}
-          </a>
-          }
-        </div>
-        }
-
-        <div role="tablist" class="tabs tabs-border justify-center">
-          @for (choice of currentLayer | keyvalue; track choice.key) {
-          <a role="tab"
-            [class]="'tab ' + (selectedChoice==choice.key ? 'tab-active' : '') + ' ' + (hasError(selectedCategory, currentCategory.skipNonSelection, choice.key) ? 'text-error' : '')"
-            (click)="onSelectChoice(choice.key)">
-            {{ choice.key.name }}
-          </a>
-          }
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <item-choice-list class="w-full" [type]="selectedChoice!" [choices]="currentChoice!"></item-choice-list>
-        </div>
-      </div>
-      }
-      @else {
-      <!-- Publish -->
-      @if (selectedCategory == category.Publish) {
-      <div class="flex flex-col gap-2 p-4">
-        <div class="flex flex-col gap-4">
-          <h1 class="font-bold text-xl">Name:</h1>
-          <label [class]="'input w-full ' + (recipeNameError ? 'input-error' : '')">
-            <input type="search" class="grow placeholder-gray-350 input-lg" placeholder="Enter name of your cake"
-              [(ngModel)]="recipeName" (change)="recipeNameError=undefined" />
-          </label>
-          @if (recipeNameError) {
-          <p class="text-right text-error">{{ recipeNameError }}</p>
-          }
-        </div>
-
-        <div class="flex flex-col gap-4">
-          <h1 class="font-bold text-xl">Description:</h1>
-          <fieldset class="fieldset">
-            <textarea class="textarea placeholder-gray-350 h-24 w-full" placeholder="Enter a description for your recipe"
-              [(ngModel)]="recipeDescription"></textarea>
-            <label class="label justify-end w-full">Optional</label>
-          </fieldset>
-        </div>
-
-        <div class="flex justify-between gap-2">
-          <h1 class="font-bold text-xl">Publish Recipe:</h1>
-          <fieldset class="fieldset flex-1 flex flex-col items-end">
-            <input type="checkbox" class="toggle" [(ngModel)]="publicRecipe" />
-            <label class="text-right">
-              Other people can view/buy your recipe when its public (each buy gets you BakeSale points).
-            </label>
-          </fieldset>
-        </div>
+  <div class="w-full lg:max-w-164 lg:shadow-2xl">
+    <div class="flex flex-col gap-2 p-4">
+      @if (selectedCategory == category.Setup) {
+      <div class="flex justify-center">
+        <h1 class="italic text-2xl">Cake Design v1.0</h1>
       </div>
       }
 
-      <!-- Choice list -->
+      @if (currentCategory.instructions) {
+      <p class="whitespace-pre-line">{{ currentCategory.instructions }}</p>
+      <br />
+      }
+
+      <!-- Cake type -->
+      @if (selectedCategory == category.Setup) {
+      <div class="flex flex-col items-center p-4 rounded-box bg-base-300">
+        <h1 class="font-bold">Select the type of Cake you want to build:</h1>
+        <div class="overflow-x-auto">
+          <ul class="menu menu-horizontal gap-2">
+            @for (type of customTypes | keyvalue; track type.key) {
+            <li [class]="selectedType != type.key ? 'menu-disabled' : ''">
+              <a [class]="selectedType == type.key ? 'menu-active' : ''" (click)="onCustomTypeChange(type.key)">
+                <fa-icon [icon]="type.value.icon" class="text-2xl"></fa-icon>
+                <span>{{ type.value.label }}</span>
+              </a>
+            </li>
+            }
+          </ul>
+        </div>
+      </div>
+      }
+    </div>
+
+    <div class="bg-base-300 h-2"></div>
+
+    <!-- Layering -->
+    @if (selectedCategory == category.Layering) {
+    <div class="flex flex-col gap-2 p-4">
+      @if (numLayers > 1) {
+      <div class="tabs tabs-box tabs-lg justify-center">
+        @for (layer of layers | keyvalue; track layer.key) {
+        <a role="tab"
+          [class]="'tab ' + (selectedLayer==layer.key ? 'tab-active bg-primary text-white font-bold' : '') + ' ' + (hasError(selectedCategory, currentCategory.skipNonSelection, undefined, layer.key) ? 'text-error' : '')"
+          (click)="onSelectLayer(layer.key)">
+          Layer {{ layer.key }}
+        </a>
+        }
+      </div>
+      }
+
+      <div role="tablist" class="tabs tabs-border justify-center">
+        @for (choice of currentLayer | keyvalue; track choice.key) {
+        <a role="tab"
+          [class]="'tab ' + (selectedChoice==choice.key ? 'tab-active' : '') + ' ' + (hasError(selectedCategory, currentCategory.skipNonSelection, choice.key) ? 'text-error' : '')"
+          (click)="onSelectChoice(choice.key)">
+          {{ choice.key.name }}
+        </a>
+        }
+      </div>
+
       <div class="flex flex-col gap-2">
-        @let last = getLastChoice(currentCategory.choices);
-        @for (entry of currentCategory.choices | keyvalue; track entry.key) {
-        <item-choice-list class="w-full p-4" [type]="entry.key" [choices]="entry.value"></item-choice-list>
-        @if (entry.key != last) {
-        <div class="bg-base-300 h-2"></div>
-        }
+        <item-choice-list class="w-full" [type]="selectedChoice!" [choices]="currentChoice!"></item-choice-list>
+      </div>
+    </div>
+    }
+    @else {
+    <!-- Publish -->
+    @if (selectedCategory == category.Publish) {
+    <div class="flex flex-col gap-2 p-4">
+      <div class="flex flex-col gap-4">
+        <h1 class="font-bold text-xl">Name:</h1>
+        <label [class]="'input w-full ' + (recipeNameError ? 'input-error' : '')">
+          <input type="search" class="grow placeholder-gray-350 input-lg" placeholder="Enter name of your cake"
+            [(ngModel)]="recipeName" (change)="recipeNameError=undefined" />
+        </label>
+        @if (recipeNameError) {
+        <p class="text-right text-error">{{ recipeNameError }}</p>
         }
       </div>
-      }
 
-      <!-- Finish -->
-      @if (selectedCategory == category.Finish) {
-      <div class="flex flex-col gap-1 p-4">
-        <h1 class="text-lg">Special Instructions:</h1>
+      <div class="flex flex-col gap-4">
+        <h1 class="font-bold text-xl">Description:</h1>
         <fieldset class="fieldset">
-          <input type="search" class="input placeholder-gray-350 input-lg w-full"
-            placeholder="Enter additional instructions for finish" [(ngModel)]="recipeInstructions" />
+          <textarea class="textarea placeholder-gray-350 h-24 w-full" placeholder="Enter a description for your recipe"
+            [(ngModel)]="recipeDescription"></textarea>
           <label class="label justify-end w-full">Optional</label>
         </fieldset>
       </div>
-      }
 
-      <!-- Buttons -->
-      <footer class="flex flex-col gap-2 p-4">
-        @for (buttons of currentCategory.buttons; track buttons) {
-        @switch (buttons.type) {
-        @case (buttonType.Finish) {
-        <button [class]="'btn btn-lg w-full btn-warning ' + (!hasEnoughPoints ? 'btn-disabled' : '')" (click)="next()">
-          {{ publicRecipe ? 'Publish Recipe' : 'Create Recipe' }} (<fa-icon icon="coins"></fa-icon> {{ requiredPoints
-          }})
-        </button>
-        @if (!hasEnoughPoints) {
-        <label class="text-error text-center w-full">You don't have enough points</label>
-        }
-        }
-        @case (buttonType.Next) {
-        <button class="btn btn-lg w-full btn-neutral" (click)="next()">{{ buttons.name }}</button>
-        }
-        @case (buttonType.Back) {
-        <button class="btn btn-lg w-full btn-soft" (click)="back()">{{ buttons.name }}</button>
-        }
-        @default {
-        <button class="btn btn-lg w-full btn-soft">{{ buttons.name }}</button>
-        }
-        }
-        }
-      </footer>
+      <div class="flex justify-between gap-2">
+        <h1 class="font-bold text-xl">Publish Recipe:</h1>
+        <fieldset class="fieldset flex-1 flex flex-col items-end">
+          <input type="checkbox" class="toggle" [(ngModel)]="publicRecipe" />
+          <label class="text-right">
+            Other people can view/buy your recipe when its public (each buy gets you BakeSale points).
+          </label>
+        </fieldset>
+      </div>
     </div>
+    }
+
+    <!-- Choice list -->
+    <div class="flex flex-col gap-2">
+      @let last = getLastChoice(currentCategory.choices);
+      @for (entry of currentCategory.choices | keyvalue; track entry.key) {
+      <item-choice-list class="w-full p-4" [type]="entry.key" [choices]="entry.value"></item-choice-list>
+      @if (entry.key != last) {
+      <div class="bg-base-300 h-2"></div>
+      }
+      }
+    </div>
+    }
+
+    <!-- Finish -->
+    @if (selectedCategory == category.Finish) {
+    <div class="flex flex-col gap-1 p-4">
+      <h1 class="text-lg">Special Instructions:</h1>
+      <fieldset class="fieldset">
+        <input type="search" class="input placeholder-gray-350 input-lg w-full"
+          placeholder="Enter additional instructions for finish" [(ngModel)]="recipeInstructions" />
+        <label class="label justify-end w-full">Optional</label>
+      </fieldset>
+    </div>
+    }
+
+    <!-- Buttons -->
+    <footer class="flex flex-col gap-2 p-4">
+      @for (buttons of currentCategory.buttons; track buttons) {
+      @switch (buttons.type) {
+      @case (buttonType.Finish) {
+      <button [class]="'btn btn-lg w-full btn-warning ' + (!hasEnoughPoints ? 'btn-disabled' : '')" (click)="next()">
+        {{ publicRecipe ? 'Publish Recipe' : 'Create Recipe' }} (<fa-icon icon="coins"></fa-icon> {{ requiredPoints
+        }})
+      </button>
+      @if (!hasEnoughPoints) {
+      <label class="text-error text-center w-full">You don't have enough points</label>
+      }
+      }
+      @case (buttonType.Next) {
+      <button class="btn btn-lg w-full btn-neutral" (click)="next()">{{ buttons.name }}</button>
+      }
+      @case (buttonType.Back) {
+      <button class="btn btn-lg w-full btn-soft" (click)="back()">{{ buttons.name }}</button>
+      }
+      @default {
+      <button class="btn btn-lg w-full btn-soft">{{ buttons.name }}</button>
+      }
+      }
+      }
+    </footer>
+  </div>
 
   @if (selectedCategory != category.Setup) {
   <div class="w-full lg:max-w-128">
@@ -231,9 +231,7 @@
           <span class="text-lg font-bold">
             <fa-icon tabindex="0" role="button" class="text-sm" icon="info-circle"></fa-icon> Value: $50
           </span>
-          <div
-            tabindex="0"
-            class="dropdown-content card card-sm z-50 w-42 bg-neutral shadow-xl">
+          <div tabindex="0" class="dropdown-content card card-sm z-50 w-42 bg-neutral shadow-xl">
             <div class="card-body text-wrap text-white text-start p-2">
               <p>This is a card. You can use any element as a dropdown.</p>
             </div>

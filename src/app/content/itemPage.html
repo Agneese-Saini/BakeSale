@@ -2,21 +2,30 @@
 
 <div class="bg-base-300 h-2 my-2"></div>
 
-<div class="px-4 py-2">
-  <a class="link text-lg font-mono" style="text-decoration: none" routerLink="/shop">
+<div class="flex justify-between items-center p-4">
+  <a class="link" style="text-decoration: none" routerLink="/shop">
     <fa-icon icon="arrow-left"></fa-icon> Back to {{ item ? item.parent : 'Store' }}
   </a>
+
+  <div class="flex gap-2 items-center">
+    <button class="btn btn-ghost p-1">
+      <fa-icon icon="share-nodes"></fa-icon> Share
+    </button>
+    <button class="btn btn-ghost p-1">
+      <fa-icon [icon]="['far', 'heart']"></fa-icon> Save
+    </button>
+  </div>
 </div>
-<br />
 
 @if (item) {
 <div class="flex flex-col items-center gap-2">
   @if (item.notify) {
-  <div class="w-full lg:max-w-198 px-4 lg:p-0">
+  <div class="w-full lg:max-w-198 p-4 py-1 lg:px-0">
     <div class="card bg-base-300 w-full">
-      <div class="card-body p-1">
+      <div class="card-body p-2">
         <div class="flex justify-between items-center">
-          <p class="text-gray-500"><span class="badge badge-sm badge-warning text-white">NEW</span> {{ item.notify }}
+          <p>
+            <span class="badge badge-sm badge-warning text-white">NEW</span> {{ item.notify }}
           </p>
           <button class="btn btn-circle btn-ghost btn-sm" (click)="item.notify=undefined;">
             <fa-icon icon="xmark"></fa-icon>
@@ -28,53 +37,46 @@
   }
 
   <div class="w-full lg:bg-base-200 lg:shadow-2xl lg:max-w-198 lg:mb-6">
-    <div class="flex flex-col gap-6 p-4">
-      <div class="flex flex-col">
-        @if (item.company) {
-        <span class="label text-sm font-bold">
-          <fa-icon class="text-info" icon="check-circle"></fa-icon>
-          <p class="tooltip" data-tip="Verified Seller">{{ item.company }}</p>
-        </span>
-        }
-
-        <h1 class="font-bold text-2xl">{{ item.name }}</h1>
-
-        <item-price-tag [value]="item" [likes]="false" [showSale]="true"></item-price-tag>
-
-        @if (item.author) {
-        <div class="flex flex-row-reverse items-center text-right gap-2">
-          <img class="size-12 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp" />
-          <div class="grid">
-            <label class="text-xs uppercase opacity-60">Created by:</label>
-            <a class="link" style="text-decoration: none;">{{ item.author }}</a>
-          </div>
-        </div>
-        }
-        <br />
-
-        @if (item.about) {
-        <text-read-more [text]="item.about" [maxLength]="150"></text-read-more>
-        }
+    <div class="flex flex-col gap-4 items-center w-full">
+      <div class="rounded-box flex bg-base-300 justify-center w-full">
+        <img class="h-84 lg:h-98" [src]="displayImage" />
       </div>
 
-      <div class="flex flex-col gap-4 items-center w-full">
-        <div class="flex justify-end w-full">
-          <a class="link text-xs" style="text-decoration: none;">
-            <fa-icon icon="share-nodes"></fa-icon> Share
-          </a>
-        </div>
+      <div class="flex flex-wrap justify-center gap-2">
+        @for (img of item.image; track img) {
+        <img [class]="'link rounded-box h-12 w-12 ' + (displayImage == img ? 'ring ring-2' : '')" [src]="img"
+          (click)="selectImage(img)" />
+        }
+      </div>
+    </div>
+    <br />
 
-        <div class="rounded-box flex bg-base-300 justify-center w-full">
-          <img class="h-84 lg:h-98" [src]="displayImage" />
-        </div>
+    <div class="flex flex-col p-4">
+      @if (item.company) {
+      <span class="label text-sm font-bold">
+        <fa-icon class="text-info" icon="check-circle"></fa-icon>
+        <p class="tooltip" data-tip="Verified Seller">{{ item.company }}</p>
+      </span>
+      }
 
-        <div class="flex flex-wrap justify-center gap-2">
-          @for (img of item.image; track img) {
-          <img [class]="'link rounded-box h-12 w-12 ' + (displayImage == img ? 'ring ring-2' : '')" [src]="img"
-            (click)="selectImage(img)" />
-          }
+      <h1 class="font-bold text-2xl">{{ item.name }}</h1>
+
+      <item-price-tag [value]="item" [likes]="false" [showSale]="true"></item-price-tag>
+
+      @if (item.author) {
+      <div class="flex flex-row-reverse items-center text-right gap-2">
+        <img class="size-12 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp" />
+        <div class="grid">
+          <label class="text-xs uppercase opacity-60">Created by:</label>
+          <a class="link" style="text-decoration: none;">{{ item.author }}</a>
         </div>
       </div>
+      }
+      <br />
+
+      @if (item.about) {
+      <text-read-more [text]="item.about" [maxLength]="150"></text-read-more>
+      }
     </div>
 
     @if (item.choices) {
@@ -142,7 +144,8 @@
                 </p>
 
                 @if (!item.price.buyOneGetOne && item.price.previousPrice) {
-                <p class="opacity-80 text-md line-through">${{ getPrice(item, item.price.previousPrice) | number: '1.2-2'
+                <p class="opacity-80 text-md line-through">${{ getPrice(item, item.price.previousPrice) | number:
+                  '1.2-2'
                   }}
                 </p>
                 }
@@ -159,7 +162,8 @@
             </button>
 
             @if (isCartItem && hasChoices) {
-            <button class="btn btn-lg px-2" (click)="openCartItemsDialog()"><fa-icon icon="shopping-cart"></fa-icon><b class="text-warning">{{ numCartItems }}</b></button>
+            <button class="btn btn-lg px-2" (click)="openCartItemsDialog()"><fa-icon icon="shopping-cart"></fa-icon><b
+                class="text-warning">{{ numCartItems }}</b></button>
             }
           </div>
 
@@ -171,10 +175,10 @@
         </div>
       </div>
     </div>
-    
-    <div class="bg-base-300 h-2"></div>
-      
-    <div class="flex flex-col bg-base-200">
+  </div>
+
+  <div class="w-full bg-base-300 lg:bg-base-200 lg:max-w-198 lg:mb-6">
+    <div class="flex flex-col">
       @if (this.item.details) {
       <div class="flex flex-col p-4">
         <h1 class="text-xl">Details:</h1>

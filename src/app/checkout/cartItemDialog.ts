@@ -15,13 +15,15 @@ import { CartItemList } from "./cartItemList";
   template: `
 <div class="bg-base-200">
   <div mat-dialog-content>
-    <h1>Your shopping cart ({{ data.name }}):</h1>
+    <div class="flex justify-between gap-6 py-2">
+    <h1 class="font-medium">Your shopping cart:</h1>
+    <h2 class="font-bold">{{ data.name }}</h2>
+    </div>
 
-    <div class="flex flex-col gap-1 rounded-box overflow-y-auto h-94 p-2">
+    <div class="flex flex-col gap-1 rounded-box overflow-y-auto h-94 p-2 bg-base-300">
       <cart-item-list [items]="items" />    
     </div>
   </div>
-  <br />
 
   <div mat-dialog-actions>    
     <button class="btn btn-neutral w-full" (click)="closeDialog()">Close</button>
