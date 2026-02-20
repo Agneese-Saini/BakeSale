@@ -4,6 +4,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AddressBook, DeliveryService, IDeliverySettings } from "./addressBook";
+import { GoogleMapsModule } from "@angular/google-maps";
 
 export enum BuildingType {
   House = 'House',
@@ -55,7 +56,7 @@ export interface IAddress {
 };
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, MatDialogModule],
+  imports: [FormsModule, FontAwesomeModule, MatDialogModule, GoogleMapsModule],
   templateUrl: './addressDialog.html',
 })
 export class AddressDialog {

@@ -46,6 +46,7 @@
     "@angular/build": "^21.0.4",
     "@angular/cli": "^21.0.4",
     "@angular/compiler-cli": "^21.0.0",
+    "@angular/google-maps": "^21.1.5",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/express": "^5.0.1",
     "@types/lodash": "^4.17.21",
