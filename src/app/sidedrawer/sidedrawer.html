@@ -36,7 +36,9 @@
         </div>
         <div class="flex gap-4 items-center">
             <fa-icon icon="s"></fa-icon>
-            <a class="link" style="text-decoration: none;" routerLink="/subscriptions">Subscriptions</a>
+            <a class="link" style="text-decoration: none;" routerLink="/subscriptions">
+                Subscriptions {{ user.subscriptions ? ('(' + user.subscriptions.length + ')') : '' }}
+            </a>
         </div>
         <div class="flex gap-4 items-center">
             <fa-icon icon="credit-card"></fa-icon>

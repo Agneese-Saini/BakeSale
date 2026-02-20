@@ -90,7 +90,7 @@
                   @if (order.inProgress) {
                   IN PROGRESS
                   } @else if (order.deliveryType != undefined) {
-                  DELIVERY
+                  DELIVERED
                   } @else {
                   PICKUP
                   }
@@ -105,7 +105,7 @@
                 }}:00 pm</span>
             </div>
             <div class="overflow-y-auto max-h-56 lg:h-full">
-              <order-summary [order]="order" [hidePrice]="true"></order-summary>
+              <order-items [order]="order" [hidePrice]="true"></order-items>
             </div>
             <br />
             <div class="card-actions justify-end">

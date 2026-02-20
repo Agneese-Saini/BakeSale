@@ -119,8 +119,8 @@ export class CartService {
     return null;
   }
 
-  static deliveryFee(): number {
-    return 4.00;
+  public getCouponDiscount(): number {
+    return this._coupon.value;
   }
 
   static numItems(cart: Cart): number {

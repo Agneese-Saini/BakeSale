@@ -33,19 +33,25 @@
               <b>Address:</b>
             </td>
             <td>
-              <label class="flex flex-col">
-                <b>{{ order.address.addressLine }}</b>
-                <p class="text-sm">{{ order.address.city }}, {{ order.address.province }} {{
-                  order.address.postal }}</p>
-              </label>
+              <div class="flex justify-between gap-4 items-center">
+                <label class="flex flex-col">
+                  <b>{{ order.address.addressLine }}</b>
+                  <p class="text-sm">{{ order.address.city }}, {{ order.address.province }} {{
+                    order.address.postal }}</p>
+                </label>
+
+                @if (order.deliveryType != undefined && !order.inProgress) {
+                <a class="shrink-0 link"><img class="w-12 h-12 lg:w-24 lg:h-24 rounded-box border" src="https://onfleet.com/blog/content/images/2020/05/deliverypackage.jpg" /></a>
+                }
+              </div>
             </td>
           </tr>
           <tr>
             <td>
-              <b>Time:</b>
+              <b>{{ order.deliveryType != undefined ? 'Delivery Time' : 'Pickup Time' }}:</b>
             </td>
             <td>
-              12:54 am
+              <p>{{ order.inProgress ? 'In Progress' : ((order.statusTime ? order.statusTime : currentDate) | date:'hh:ss a') }}</p>
             </td>
           </tr>
         </tbody>
@@ -57,13 +63,13 @@
         <h1 class="font-bold text-xl">Cart Items:</h1>
         <p class="text-xl">{{ totalItems }} items</p>
       </div>
-      <order-summary [order]="order" [open]="true"></order-summary>
+      <order-items [order]="order" [open]="true"></order-items>
     </div>
 
     <div class="rounded-box bg-base-200 w-full p-6 border border-base-300">
       <h1 class="font-bold text-xl p-2">Order Details:</h1>
       <div class="p-4">
-        <order-total [order]="order"></order-total>
+        <receipt [order]="order"></receipt>
       </div>
     </div>
 

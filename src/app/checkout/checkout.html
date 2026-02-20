@@ -46,8 +46,7 @@
     <li>
       <hr />
       <div class="timeline-start">
-        <button [class]="'btn ' + (isPlacingOrder == true ? 'btn-neutral' : 'btn-disabled  btn-sm')"
-          (click)="placeOrder()">Place Order</button>
+        <button [class]="'btn ' + (isPlacingOrder == true ? 'btn-neutral' : 'btn-disabled btn-sm')">Place Order</button>
       </div>
       <div class="timeline-middle">
         <fa-icon [class]="isPlacingOrder ? 'text-lg' : 'text-neutral-500'" icon="circle-dot"></fa-icon>
@@ -73,12 +72,12 @@
       <h1 class="text-xl font-medium">Order Total</h1>
 
       <div class="p-2">
-        <order-total></order-total>
+        <receipt></receipt>
       </div>
     </div>
 
     <div class="grid gap-2">
-      <button tabindex="0" class="btn btn-neutral btn-lg w-full" (click)="placeOrder()">Place Order</button>
+      <button tabindex="0" class="btn btn-neutral btn-lg w-full" (click)="placeOrder()">Place {{ deliveryMode.label }}</button>
       <button class="btn btn-soft btn-lg w-full" (click)="isPlacingOrder=false;">Back</button>
     </div>
     }
@@ -102,12 +101,12 @@
         <h1 class="text-xl font-medium">Order Total</h1>
 
         <div class="flex flex-col gap-1 p-2">
-          <order-total></order-total>
+          <receipt></receipt>
         </div>
       </div>
 
       <footer>
-        <button class="btn btn-neutral btn-lg w-full" (click)="placeOrder()">Place Order</button>
+        <button class="btn btn-neutral btn-lg w-full" (click)="placeOrder()">Place {{ deliveryMode.label }}</button>
       </footer>
     </div>
   </div>

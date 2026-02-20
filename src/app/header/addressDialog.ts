@@ -87,9 +87,9 @@ export class AddressDialog {
   }
 
   protected get isValidAddressInfo(): boolean {
-    return this.error(ErrorTypes.AddressLine) == undefined &&
-      this.error(ErrorTypes.City) == undefined &&
-      this.error(ErrorTypes.PostalCode) == undefined;
+    return this.getError(ErrorTypes.AddressLine) == undefined &&
+      this.getError(ErrorTypes.City) == undefined &&
+      this.getError(ErrorTypes.PostalCode) == undefined;
   }
 
   constructor(
@@ -224,21 +224,21 @@ export class AddressDialog {
     this.lookupAddress = "Current Location";
   }
 
-  protected error(type: ErrorTypes) {
-    const err = this.errors.get(type);
-    if (err && err.value) {
-      return err;
-    }
-
-    return undefined;
-  }
-
   protected get numErrors() {
     return this.errors.size;
   }
 
   protected setError(type: ErrorTypes, message?: string) {
     this.errors.set(type, { value: true, message: message });
+  }
+
+  protected getError(type: ErrorTypes) {
+    const err = this.errors.get(type);
+    if (err && err.value) {
+      return err;
+    }
+
+    return undefined;
   }
 
   protected clearError(type: ErrorTypes) {

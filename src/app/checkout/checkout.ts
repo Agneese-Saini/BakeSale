@@ -12,8 +12,9 @@ import { Router, RouterModule } from '@angular/router';
 import { IOrderHistory } from '../user/order-history';
 import { UserService } from '../user/user';
 import { ItemChoiceList } from '../content/itemChoice';
-import { OrderTotal, Tip } from "./order";
+import { Tip } from "./order";
 import { CartItemList } from './cartItemList';
+import { Receipt } from '../custom/receipt';
 
 export enum DriverTip {
   Tip_10 = 10,
@@ -291,7 +292,7 @@ export class CheckoutDetails {
   imports: [FormsModule, FontAwesomeModule, KeyValuePipe, CartItemList],
   template: `
 <div class="collapse collapse-arrow bg-base-200 shadow-lg p-2">
-  <input type="checkbox" />
+  <input type="checkbox" checked />
   <div class="collapse-title">
     <div class="flex gap-2 justify-between items-center text-xl">
       <div class="flex gap-2 text-xl">
@@ -334,12 +335,16 @@ export class CheckoutCart {
 
 @Component({
   selector: 'app-checkout',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, CheckoutCoupon, CheckoutDetails, OrderTotal, EmptyCartLinks, CheckoutCart, OrderTotal],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, CheckoutCoupon, CheckoutDetails, EmptyCartLinks, CheckoutCart, Receipt],
   templateUrl: './checkout.html',
   styleUrl: './checkout.css'
 })
 export class Checkout {
 
+  public get deliveryMode() {
+    return AddressBook.DeliveryModes.get(this.deliverySettings.mode)!;
+  }
+  
   protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
   protected shoppingCart: Cart = new Map();
   protected couponDiscount: number = 0;
@@ -352,6 +357,22 @@ export class Checkout {
 
   protected get totalItems() {
     return CartService.totalItems(this.shoppingCart);
+  }
+
+  protected get orderHistory(): IOrderHistory {
+    return {
+      tipAmount: this.deliverySettings.mode == DeliveryMode.Delivery ? Tip.getAmount(CartService.subTotal(this.shoppingCart), this.deliverySettings.tip, this.deliverySettings.tipAmount) : 0,
+      deliveryType: this.deliverySettings.mode == DeliveryMode.Delivery ? this.deliverySettings.deliveryType : undefined,
+      deliveryInstructions: this.deliverySettings.deliveryInstructions,
+      gstPercentage: Receipt.GST_Rate,
+      pstPercentage: Receipt.PST_Rate,
+      couponDiscount: this.couponDiscount,
+      cart: structuredClone(this.shoppingCart),
+      date: Date.now(),
+      time: this.deliverySettings.time!,
+      address: this.deliverySettings.address!,
+      payment: this.deliverySettings.payment!
+    };
   }
 
   constructor(
@@ -440,21 +461,7 @@ export class Checkout {
       return;
     }
 
-    let order: IOrderHistory = {
-      tipAmount: this.deliverySettings.mode == DeliveryMode.Delivery ? Tip.getAmount(this.shoppingCart, this.deliverySettings.tip, this.deliverySettings.tipAmount) : 0,
-      deliveryType: this.deliverySettings.mode == DeliveryMode.Delivery ? this.deliverySettings.deliveryType : undefined,
-      deliveryInstructions: this.deliverySettings.deliveryInstructions,
-      gstPercentage: OrderTotal.GST_Rate,
-      pstPercentage: OrderTotal.PST_Rate,
-      couponDiscount: this.couponDiscount,
-      cart: structuredClone(this.shoppingCart),
-      date: Date.now(),
-      time: this.deliverySettings.time!,
-      address: this.deliverySettings.address!,
-      payment: this.deliverySettings.payment!
-    };
-
-    this.userService.addOrder(order);
+    this.userService.addOrder(this.orderHistory);
     this.shoppingCart.clear();
     this.router.navigate(['/']);
 
@@ -503,9 +510,9 @@ export class Checkout {
   </div>
   <br />
 
-  <label class="text-xl">Special Instructions:</label>
-  <label class="text-gray-500">Write an instruction for your delivery driver:</label>
-  <input class="input placeholder-gray-500" type="search" placeholder="e.g. Don't ring the door bell." [(ngModel)]="instructions" />
+  <label class="text-xl">Delivery Instructions:</label>
+  <label class="text-gray-500">Please write (if)any Delivery instructions for your courier:</label>
+  <input [class]="'input placeholder-gray-350 w-full ' + (instructions ? 'border border-neutral' : '')" type="search" placeholder="e.g. Don't ring the door bell." [(ngModel)]="instructions" />
   <br />
 
   <div class="grid items-stretch pt-4">

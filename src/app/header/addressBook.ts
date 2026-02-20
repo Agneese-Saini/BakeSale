@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ITime, ITimeSlot, TimeslotsDialog } from './timeslots';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA, MatDialogClose } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 import { AddressBookAction, AddressDialog, IAddress, Province } from './addressDialog';
 import { Category, ICategory } from './category';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -20,6 +20,12 @@ export enum DeliveryType {
   MeetAtDoor = 'Meet At Door',
   LeaveAtDoor = 'Leave At Door',
   LeaveAtLobby = 'Leave At Lobby (Hotel)'
+};
+
+export enum SearchModes {
+  None,
+  ShowResults,
+  AddFavourite
 };
 
 export interface IDeliverySettings {
@@ -165,6 +171,10 @@ export class DeliveryService {
       this._addressBook.next(book);
     }
   }
+  
+  public getDeliveryFee(): number {
+    return 4.00;
+  }
 }
 
 
@@ -266,6 +276,8 @@ export class AddressBook {
     category: Category.DefaultCategory
   };
 
+  protected readonly searchModes = SearchModes; 
+
   @Input()
   public timeslot: boolean = false;
 
@@ -285,8 +297,9 @@ export class AddressBook {
   protected selectedAddress: IAddress | undefined = undefined;
 
   // TRUE if user is in selecting mode; for picking a favourite address
-  protected isSelecting: boolean = false;
-  protected selectingForLabel?: string;
+  protected searchMode: SearchModes = SearchModes.None;
+  protected searchInput?: string;
+  protected favouriteLabel?: string;
 
   protected get deliveryModes() {
     return Array.from(AddressBook.DeliveryModes.entries());
@@ -312,7 +325,7 @@ export class AddressBook {
 
   protected get hasFavouritesToAdd() {
     for (let addy of this.addressBook) {
-      if (this.selectingForLabel != undefined || !addy.isFavourite) {
+      if (this.favouriteLabel != undefined || !addy.isFavourite) {
         return true;
       }
     }
@@ -400,33 +413,43 @@ export class AddressBook {
   }
 
   protected setSelectLabel(label?: string) {
-    this.selectingForLabel = label;
-    this.isSelecting = true;
+    this.favouriteLabel = label;
+    this.searchMode = SearchModes.AddFavourite;
   }
 
   protected closeSelectLabel() {
-    this.isSelecting = false;
+    this.searchMode = SearchModes.None;
   }
 
   protected selectLabelAddress(address: IAddress) {
     address.isFavourite = true;
-    if (this.selectingForLabel != undefined) {
-      address.label = this.selectingForLabel;
+    if (this.favouriteLabel != undefined) {
+      address.label = this.favouriteLabel;
     }
 
-    this.isSelecting = false;
+    this.searchMode = SearchModes.None;
+  }
+
+  protected onSearch() {
+    if (!this.searchInput) {
+      this.searchMode = SearchModes.None;
+    }
+    else {
+      this.searchMode = SearchModes.ShowResults;
+    }
   }
 };
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, AddressBook, MatDialogClose],
+  imports: [FormsModule, FontAwesomeModule, AddressBook, MatDialogClose, MatDialogContent],
   template: `
-<div class="bg-base-200 p-4">
+<div class="bg-base-200">
+  <div mat-dialog-content>
   <address-book [timeslot]="showTimeslots" (clickFavourite)="onClickFavourite()" />
-  <br />
+  </div>
 
-  <div mat-dialog-actions>
+  <div mat-dialog-actions class="p-4">
     <button mat-dialog-close class="btn btn-soft w-full">
         Close
     </button>

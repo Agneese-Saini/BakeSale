@@ -13,56 +13,77 @@
     <br />
 
     <h1>Lookup Address:</h1>
-    <div class="flex justify-between gap-2 items-center">
-      <input type="search" class="input input-bordered placeholder-gray-350 w-full" placeholder="Search an address" [(ngModel)]="lookupAddress" />
-      <div class="tooltip tooltip-left" data-tip="Use Current location">
-        <button class="btn btn-neutral" (click)="useCurrentLocation()">
-          <fa-icon icon="location-dot"></fa-icon>
-        </button>
+    <div class="form-control">
+      <div [class]="'w-full ' + ((showAddressInfo || isValidAddress) ? 'dropdown dropdown-bottom' : 'menu')">
+        <div class="flex justify-between gap-2 items-center">
+          <input type="search"
+            [class]="'input input-bordered placeholder-gray-350 w-full ' + (lookupAddress ? 'border border-neutral' : '')"
+            placeholder="Search an address" [(ngModel)]="lookupAddress" />
+          <div class="tooltip tooltip-left" data-tip="Use Current location">
+            <button class="btn btn-neutral" (click)="useCurrentLocation()">
+              <fa-icon icon="location-dot"></fa-icon>
+            </button>
+          </div>
+        </div>
+        @if (getError(errorTypes.LookupAddress)) {
+        <div class="flex gap-1 p-1">
+          <fa-icon class="text-error text-sm" icon="exclamation-circle"></fa-icon>
+          <p class="font-mono text-sm text-error pb-2">{{ getError(errorTypes.LookupAddress)?.message }}</p>
+        </div>
+        }
+
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-2xl bg-base-100 rounded-box w-full mt-1">
+          <li>
+            <div class="flex flex-col items-start gap-0 rounded-box p-2">
+              <b>Label</b>
+              <p>123 Manitoba ave., Winnipeg</p>
+              <p class="text-sm">Manitoba R1T 2G3</p>
+            </div>
+          </li>
+          <li>
+            <div class="flex flex-col items-start gap-0 rounded-box p-2">
+              <b>Label</b>
+              <p>123 Manitoba ave., Winnipeg</p>
+              <p class="text-sm">Manitoba R1T 2G3</p>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
-    @if (error(errorTypes.LookupAddress)) {
-    <div class="flex gap-1 p-1">
-      <fa-icon class="text-error text-sm" icon="exclamation-circle"></fa-icon>
-      <p class="font-mono text-sm text-error pb-2">{{ error(errorTypes.LookupAddress)?.message }}</p>
-    </div>
-    }
     <br />
 
     @if (showAddressInfo || isValidAddress) {
     <fieldset class="fieldset w-full">
       <p class="fieldset-legend text-lg">Address line:</p>
 
-      @if (error(errorTypes.AddressLine)) {
-      <input type="search" placeholder="Enter Address" class="input placeholder-gray-350 outline outline-error w-full"
+      <input type="search" placeholder="Enter Address"
+        [class]="'input input-bordered placeholder-gray-350 w-full ' + (address.addressLine ? 'outline' : '') + ' ' + (getError(errorTypes.AddressLine) ? 'outline outline-error' : '')"
         [(ngModel)]="address.addressLine" (change)="clearError(errorTypes.AddressLine)" />
-      <p class="font-mono text-sm text-error pb-2">{{ error(errorTypes.AddressLine)?.message }}</p>
-      }
-      @else {
-      <input type="search" placeholder="Enter Address" class="input placeholder-gray-350 w-full"
-        [(ngModel)]="address.addressLine" />
+
+      @let AddressError = getError(errorTypes.AddressLine);
+      @if (AddressError) {
+      <p class="font-mono text-sm text-error pb-2">{{ AddressError.message }}</p>
       }
     </fieldset>
 
     <fieldset class="fieldset w-full">
       <p class="fieldset-legend text-lg">City:</p>
 
-      @if (error(errorTypes.City)) {
-      <input type="search" placeholder="Enter City" class="input placeholder-gray-350 outline outline-error w-full"
+      <input type="search" placeholder="Enter City"
+        [class]="'input input-bordered placeholder-gray-350 w-full ' + (address.city ? 'outline' : '') + ' ' + (getError(errorTypes.City) ? 'outline outline-error' : '')"
         [(ngModel)]="address.city" (change)="clearError(errorTypes.City)" />
-      <p class="font-mono text-sm text-error pb-2">{{ error(errorTypes.City)?.message }}</p>
-      }
-      @else {
-      <input type="search" placeholder="Enter City" class="input placeholder-gray-350 w-full"
-        [(ngModel)]="address.city" />
+
+      @let CityError = getError(errorTypes.City);
+      @if (CityError) {
+      <p class="font-mono text-sm text-error pb-2">{{ CityError.message }}</p>
       }
     </fieldset>
 
-    <div class="flex gap-2 px-1">
+    <div class="flex gap-2">
       <fieldset class="fieldset w-full">
         <p class="fieldset-legend text-lg">Province:</p>
 
-        <select class="select w-full" [(ngModel)]="address.province">
+        <select class="select w-full outline" [(ngModel)]="address.province">
           @for (entry of provinceList; track entry) {
           <option [ngValue]="entry">{{ entry }}</option>
           }
@@ -72,14 +93,13 @@
       <fieldset class="fieldset">
         <p class="fieldset-legend text-lg">Postal Code:</p>
 
-        @if (error(errorTypes.PostalCode)) {
-        <input type="search" placeholder="Postal Code" class="input placeholder-gray-350 outline outline-error w-full"
+        <input type="search" placeholder="Enter Postal Code"
+          [class]="'input input-bordered placeholder-gray-350 w-full ' + (address.postal ? 'outline' : '') + ' ' + (getError(errorTypes.PostalCode) ? 'outline outline-error' : '')"
           [(ngModel)]="address.postal" (change)="clearError(errorTypes.PostalCode)" />
-        <p class="font-mono text-sm text-error pb-2">{{ error(errorTypes.PostalCode)?.message }}</p>
-        }
-        @else {
-        <input type="search" placeholder="Postal Code" class="input placeholder-gray-350 w-full"
-          [(ngModel)]="address.postal" />
+
+        @let PostalCodeError = getError(errorTypes.PostalCode);
+        @if (PostalCodeError) {
+        <p class="font-mono text-sm text-error pb-2">{{ PostalCodeError.message }}</p>
         }
       </fieldset>
     </div>
@@ -87,15 +107,13 @@
     <fieldset class="fieldset w-full">
       <p class="fieldset-legend text-lg justify-start">Apt / Suite / Floor:</p>
 
-      @if (error(errorTypes.Apt)) {
-      <input type="search" maxlength="5" placeholder="e.g. 1408"
-        class="input placeholder-gray-350 outline outline-error w-full" [(ngModel)]="address.apt"
-        (change)="clearError(errorTypes.Apt)" />
-      <p class="font-mono text-sm text-error pb-2">{{ error(errorTypes.Apt)?.message }}</p>
-      }
-      @else {
-      <input type="search" maxlength="5" placeholder="e.g. 1408" class="input placeholder-gray-350 w-full"
-        [(ngModel)]="address.apt" />
+      <input type="search" placeholder="Enter Brief Instrunction"
+        [class]="'input input-bordered placeholder-gray-350 w-full ' + (address.apt ? 'outline' : '') + ' ' + (getError(errorTypes.Apt) ? 'outline outline-error' : '')"
+        [(ngModel)]="address.apt" (change)="clearError(errorTypes.Apt)" />
+
+      @let AptError = getError(errorTypes.Apt);
+      @if (AptError) {
+      <p class="font-mono text-sm text-error pb-2">{{ AptError.message }}</p>
       }
       <p class="label justify-end w-full">Optional</p>
     </fieldset>
@@ -103,7 +121,7 @@
     <fieldset class="fieldset">
       <legend class="fieldset-legend text-lg">Building Type:</legend>
 
-      <select class="select w-full" [(ngModel)]="address.buildingType">
+      <select class="select w-full outline" [(ngModel)]="address.buildingType">
         @for (entry of buildingTypes; track entry) {
         <option [value]="entry">{{ entry }}</option>
         }
@@ -113,17 +131,14 @@
     <fieldset class="fieldset w-full">
       <legend class="fieldset-legend text-lg">Label:</legend>
 
-      <div class="join">
-        @if (error(errorTypes.Label)) {
-        <input type="search" placeholder="e.g. Home" class="input placeholder-gray-350 outline outline-error w-full join-item"
+      <div class="flex gap-2 w-full">
+        <input type="search" placeholder="e.g. Home"
+          [class]="'input rounded-box input-bordered placeholder-gray-350 w-full ' + (address.label ? 'outline' : '') + ' ' + (getError(errorTypes.Label) ? 'outline outline-error' : '')"
           [(ngModel)]="address.label" (change)="clearError(errorTypes.Label)" />
-        }
-        @else {
-        <input type="search" placeholder="e.g. Home" class="input placeholder-gray-350 w-full join-item"
-          [(ngModel)]="address.label" />
-        }
 
-        <button class="btn text-lg tooltip" [attr.data-tip]="address.isFavourite ? 'Favourite' : 'Not Favourite'" (click)="address.isFavourite=!address.isFavourite">
+        <button [class]="'btn text-lg tooltip ' + (address.isFavourite ? 'border-neutral' : '')"
+          [attr.data-tip]="address.isFavourite ? 'Favourite' : 'Not Favourite'"
+          (click)="address.isFavourite=!address.isFavourite">
           @if (address.isFavourite) {
           <fa-icon [icon]="['fas', 'star']"></fa-icon>
           } @else {
@@ -132,8 +147,8 @@
         </button>
       </div>
 
-      @if (error(errorTypes.Label)) {
-      <p class="justify-end w-full font-mono text-sm text-error">{{ error(errorTypes.Label)?.message }}</p>
+      @if (getError(errorTypes.Label)) {
+      <p class="justify-end w-full font-mono text-sm text-error">{{ getError(errorTypes.Label)?.message }}</p>
       } @else if (address.isFavourite) {
       <p class="label justify-end w-full">Marked as Favourite</p>
       }

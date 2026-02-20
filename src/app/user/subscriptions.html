@@ -64,7 +64,7 @@
                 </div>
                 <p></p>
                 <div class="flex gap-2 px-2">
-                  <a class="link">View Order</a>
+                  <a class="link">View Receipt</a>
                   <a class="link text-error">Cancel this Order</a>
                 </div>
               </div>
@@ -90,7 +90,7 @@
                 <p class="text-sm text-gray-500">{{ getTotalItems(getSelectedItems(sub.category)) }} items</p>
               </div>
             </div>
-            <p class="font-bold">${{ getTotal(sub) | number: '1.2-2' }}</p>
+            <p class="font-bold">${{ getTotal(getSelectedItems(sub.category)) | number: '1.2-2' }}</p>
           </div>
 
           <div class="collapse-content bg-base-300 text-sm">
@@ -114,8 +114,8 @@
                   </span>
                 </div>
                 <div class="flex-1 flex flex-col">
-                  <h2 class="font-bold">Delivery Frequency:</h2>
-                  <p>{{ sub.freq > 1 ? (sub.freq + ' Weeks') : 'Weekly' }}</p>
+                  <h2 class="font-bold">Get it Every:</h2>
+                  <p>{{ sub.freq > 1 ? (sub.freq + ' Weeks') : 'Week' }}</p>
                 </div>
               </div>
               <br />
@@ -139,7 +139,7 @@
 
               <div class="flex justify-end items-end gap-2">
                 <button class="btn btn-neutral" (click)="openChangeSubscriptionDialogDialog(sub)">Change</button>
-                <button class="btn" (click)="openOrderSummaryDialog(sub)">View Order</button>
+                <button class="btn" (click)="openOrderSummaryDialog(sub)">View Receipt</button>
               </div>
             </div>
           </div>

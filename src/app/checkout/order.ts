@@ -51,7 +51,7 @@ export class Tip {
   }
 
   protected get tipAmount(): number {
-    return Tip.getAmount(this.shoppingCart, this.selectedTip, this.deliverySettings.tipAmount);
+    return Tip.getAmount(this.subTotal, this.selectedTip, this.deliverySettings.tipAmount);
   }
 
   constructor(
@@ -102,188 +102,16 @@ export class Tip {
     });
   }
 
-  static getAmount(cart: Cart, tip?: DriverTip, amount?: number): number {
+  static getAmount(subTotal: number, tip?: DriverTip, amount?: number): number {
     if (tip == DriverTip.Tip_Custom) {
       return amount ? amount : 0;
     }
 
     if (tip) {
       const percentage = Number(tip);
-      return CartService.subTotal(cart) * percentage / 100;
+      return subTotal * percentage / 100;
     }
 
     return 0.0;
-  }
-}
-
-
-@Component({
-  selector: 'order-total',
-  imports: [FormsModule, FontAwesomeModule, DecimalPipe, Tip],
-  template: `
-<div class="flex flex-col gap-1">
-  <div class="flex justify-between">
-    <h1>SubTotal:</h1>
-    <div class="flex flex-col items-end">
-      <div class="flex gap-2">
-        @if (originalPrice != subTotal) {
-        <p class="font-mono text-sm label line-through">{{ '$' }}{{ originalPrice | number: '1.2-2' }}</p>
-        }
-        <p class="font-mono">{{ '$' }}{{ subTotal | number: '1.2-2' }}</p>
-      </div>
-      @if (originalPrice > subTotal) {
-      <p class="text-success text-right">Saving {{ '$' }}{{ (originalPrice - subTotal) | number: '1.2-2' }}</p>
-      }
-    </div>
-  </div>
-
-  @if (couponDiscount > 0) {
-  <div class="flex justify-between items-center text-success">
-    <h1>Coupon discount:</h1>
-    <p class="font-mono text-right">-{{ '$' }}{{ couponDiscount | number: '1.2-2' }}</p>
-  </div>
-  }
-
-  @if (isDelivery) {
-  <div class="flex justify-between items-center">
-    <div class="flex gap-1">
-      <h1>Delivery Fee:</h1>
-      <div class="dropdown dropdown-center">
-        <div tabindex="0" role="button" class="link">
-          <fa-icon icon="circle-info"></fa-icon>
-        </div>
-
-        <div tabindex="0" class="dropdown-content z-2 pt-2 shadow-xl">
-          <div tabindex="0" class="rounded-box bg-neutral text-white text-wrap p-1 px-2 w-52">
-            <p>
-              Delivery fee varies for each merchant based on your location and availability of nearby couriers.
-            </p>              
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <p class="font-mono text-right">{{ '$' }}{{ deliveryFee | number: '1.2-2' }}</p>
-  </div>
-  }
-
-  <div class="flex justify-between">
-    <span class="flex flex-col">
-      <h1>Taxes:</h1>
-      <h2 class="label text-xs px-2">
-        {{ GST_Rate }}% GST: {{ '$' }}{{ GST | number: '1.2-2' }}<br />
-        {{ PST_Rate }}% PST: {{ '$' }}{{ PST | number: '1.2-2' }}
-      </h2>
-    </span>
-    <p class="font-mono text-right">{{ '$' }}{{ (GST + PST) | number: '1.2-2' }}</p>
-  </div>
-
-  <div class="divider"></div>
-
-  @if (isDelivery) {
-  @if (!order) {
-  <add-tip></add-tip>
-  } @else {
-  <div class="flex justify-between items-center">
-    <h1>Tip:</h1>
-    <p class="font-mono text-right">{{ '$' }}{{ tipAmount | number: '1.2-2' }}</p>
-  </div>
-  <p class="label text-sm">100% of your tip went to the courier.</p>
-  }
-  <div class="divider"></div>
-  }
-
-  <div class="flex justify-between text-xl">
-    <b>Total:</b>
-    <b class="font-mono text-right">{{ '$' }}{{ checkoutPrice | number: '1.2-2' }}</b>
-  </div>
-  <div class="flex justify-end">
-    @if (getLastFourDigits != undefined) {
-    <label class="label">VISA **** {{ getLastFourDigits }}</label>
-    }
-  </div>
-</div>
-`
-})
-export class OrderTotal {
-
-  static readonly GST_Rate: number = 7; // Percentage %
-  static readonly PST_Rate: number = 4; // Percentage %
-
-  protected GST_Rate = OrderTotal.GST_Rate;
-  protected PST_Rate = OrderTotal.PST_Rate;
-
-  @Input()
-  public order?: IOrderHistory;
-
-  protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
-  protected shoppingCart: Cart = new Map();
-  protected couponDiscount: number = 0.0;
-
-  protected get isDelivery(): boolean {
-    return this.order ? (this.order.deliveryType != undefined) : (this.deliverySettings.mode == DeliveryMode.Delivery);
-  }
-
-  protected get deliveryFee(): number {
-    return this.isDelivery ? CartService.deliveryFee() : 0;
-  }
-
-  protected get numItems() {
-    return CartService.numItems(this.order ? this.order.cart : this.shoppingCart);
-  }
-
-  protected get originalPrice(): number {
-    return CartService.originalSubTotal(this.order ? this.order.cart : this.shoppingCart);
-  }
-
-  protected get subTotal(): number {
-    return CartService.subTotal(this.order ? this.order.cart : this.shoppingCart);
-  }
-
-  protected get GST(): number {
-    return this.subTotal * (OrderTotal.GST_Rate / 100);
-  }
-
-  protected get PST(): number {
-    return this.subTotal * (OrderTotal.PST_Rate / 100);
-  }
-
-  protected get tipAmount(): number {
-    return this.order ? this.order.tipAmount : Tip.getAmount(this.shoppingCart, this.deliverySettings.tip, this.deliverySettings.tipAmount);
-  }
-
-  protected get checkoutPrice(): number {
-    return this.subTotal + this.deliveryFee + this.GST + this.PST - this.couponDiscount + this.tipAmount;
-  }
-
-  protected get getLastFourDigits(): string | undefined {
-    if (this.deliverySettings.payment) {
-      const cardNumber = this.deliverySettings.payment.cardNumber;
-      return cardNumber.slice(-4);
-    }
-
-    return undefined;
-  }
-
-  constructor(
-    private deliveryService: DeliveryService,
-    private cartService: CartService,
-    private cdr: ChangeDetectorRef) { }
-
-  protected ngOnInit() {
-    this.deliveryService.deliverySettings$.subscribe(data => {
-      this.deliverySettings = data;
-      this.cdr.detectChanges();
-    });
-
-    this.cartService.shoppingCart$.subscribe(data => {
-      this.shoppingCart = data;
-      this.cdr.detectChanges();
-    });
-
-    this.cartService.coupon$.subscribe(data => {
-      this.couponDiscount = data;
-      this.cdr.detectChanges();
-    });
   }
 }

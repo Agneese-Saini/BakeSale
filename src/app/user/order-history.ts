@@ -1,13 +1,12 @@
-import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { IPayMethod, IUser, UserService } from './user';
 import { Cart, CartService } from '../checkout/cart';
 import { DecimalPipe } from '@angular/common';
-import { Item } from '../content/item';
-import { DeliveryType } from '../header/addressBook';
-import { OrderSummary } from "./view-receipt";
+import { DeliveryService, DeliveryType } from '../header/addressBook';
+import { OrderItems } from "./view-receipt";
 import { IAddress } from '../header/addressDialog';
 import { ITime } from '../header/timeslots';
 
@@ -23,12 +22,13 @@ export interface IOrderHistory {
   payment: IPayMethod,
   deliveryType?: DeliveryType,
   deliveryInstructions?: string,
-  inProgress?: boolean
+  inProgress?: boolean,
+  statusTime?: number
 };
 
 @Component({
   selector: 'order-history',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe, OrderSummary],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe, OrderItems],
   templateUrl: "order-history.html"
 })
 export class OrderHistory {
@@ -43,13 +43,14 @@ export class OrderHistory {
 
   constructor(
     private service: UserService,
+    private deliveryService: DeliveryService,
     private cdr: ChangeDetectorRef) { }
 
   protected numItems = CartService.numItems;
 
   protected checkoutPrice(order: IOrderHistory): number {
     const subTotal = CartService.subTotal(order.cart);
-    const deliveryFee = order.deliveryType != undefined ? CartService.deliveryFee() : 0;
+    const deliveryFee = order.deliveryType != undefined ? this.deliveryService.getDeliveryFee() : 0;
     const GST = subTotal * (order.gstPercentage / 100);
     const PST = subTotal * (order.pstPercentage / 100);
 

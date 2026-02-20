@@ -1,0 +1,112 @@
+@for (item of selectedItems; track item) {
+<div class="flex justify-between items-center">
+  <b>{{ item.name }} {{ item.amount > 1 ? ('(' + item.amount + ')') : '' }}</b>
+  <div class="flex gap-2 items-center">
+    @if (item.price.previousPrice) {
+    <p class="label line-through">{{ '$' }}{{ getPrice(item, item.price.previousPrice) | number: '1.1-2' }}</p>
+    }
+    <p>{{ '$' }}{{ getPrice(item) | number: '1.2-2' }}</p>
+  </div>
+</div>
+}
+
+<div class="divider px-2"></div>
+
+<div class="flex justify-between">
+  <P>SubTotal:</P>
+  <div class="flex flex-col items-end justify-end">
+    <div class="flex gap-2">
+      @if (getSavings() != 0) {
+      <p class="label line-through">{{ '$' }}{{ (getSubTotal() + getSavings()) | number: '1.2-2' }}</p>
+      }
+      <b>{{ '$' }}{{ getSubTotal() | number: '1.2-2' }}</b>
+    </div>
+    @if (getSavings() != 0) {
+    <p class="text-right text-success">Saving: {{ '$' }}{{ getSavings() | number: '1.2-2' }}</p>
+    }
+  </div>
+</div>
+
+@if (getCouponDiscount() > 0) {
+<div class="flex justify-between items-center pt-1">
+  <p>Coupon discount:</p>
+  <p>-{{ '$' }}{{ getCouponDiscount() | number: '1.2-2' }}</p>
+</div>
+}
+
+<div class="flex justify-between items-center pt-1">
+  <span class="flex flex-col">
+    <div class="flex gap-1">
+      <h1>Taxes:</h1>
+      <div class="dropdown">
+        <div tabindex="0" role="button" class="link">
+          <fa-icon icon="circle-info"></fa-icon>
+        </div>
+
+        <div tabindex="0" class="dropdown-content z-2 pt-2 shadow-xl">
+          <div tabindex="0" class="rounded-box bg-neutral text-white text-wrap p-1 px-2 w-32">
+            <p>
+              {{ GST_Rate }}% GST: {{ '$' }}{{ getGST() | number: '1.2-2' }}<br />
+              {{ PST_Rate }}% PST: {{ '$' }}{{ getPST() | number: '1.2-2' }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </span>
+
+  <p class="font-mono text-right">{{ '$' }}{{ (getPST() + getGST()) | number: '1.2-2' }}</p>
+</div>
+
+<div class="flex justify-between items-center">
+  <p>Service Fee:</p>
+  <p>{{ '$' }}{{ getServiceFee() | number: '1.2-2' }}</p>
+</div>
+
+@if (isDelivery) {
+<div class="flex justify-between items-center">
+  <div class="flex gap-1">
+    <h1>Delivery Fee:</h1>
+    <div class="dropdown dropdown-center">
+      <div tabindex="0" role="button" class="link">
+        <fa-icon icon="circle-info"></fa-icon>
+      </div>
+
+      <div tabindex="0" class="dropdown-content z-2 pt-2 shadow-xl">
+        <div tabindex="0" class="rounded-box bg-neutral text-white text-wrap p-1 px-2 w-52">
+          <p>
+            Delivery fee varies for each merchant based on your location and availability of nearby couriers.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (getDeliveryFee() == 0) {
+  <p class="text-success">Free</p>
+  } @else {
+  <p>{{ '$' }}{{ getDeliveryFee() | number: '1.2-2' }}</p>
+  }
+</div>
+}
+
+<div class="divider px-2"></div>
+
+@if (isDelivery && !subscription) {
+@if (!order) {
+<add-tip></add-tip>
+} @else {
+<div class="flex justify-between items-center">
+  <h1>Tip:</h1>
+  <p class="font-mono text-right">{{ '$' }}{{ getTipAmounmt() | number: '1.2-2' }}</p>
+</div>
+<p class="label text-sm">100% of your tip went to the courier.</p>
+}
+<div class="divider"></div>
+}
+
+<div class="flex justify-between gap-4 text-lg">
+  <b>Total:</b>
+  <b>{{ '$' }}{{ getTotal() | number: '1.2-2' }}</b>
+</div>
+<p class="text-right">{{ getCustomText() }}</p>

@@ -1,24 +1,35 @@
 @if (isDelivery) {
 <div class="flex flex-col gap-2">
-  <input type="search" tabindex="-1" class="input input-bordered rounded-full placeholder-gray-350 w-full" [disabled]="isSelecting"
-    placeholder="Enter an address" />
+  @if (searchMode == searchModes.AddFavourite) {
+  <a class="link p-2 w-fit" style="text-decoration: none;" (click)="closeSelectLabel()">
+    <fa-icon icon="arrow-left"></fa-icon> Go Back
+  </a>
+  }
+  @else {
+  <input type="search" tabindex="-1" class="input input-bordered rounded-full placeholder-gray-350 w-full"
+    placeholder="Enter an address" [(ngModel)]="searchInput" (input)="onSearch()" />
+  }
 
+  @if (searchMode != searchModes.ShowResults) {
   <div class="flex gap-2 overflow-x-auto py-2">
     @for (addy of addressBook; track addy) {
     @if (addy.isFavourite) {
-    <button [class]="'btn btn-soft rounded-full h-14 ' + (isSelecting == true ? 'opacity-50' : '')"
-      [disabled]="isSelecting == true" (click)="onAddressChange(addy, true)">
+    <button [class]="'btn btn-soft rounded-full h-14 ' + (searchMode == searchModes.AddFavourite ? 'opacity-50' : '')"
+      [disabled]="searchMode == searchModes.AddFavourite" (click)="onAddressChange(addy, true)">
       <span class="flex flex-col">
-        <span>
-          @if (addy.label.toLowerCase() == "home") {
-          <fa-icon class="text-primary" icon="home"></fa-icon>
-          } @else if (addy.label.toLowerCase() == "work") {
-          <fa-icon class="text-secondary" icon="suitcase"></fa-icon>
-          } @else {
-          <fa-icon icon="star"></fa-icon>
-          }
-          {{ addy.label }}
+        @if (addy.label.toLowerCase() == "home") {
+        <span class="text-primary">
+          <fa-icon icon="home"></fa-icon> Home
         </span>
+        } @else if (addy.label.toLowerCase() == "work") {
+        <span class="text-secondary">
+          <fa-icon icon="suitcase"></fa-icon> Work
+        </span>
+        } @else {
+        <span>
+          <fa-icon class="text-warning" icon="star"></fa-icon> {{ addy.label }}
+        </span>
+        }
 
         <i class="text-xs text-gray-500 font-medium">{{ addy.addressLine | truncate: 24 }}</i>
       </span>
@@ -28,7 +39,7 @@
 
     @if (!homeAddressExist) {
     <button
-      [class]="'btn rounded-full h-14 ' + (isSelecting && selectingForLabel==='Home' ? 'btn-outline btn-primary' : 'btn-soft')"
+      [class]="'btn rounded-full h-14 ' + (searchMode == searchModes.AddFavourite && favouriteLabel==='Home' ? 'btn-outline' : 'btn-soft')"
       (click)="setSelectLabel('Home')">
       <span>
         <fa-icon class="text-primary" icon="home"></fa-icon> Set Home
@@ -38,7 +49,7 @@
 
     @if (!workAddressExist) {
     <button
-      [class]="'btn rounded-full h-14 ' + (isSelecting && selectingForLabel==='Work' ? 'btn-outline btn-secondary' : 'btn-soft')"
+      [class]="'btn rounded-full h-14 ' + (searchMode == searchModes.AddFavourite && favouriteLabel==='Work' ? 'btn-outline' : 'btn-soft')"
       (click)="setSelectLabel('Work')">
       <span>
         <fa-icon class="text-secondary" icon="suitcase"></fa-icon> Set Work
@@ -47,53 +58,101 @@
     }
 
     <button
-      [class]="'btn rounded-full h-14 ' + (isSelecting && selectingForLabel===undefined ? 'btn-outline' : 'btn-soft')"
+      [class]="'btn rounded-full h-14 ' + (searchMode == searchModes.AddFavourite && favouriteLabel===undefined ? 'btn-outline' : 'btn-soft')"
       (click)="setSelectLabel(undefined)">
       <fa-icon icon="star"></fa-icon> Add Favourite
     </button>
   </div>
+  }
 </div>
 <br />
 }
 
-@if (isSelecting == true) {
+@if (searchMode == searchModes.AddFavourite) {
 <h1 class="text-lg">
   Select an address to add as favourite:
 </h1>
-<div class="bg-base-100 border border-neutral-300 rounded-box overflow-x-auto min-h-64 lg:min-h-72 ">
-  <ul class="menu w-full">
-    @if (addressBook.length > 0 && hasFavouritesToAdd) {
-    @for (addy of addressBook; track addy) {
-    @if (selectingForLabel != undefined || !addy.isFavourite) {
-    <div class="bg-base-200 flex justify-between items-center">
-      <li class="flex-1 " (click)="selectLabelAddress(addy)">
-        <span class="flex flex-col text-wrap gap-0 items-start">
-          <b>{{ addy.label }} @if (addy.isFavourite) { <fa-icon class="opacity-65 text-xs" icon="star"></fa-icon>}</b>
-          <p class="text-xs">{{ addy.addressLine }}, {{ addy.city }}</p>
-          <p class="text-xs">{{ addy.province }} {{ addy.postal }}</p>
+<div class="flex flex-col gap-2">
+  <div class="bg-base-100 border border-neutral-300 rounded-box overflow-x-auto min-h-64 lg:min-h-72 max-h-98">
+    <ul class="menu w-full gap-1">
+      @if (addressBook.length > 0 && hasFavouritesToAdd) {
+      @for (addy of addressBook; track addy) {
+      @if (favouriteLabel != undefined || !addy.isFavourite) {
+      <div class="bg-base-200 flex justify-between items-center">
+        <li class="flex-1" (click)="selectLabelAddress(addy)">
+          <span class="flex flex-col text-wrap gap-0 items-start">
+            <b class="text-lg">{{ addy.label }} @if (addy.isFavourite) { <fa-icon class="opacity-65 text-xs"
+                icon="star"></fa-icon>}</b>
+            <p class="text-xs">{{ addy.addressLine }}, {{ addy.city }}</p>
+            <p class="text-xs">{{ addy.province }} {{ addy.postal }}</p>
+          </span>
+        </li>
+
+        <span class="label tooltip tooltip-left" data-tip="View on Map">
+          <a class="btn btn-ghost btn-circle text-xl">
+            <fa-icon icon="map-location-dot"></fa-icon>
+          </a>
         </span>
-      </li>
-
-      <span class="label tooltip tooltip-left" data-tip="View on Map">
-        <a class="btn btn-ghost p-1 text-xl">
-          <fa-icon icon="map-location-dot"></fa-icon>
-        </a>
-      </span>
-    </div>
-    }
-    }
-    }
-    @else {
-    <div class="flex justify-center p-4">
-      <i>No address to add!</i>
-    </div>
-    }
-  </ul>
+      </div>
+      }
+      }
+      }
+      @else {
+      <div class="flex justify-center p-4">
+        <i>No address to add!</i>
+      </div>
+      }
+    </ul>
+  </div>
 </div>
+}
+@else if (searchMode == searchModes.ShowResults) {
+<div class="bg-base-100 border border-neutral-300 rounded-box overflow-y-auto min-h-64 lg:min-h-72 max-h-98">
+  <div class="flex flex-col gap-1">
+    @if (isDelivery) {
+    <button class="btn p-4 m-2" m-2 (click)="openAddressBookDialog()">
+      <fa-icon icon="location-crosshairs"></fa-icon> Use Current Location
+    </button>
+    }
 
-<button class="link p-4" style="text-decoration: none;" (click)="closeSelectLabel()">
-  <fa-icon icon="arrow-left"></fa-icon> Go Back
-</button>
+    <div class="divider m-2">Saved Address</div>
+    <ul class="menu w-full gap-1">
+      <div class="bg-base-200 flex justify-between items-center">
+        <li class="flex-1">
+          <div class="flex flex-col items-start gap-0 rounded-box p-2">
+            <b>Label</b>
+            <p>123 Manitoba ave., Winnipeg</p>
+            <p class="text-sm">Manitoba R1T 2G3</p>
+          </div>
+        </li>
+        <span class="label tooltip tooltip-left" data-tip="View on Map">
+          <a class="btn btn-ghost btn-circle text-xl">
+            <fa-icon icon="map-location-dot"></fa-icon>
+          </a>
+        </span>
+      </div>
+    </ul>
+
+    <div class="divider m-2">Search Results</div>
+    <ul class="menu w-full gap-1">
+      <div class="bg-base-200 flex justify-between items-center">
+        <li class="flex-1">
+          <div class="flex flex-col items-start gap-0 rounded-box p-2">
+            <b>123 Manitoba ave., Winnipeg</b>
+            <p class="text-sm">Manitoba R1T 2G3</p>
+          </div>
+        </li>
+        <span class="label tooltip tooltip-left" data-tip="View on Map">
+          <a class="btn btn-ghost btn-circle text-xl">
+            <fa-icon icon="map-location-dot"></fa-icon>
+          </a>
+        </span>
+      </div>
+    </ul>
+  </div>
+</div>
+<br />
+<br />
 }
 @else {
 <h1 class="font-medium">
@@ -103,7 +162,7 @@
   Pickup Locations:
   }
 </h1>
-<div class="bg-base-100 border border-neutral-300 rounded-box overflow-x-auto min-h-64 lg:min-h-72 p-2">
+<div class="bg-base-100 border border-neutral-300 rounded-box overflow-x-auto min-h-64 lg:min-h-72 max-h-98 p-2">
   <div class="flex flex-col gap-1">
     @if (isDelivery) {
     <button class="btn p-4" (click)="openAddressBookDialog()">
@@ -114,32 +173,32 @@
     @if (addressBook.length > 0) {
     @for (addy of addressBook; track addy) {
     <div [class]="'rounded-box p-2' + ' ' + (selectedAddress == addy ? 'bg-base-300' : 'bg-base-200')">
-      <div class="flex justify-between gap-8">
-        <label class="label cursor-pointer">
+      <div class="flex justify-between items-center">
+        <label class="label cursor-pointer text-neutral">
           <input type="radio" class="radio radio-neutral" [value]="addy" [(ngModel)]="selectedAddress"
             (change)="onAddressChange(addy)" />
           <span class="flex flex-col text-wrap">
-            <b>{{ addy.label }} @if (addy.isFavourite) { <fa-icon class="opacity-65 text-xs" icon="star"></fa-icon>}</b>
+            <b class="text-lg">{{ addy.label }} @if (addy.isFavourite) { <fa-icon class="opacity-65 text-xs"
+                icon="star"></fa-icon>}</b>
             <p class="text-xs">{{ addy.addressLine }}, {{ addy.city }}</p>
             <p class="text-xs">{{ addy.province }} {{ addy.postal }}</p>
           </span>
         </label>
-        <span class="flex items-center">
-          @if (isDelivery) {
-          <span class="label tooltip tooltip-left" data-tip="Edit Address">
-            <a class="btn btn-ghost btn-circle p-1 text-xl" (click)="openAddressBookDialog(addy)">
-              <fa-icon icon="pencil"></fa-icon>
-            </a>
-          </span>
-          }
-          @else {
-          <span class="label tooltip tooltip-left" data-tip="View on Map">
-            <a class="btn btn-ghost btn-circle p-1 text-xl">
-              <fa-icon icon="map-location-dot"></fa-icon>
-            </a>
-          </span>
-          }
+
+        @if (isDelivery) {
+        <span class="label tooltip tooltip-left" data-tip="Edit Address">
+          <a class="btn btn-ghost btn-circle text-xl" (click)="openAddressBookDialog(addy)">
+            <fa-icon icon="pencil"></fa-icon>
+          </a>
         </span>
+        }
+        @else {
+        <span class="label tooltip tooltip-left" data-tip="View on Map">
+          <a class="btn btn-ghost btn-circle text-xl">
+            <fa-icon icon="map-location-dot"></fa-icon>
+          </a>
+        </span>
+        }
       </div>
     </div>
     }
@@ -151,19 +210,19 @@
     }
   </div>
 </div>
+}
 
-@if (timeslot == true) {
+@if (timeslot == true && searchMode != searchModes.AddFavourite) {
 <br />
 <div class="flex flex-col">
   <h1 class="font-medium">Time preference:</h1>
   <div class="bg-base-100 border border-neutral-300 rounded-box p-2">
     <div class="flex justify-between items-center px-2">
-      <label [class]="settings.timeslot ? '' : 'text-error'">
+      <label>
         <fa-icon icon="clock"></fa-icon> {{ settings.timeslot ? settings.timeslot.label : 'Select a timeslot' }}
       </label>
       <button class="btn btn-sm btn-neutral" (click)="openTimeslotsDialog()">Schedule</button>
     </div>
   </div>
 </div>
-}
 }

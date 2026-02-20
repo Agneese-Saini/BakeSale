@@ -3,29 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { IUser, UserService } from './user';
-import { Cart, CartService } from '../checkout/cart';
+import { CartService } from '../checkout/cart';
 import { DecimalPipe } from '@angular/common';
 import { IItem } from '../content/item';
-import { DeliveryType } from '../header/addressBook';
-import { IAddress } from '../header/addressDialog';
-import { ITime } from '../header/timeslots';
 import { Category, Recipe, IRecipe, RecipeGroup } from '../custom/recipe';
 import { ItemChoiceList } from '../content/itemChoice';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-export interface IOrderHistory {
-  tipAmount: number,
-  gstPercentage: number,
-  pstPercentage: number,
-  couponDiscount: number,
-  cart: Cart,
-  date: number,
-  time: ITime,
-  address: IAddress,
-  payment: string,
-  deliveryType?: DeliveryType,
-  deliveryInstructions?: string
-};
+import { IOrderHistory } from './order-history';
 
 @Component({
   selector: 'recipe-book',
@@ -64,13 +48,8 @@ export class RecipeBook {
     return this.subTotal(order) * (order.pstPercentage / 100);
   }
 
-  protected get deliveryFee(): number {
-    return CartService.deliveryFee();
-  }
-
   protected checkoutPrice(order: IOrderHistory): number {
     return this.subTotal(order)
-      + this.deliveryFee
       + (this.GST(order) + this.PST(order))
       - order.couponDiscount
       + order.tipAmount;

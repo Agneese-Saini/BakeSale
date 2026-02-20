@@ -5,11 +5,13 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { IUser, UserService } from './user';
 import { IItem, Item } from '../content/item';
 import { DatePipe, DecimalPipe, KeyValuePipe } from '@angular/common';
-import { ISubscription, Subscribe, SubscribeItemList, SubscribeOrderSummary } from '../custom/subscribe';
+import { ISubscription, Subscribe } from '../custom/subscribe';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CartItemsDialog } from '../checkout/cartItemDialog';
 import { ICategory } from '../header/category';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SubscribeItemList } from '../custom/subscribeItemList';
+import { Receipt } from "../custom/receipt";
 
 @Component({
   selector: 'subscriptions',
@@ -72,13 +74,13 @@ export class Subscriptions {
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, MatDialogModule, SubscribeOrderSummary],
+  imports: [FormsModule, FontAwesomeModule, MatDialogModule, Receipt],
   template: `
 <div class="bg-base-200">
   <div mat-dialog-content>
     <h2 class="font-bold">Order Summary:</h2>
     <div class="bg-base-300 rounded-box p-4">
-      <subscribe-order-summary [subscription]="data"></subscribe-order-summary>
+      <receipt [subscription]="data"></receipt>
     </div>
     <br />
 
@@ -122,34 +124,6 @@ export class OrderSummaryDialog {
     private dialogRef: MatDialogRef<CartItemsDialog>) { }
 
   protected ngOnInit() {
-  }
-
-  protected get selectedItems(): IItem[] {
-    return SubscribeItemList.getSelectedItems(this.data.category);
-  }
-
-  protected getSubTotal(): number {
-    return Subscribe.getSubTotal(this.data);
-  }
-
-  protected getSavings(): number {
-    return Subscribe.getSavings(this.data);
-  }
-
-  protected getTaxes(): number {
-    return Subscribe.getTaxes(this.data);
-  }
-
-  protected getServiceFee(): number {
-    return Subscribe.getServiceFee(this.data);
-  }
-
-  protected getDeliveryFee(): number {
-    return Subscribe.getDeliveryFee(this.data);
-  }
-
-  protected getTotal(): number {
-    return Subscribe.getTotal(this.data);
   }
 
   protected getLastFourDigits(cardNumber: string): string {

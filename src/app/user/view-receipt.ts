@@ -1,4 +1,4 @@
-import { DecimalPipe, KeyValuePipe } from "@angular/common";
+import { DatePipe, DecimalPipe, KeyValuePipe } from "@angular/common";
 import { ChangeDetectorRef, Component, Input } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
@@ -9,10 +9,10 @@ import { IOrderHistory } from "./order-history";
 import { Item } from "../content/item";
 import { CartService } from "../checkout/cart";
 import { DeliveryType } from "../header/addressBook";
-import { OrderTotal } from "../checkout/order";
+import { Receipt } from "../custom/receipt";
 
 @Component({
-  selector: 'order-summary',
+  selector: 'order-items',
   imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe, KeyValuePipe, ItemChoiceSummary],
   template: `
 @if (order) {
@@ -84,7 +84,7 @@ import { OrderTotal } from "../checkout/order";
 }
 `
 })
-export class OrderSummary {
+export class OrderItems {
 
   @Input({ required: true })
   public order?: IOrderHistory;
@@ -101,9 +101,9 @@ export class OrderSummary {
 };
 
 
-@Component({
+@Component({  
   selector: 'view-receipt',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, OrderSummary, OrderTotal],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, OrderItems, Receipt, DatePipe],
   templateUrl: "view-receipt.html"
 })
 export class ViewReceipt {
@@ -114,6 +114,10 @@ export class ViewReceipt {
 
   protected get totalItems() {
     return this.order ? CartService.totalItems(this.order.cart) : 0;
+  }
+
+  protected get currentDate(): Date {
+      return new Date();
   }
 
   constructor(
