@@ -34,7 +34,7 @@
 @if (selectedCategory != category.Setup) {
 <div class="flex justify-center py-4">
   <ul class="timeline overflow-x-auto">
-    @for (cat of categories | keyvalue; track cat.key) {
+    @for (cat of categories | keyvalue; track $index) {
     <li>
       @if (cat.key != firstCategory) {
       <hr />
@@ -83,7 +83,7 @@
         <h1 class="font-bold">Select the type of Cake you want to build:</h1>
         <div class="overflow-x-auto">
           <ul class="menu menu-horizontal gap-2">
-            @for (type of customTypes | keyvalue; track type.key) {
+            @for (type of customTypes | keyvalue; track $index) {
             <li [class]="selectedType != type.key ? 'menu-disabled' : ''">
               <a [class]="selectedType == type.key ? 'menu-active' : ''" (click)="onCustomTypeChange(type.key)">
                 <fa-icon [icon]="type.value.icon" class="text-2xl"></fa-icon>
@@ -104,7 +104,7 @@
     <div class="flex flex-col gap-2 p-4">
       @if (numLayers > 1) {
       <div class="tabs tabs-box tabs-lg justify-center">
-        @for (layer of layers | keyvalue; track layer.key) {
+        @for (layer of layers | keyvalue; track $index) {
         <a role="tab"
           [class]="'tab ' + (selectedLayer==layer.key ? 'tab-active bg-primary text-white font-bold' : '') + ' ' + (hasError(selectedCategory, currentCategory.skipNonSelection, undefined, layer.key) ? 'text-error' : '')"
           (click)="onSelectLayer(layer.key)">
@@ -115,7 +115,7 @@
       }
 
       <div role="tablist" class="tabs tabs-border justify-center">
-        @for (choice of currentLayer | keyvalue; track choice.key) {
+        @for (choice of currentLayer | keyvalue; track $index) {
         <a role="tab"
           [class]="'tab ' + (selectedChoice==choice.key ? 'tab-active' : '') + ' ' + (hasError(selectedCategory, currentCategory.skipNonSelection, choice.key) ? 'text-error' : '')"
           (click)="onSelectChoice(choice.key)">
@@ -168,7 +168,7 @@
     <!-- Choice list -->
     <div class="flex flex-col gap-2">
       @let last = getLastChoice(currentCategory.choices);
-      @for (entry of currentCategory.choices | keyvalue; track entry.key) {
+      @for (entry of currentCategory.choices | keyvalue; track $index) {
       <item-choice-list class="w-full p-4" [type]="entry.key" [choices]="entry.value"></item-choice-list>
       @if (entry.key != last) {
       <div class="bg-base-300 h-2"></div>
@@ -191,7 +191,7 @@
 
     <!-- Buttons -->
     <footer class="flex flex-col gap-2 p-4">
-      @for (buttons of currentCategory.buttons; track buttons) {
+      @for (buttons of currentCategory.buttons; track $index) {
       @switch (buttons.type) {
       @case (buttonType.Finish) {
       <button [class]="'btn btn-lg w-full btn-warning ' + (!hasEnoughPoints ? 'btn-disabled' : '')" (click)="next()">
@@ -240,7 +240,7 @@
       </div>
 
       <div class="indicator-item indicator-top indicator-start " style="--indicator-x: 1.0em; --indicator-y: 0.5em;">
-        @for (layer of layers | keyvalue; track layer.key) {
+        @for (layer of layers | keyvalue; track $index) {
         <div class="collapse collapse-sm ">
           <input type="radio" name="layer-accordion" [checked]="selectedLayer==layer.key" />
           <div class="collapse-title font-semibold p-0">

@@ -43,7 +43,7 @@
       </div>
 
       <div class="flex flex-wrap justify-center gap-2">
-        @for (img of item.image; track img) {
+        @for (img of item.image; track $index) {
         <img [class]="'link rounded-box h-12 w-12 ' + (displayImage == img ? 'ring ring-2' : '')" [src]="img"
           (click)="selectImage(img)" />
         }
@@ -84,7 +84,7 @@
 
     <div class="flex flex-col gap-2">
       @let last = getLastChoice(item.choices);
-      @for (entry of item.choices | keyvalue; track entry.key) {
+      @for (entry of item.choices | keyvalue; track $index) {
       <item-choice-list class="w-full p-4" [type]="entry.key" [choices]="entry.value"></item-choice-list>
       @if (entry.key != last) {
       <div class="bg-base-300 h-2"></div>
@@ -103,11 +103,11 @@
             <select [class]="'select select-lg w-fit ' + ((this.item.amount > 1) ? 'outline outline-3 font-bold' : '')"
               [(ngModel)]="item.amount">
               @if (item.maxAmount) {
-              @for (num of list(item.maxAmount); track num) {
+              @for (num of list(item.maxAmount); track $index) {
               <option [value]="num">{{ num }}</option>
               }
               } @else {
-              @for (num of list(defaultMaxAmount); track num) {
+              @for (num of list(defaultMaxAmount); track $index) {
               <option [value]="num">{{ num }}</option>
               }
               }

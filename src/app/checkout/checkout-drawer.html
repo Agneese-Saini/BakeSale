@@ -21,7 +21,7 @@
 
     <!-- Main Content Area (stretches) -->
     <main class="flex flex-col gap-1 overflow-y-auto">
-      @for (cartItem of shoppingCart | keyvalue; track cartItem.key) {
+      @for (cartItem of shoppingCart | keyvalue; track $index) {
       <cart-item-list [items]="cartItem.value" />
       }
     </main>

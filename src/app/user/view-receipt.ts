@@ -18,8 +18,8 @@ import { Receipt } from "../custom/receipt";
 @if (order) {
 <table class="table">
   <tbody>
-    @for (items of order.cart | keyvalue; track items.key) {
-    @for (item of items.value; track item) {
+    @for (items of order.cart | keyvalue; track $index) {
+    @for (item of items.value; track $index) {
     <tr>
       <td>
         <div class="flex items-center justify-between">

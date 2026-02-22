@@ -203,7 +203,7 @@ export class Receipt {
       <div class="bg-base-300 rounded-box flex flex-col p-4">
         <h2 class="font-bold">Your delivery dates:</h2>
         <div class="flex flex-col gap-2 font-mono">
-          @for (day of data.days | keyvalue; track day.key) {
+          @for (day of data.days | keyvalue; track $index) {
           <p>{{ selectedDate | date }} - {{ day.value.name }}</p>
           }
           <p>...</p>

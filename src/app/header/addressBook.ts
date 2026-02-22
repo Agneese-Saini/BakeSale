@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, NgZone, Output, ViewChild } from '@angular/core';
 import { Pipe, PipeTransform, Injectable } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
@@ -10,6 +10,7 @@ import { Category, ICategory } from './category';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DriverTip } from '../checkout/checkout';
 import { IPayMethod } from '../user/user';
+import { AutoComplete } from "./googleMaps";
 
 export const enum DeliveryMode {
   Delivery,
@@ -115,23 +116,29 @@ export class DeliveryService {
   }
 
   public setAddressBook(mode: DeliveryMode) {
-    let book: IAddress[] = [];
+    // reset address book
+    this._addressBook.next([]);
 
     // Delivery
     if (mode == DeliveryMode.Delivery) {
-      book = [
-        { label: "Home", addressLine: "123 Manitoba ave.", city: "Winnipeg", province: Province.MB, postal: "R1W 2G3" }
-      ];
+      this.addAddress({
+        label: "Home",
+        addressLine: "123 Manitoba ave.",
+        city: "Winnipeg",
+        province: Province.MB,
+        postal: "R1W 2G3"
+      });
     }
     // Pickup
     else if (mode == DeliveryMode.Pickup) {
-      book = [
-        { label: "BakeSale", addressLine: "Area 51", city: "Winnipeg", province: Province.MB, postal: "R1W 2G3" }
-      ];
+      this.addAddress({
+        label: "BakeSale",
+        addressLine: "Area 51", 
+        city: "Winnipeg", 
+        province: Province.MB, 
+        postal: "R1W 2G3"
+      });
     }
-
-    // commit change
-    this._addressBook.next(book);
   }
 
   public addAddress(address: IAddress) {
@@ -171,7 +178,7 @@ export class DeliveryService {
       this._addressBook.next(book);
     }
   }
-  
+
   public getDeliveryFee(): number {
     return 4.00;
   }
@@ -241,10 +248,9 @@ export class DeliverySwitch {
   }
 };
 
-
 @Component({
   selector: 'address-book',
-  imports: [FormsModule, FontAwesomeModule, TruncatePipe],
+  imports: [FormsModule, FontAwesomeModule, TruncatePipe, AutoComplete],
   templateUrl: './addressBook.html'
 })
 export class AddressBook {
@@ -276,8 +282,6 @@ export class AddressBook {
     category: Category.DefaultCategory
   };
 
-  protected readonly searchModes = SearchModes; 
-
   @Input()
   public timeslot: boolean = false;
 
@@ -289,6 +293,7 @@ export class AddressBook {
 
   protected readonly addressBookAction = AddressBookAction;
   protected readonly currentLocation = AddressBook.CurrentLocation;
+  protected readonly searchModes = SearchModes;
 
   protected settings: IDeliverySettings = AddressBook.DefaultSettings;
   protected addressBook: IAddress[] = [];
@@ -296,9 +301,8 @@ export class AddressBook {
 
   protected selectedAddress: IAddress | undefined = undefined;
 
-  // TRUE if user is in selecting mode; for picking a favourite address
   protected searchMode: SearchModes = SearchModes.None;
-  protected searchInput?: string;
+  protected searchQuery?: string;
   protected favouriteLabel?: string;
 
   protected get deliveryModes() {
@@ -309,21 +313,21 @@ export class AddressBook {
     return AddressBook.DeliveryModes.get(this.settings.mode);
   }
 
-  protected get isDelivery() {
+  protected get isDelivery(): boolean {
     return (this.settings.mode == DeliveryMode.Delivery);
   }
 
-  protected get homeAddressExist() {
-    const ret = this.addressBook.filter(value => (value.isFavourite && value.label.toLowerCase() == "home"));
+  protected get homeAddressExist(): boolean {
+    const ret = this.addressBook.filter(value => (value.label.toLowerCase() == "home"));
     return ret.length != 0;
   }
 
-  protected get workAddressExist() {
-    const ret = this.addressBook.filter(value => (value.isFavourite && value.label.toLowerCase() == "work"));
+  protected get workAddressExist(): boolean {
+    const ret = this.addressBook.filter(value => (value.label.toLowerCase() == "work"));
     return ret.length != 0;
   }
 
-  protected get hasFavouritesToAdd() {
+  protected get hasFavouritesToAdd(): boolean {
     for (let addy of this.addressBook) {
       if (this.favouriteLabel != undefined || !addy.isFavourite) {
         return true;
@@ -376,7 +380,7 @@ export class AddressBook {
     });
   }
 
-  protected onAddressChange(address: IAddress, favourite?: boolean) {
+  protected onAddressChange(address?: IAddress, favourite?: boolean) {
     this.settings.address = address;
     this.deliveryService.setDeliverySetting(this.settings);
 
@@ -385,6 +389,15 @@ export class AddressBook {
     if (favourite) {
       this.clickFavourite.emit();
     }
+  }
+
+  protected onAutoCompleteSelect(params: { address: IAddress, prediction: string }) {
+    this.openAddressBookDialog(params.address, params.prediction);
+    this.searchMode = SearchModes.None;
+  }
+
+  protected onAutoCompleteChange() {
+    this.searchMode = SearchModes.ShowResults;
   }
 
   protected openTimeslotsDialog() {
@@ -399,10 +412,10 @@ export class AddressBook {
     });
   }
 
-  protected openAddressBookDialog(address?: IAddress) {
+  protected openAddressBookDialog(address?: IAddress, lookup?: string) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
-    dialogConfig.data = address;
+    dialogConfig.data = { address: address, lookup: lookup };
     dialogConfig.width = '90%';
 
     const dialogRef = this.dialog.open(AddressDialog, dialogConfig);
@@ -417,7 +430,7 @@ export class AddressBook {
     this.searchMode = SearchModes.AddFavourite;
   }
 
-  protected closeSelectLabel() {
+  protected back() {
     this.searchMode = SearchModes.None;
   }
 
@@ -428,15 +441,6 @@ export class AddressBook {
     }
 
     this.searchMode = SearchModes.None;
-  }
-
-  protected onSearch() {
-    if (!this.searchInput) {
-      this.searchMode = SearchModes.None;
-    }
-    else {
-      this.searchMode = SearchModes.ShowResults;
-    }
   }
 };
 

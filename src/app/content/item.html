@@ -1,7 +1,7 @@
-<div [class]="'flex flex-col ' + (value.author ? 'mx-1' : '') + ' ' + cardSize.width">
+<div [class]="'flex flex-col ' + (value.author ? 'mx-1' : '') + ' ' + CardSize.width">
   <figure>
     <div class="indicator w-full">
-      <img [class]="'w-full rounded-box link ' + cardSize.height" [src]="getImage(value)"
+      <img [class]="'w-full rounded-box link ' + CardSize.height" [src]="getImage(value)"
         [routerLink]="['/item', {category: value.parent, item: value.name}]" />
 
       <div class="indicator-item indicator-top indicator-end" style="--indicator-x: -0.5em; --indicator-y: 0.5em;">
@@ -88,7 +88,7 @@
     <!-- Label -->
     @if (value.tags) {
     <div class="flex flex-wrap gap-1 justify-end">
-      @for (tag of value.tags; track tag) {
+      @for (tag of value.tags; track $index) {
       <span class="badge badge-soft badge-sm font-semibold px-2">{{ tag }}</span>
       }
     </div>

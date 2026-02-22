@@ -67,7 +67,7 @@
 
         <table class="table">
           <tbody>
-            @for (day of daysOfWeekSetting | keyvalue; track day.key) {
+            @for (day of daysOfWeekSetting | keyvalue; track $index) {
             <tr>
               <td>
                 <label class="cursor-pointer flex justify-between items-center gap-2">
@@ -95,7 +95,7 @@
 
         <table class="table">
           <tbody>
-            @for (freq of deliveryFrequencies; track freq) {
+            @for (freq of deliveryFrequencies; track $index) {
             <tr>
               <td>
                 <label class="cursor-pointer flex justify-between items-center gap-2">

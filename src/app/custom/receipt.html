@@ -1,4 +1,4 @@
-@for (item of selectedItems; track item) {
+@for (item of selectedItems; track $index) {
 <div class="flex justify-between items-center">
   <b>{{ item.name }} {{ item.amount > 1 ? ('(' + item.amount + ')') : '' }}</b>
   <div class="flex gap-2 items-center">

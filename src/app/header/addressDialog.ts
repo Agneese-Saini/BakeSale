@@ -5,6 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from "@angular/materia
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AddressBook, DeliveryService, IDeliverySettings } from "./addressBook";
 import { GoogleMapsModule } from "@angular/google-maps";
+import { AutoComplete } from "./googleMaps";
 
 export enum BuildingType {
   House = 'House',
@@ -49,6 +50,7 @@ export interface IAddress {
   buildingType?: BuildingType,
   apt?: string,
   mustMeet?: boolean,
+  position?: { lat: number, lng: number },
   instruction?: string,
   //country?: string // For now only in Canada!
   map?: IGoogleMap,
@@ -56,7 +58,7 @@ export interface IAddress {
 };
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, MatDialogModule, GoogleMapsModule],
+  imports: [FormsModule, FontAwesomeModule, MatDialogModule, GoogleMapsModule, AutoComplete],
   templateUrl: './addressDialog.html',
 })
 export class AddressDialog {
@@ -64,7 +66,6 @@ export class AddressDialog {
   protected errorTypes = ErrorTypes;
   protected buildingType = BuildingType;
 
-  protected lookupAddress?: string;
   protected address: IAddress;
   protected originalName: string;
 
@@ -72,8 +73,15 @@ export class AddressDialog {
   protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
 
   protected showAddressInfo: boolean = false;
+  protected searchResult?: IAddress;
+  protected searchQuery?: string;
 
-  private errors: Map<ErrorTypes, { value: boolean, message?: string }> = new Map();
+  protected mapCenter: google.maps.LatLngLiteral = { lat: 34.0522, lng: -118.2437 };
+  protected mapZoom: number = 15;
+  protected markerPosition: google.maps.LatLngLiteral = { lat: 34.0522, lng: -118.2437 };
+  protected markerOptions: google.maps.MarkerOptions = { draggable: false };
+
+  private errors: Map<ErrorTypes, string | undefined> = new Map();
 
   protected get provinceList() {
     return Object.values(Province);
@@ -83,48 +91,52 @@ export class AddressDialog {
     return Object.values(BuildingType);
   }
 
-  protected get isValidAddress(): boolean {
+  protected get isAnExistingAddress(): boolean {
     return this.address.map != undefined;
   }
 
-  protected get isValidAddressInfo(): boolean {
+  protected get isValidAddress(): boolean {
     return this.getError(ErrorTypes.AddressLine) == undefined &&
       this.getError(ErrorTypes.City) == undefined &&
       this.getError(ErrorTypes.PostalCode) == undefined;
   }
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) private data: IAddress,
+    @Inject(MAT_DIALOG_DATA) private data: { address?: IAddress, lookup?: string },
     private deliveryService: DeliveryService,
     private dialogRef: MatDialogRef<AddressDialog>,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef) {
 
-    if (data) {
-      this.address = structuredClone(data);
+    this.searchQuery = data.lookup;
+
+    if (data.address) {
+      this.address = structuredClone(data.address);
 
       // When "CurrentLocation" is supplied, that means we are trying to Add new address
-      if (this.data == AddressBook.CurrentLocation) {
+      if (this.data.address == AddressBook.CurrentLocation) {
         this.useCurrentLocation();
       }
-      else {
-        // We are trying to Edit an existing address
-        this.address.map = {};
+
+      if (this.isValidAddress) {
+        this.showAddressInfo = true;
       }
     }
     else {
       this.address = {
-        label: "",
+        label: "", 
         addressLine: ""
       };
     }
 
     this.originalName = this.address.label;
 
+    // Default province
     if (!this.address.province) {
       this.address.province = this.provinceList[0];
     }
 
+    // Default building type
     if (!this.address.buildingType) {
       this.address.buildingType = this.buildingTypes[0];
     }
@@ -144,7 +156,7 @@ export class AddressDialog {
 
   protected saveAddress() {
     if (this.checkAddressForErrors()) {
-      const message = "Address entered doesn't appear to exist.";
+      const message = "There appears to be some errors in the address entered.";
       this.snackBar.open(message, "Close", {
         duration: 2500
       });
@@ -153,7 +165,7 @@ export class AddressDialog {
     }
 
     // Save address
-    if (this.isValidAddress) {
+    if (this.isAnExistingAddress) {
       this.deliveryService.editAddress(this.originalName, this.address);
     }
     // Add address
@@ -186,43 +198,79 @@ export class AddressDialog {
     this.dialogRef.close();
   }
 
+  protected checkLabelForErrors() {
+    const label = this.address.label.toLowerCase().trim();
+    if (label.length == 0) {
+      this.errors.set(ErrorTypes.Label, "Please enter a name");
+      return;
+    }
+
+    if (label.length < 3) {
+      this.errors.set(ErrorTypes.Label, "Name is too short");
+      return;
+    }
+
+    for (let addr of this.addressBook) {
+      if (addr != this.data.address && label == addr.label.toLowerCase().trim()) {
+        this.errors.set(ErrorTypes.Label, "Name already exists");
+        return;
+      }
+    }
+
+    this.clearError(ErrorTypes.Label);
+  }
+
   private checkAddressForErrors() {
     // Address Line
-    if (!this.address.addressLine || this.address.addressLine.length < 4) {
+    if (!this.address.addressLine || this.address.addressLine.trim().length == 0) {
+      this.setError(ErrorTypes.AddressLine, "Please enter an address");
+    }
+    else if (this.address.addressLine.length < 4) {
       this.setError(ErrorTypes.AddressLine, "Invalid address entered");
     }
 
     // City
-    if (!this.address.city || this.address.city.length < 4) {
-      this.setError(ErrorTypes.City, "Invalid city entered");
+    if (!this.address.city || this.address.city.trim().length == 0) {
+      this.setError(ErrorTypes.City, "Please enter city name");
+    }
+    else if (this.address.city.length < 3) {
+      this.setError(ErrorTypes.City, "Invalid city name entered");
     }
 
     // PostalCode
-    if (!this.address.postal || this.address.postal.length < 6) {
+    if (!this.address.postal || this.address.postal.trim().length == 0) {
+      this.setError(ErrorTypes.PostalCode, "Please enter postal code");
+    }
+    else if (this.address.postal.length < 6) {
       this.setError(ErrorTypes.PostalCode, "Invalid postal code entered");
     }
 
     // Label
-    if (!this.address.label || this.address.label.length < 1) {
-      this.setError(ErrorTypes.Label, "No name entered");
-    }
-    else {
-      if (this.originalName && this.address.label != this.originalName) {
-        for (let addy of this.addressBook) {
-          if (addy.label == this.address.label) {
-            this.setError(ErrorTypes.Label, "Name already exist");
-            break;
-          }
-        }
-      }
-    }
+    this.checkLabelForErrors();
 
     // Returns TRUE if there were errors found in the address entered
     return this.errors.size != 0;
   }
 
   protected useCurrentLocation() {
-    this.lookupAddress = "Current Location";
+  }
+
+  protected onAutoCompleteSelect(params: { address: IAddress, prediction: string }) {
+    this.address.label = params.address.label;
+    this.address.addressLine = params.address.addressLine;
+    this.address.city = params.address.city;
+    this.address.province = params.address.province;
+    this.address.postal = params.address.postal;
+
+    if (params.address.position) {
+      this.address.position = params.address.position;
+      this.mapCenter = this.markerPosition = params.address.position;
+    }
+
+    this.showAddressInfo = true;
+  }
+
+  protected onAutoCompleteChange() {
   }
 
   protected get numErrors() {
@@ -230,16 +278,11 @@ export class AddressDialog {
   }
 
   protected setError(type: ErrorTypes, message?: string) {
-    this.errors.set(type, { value: true, message: message });
+    this.errors.set(type, message);
   }
 
   protected getError(type: ErrorTypes) {
-    const err = this.errors.get(type);
-    if (err && err.value) {
-      return err;
-    }
-
-    return undefined;
+    return this.errors.get(type);
   }
 
   protected clearError(type: ErrorTypes) {

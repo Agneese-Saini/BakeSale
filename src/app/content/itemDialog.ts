@@ -162,7 +162,7 @@ export class PriceTag {
 @if (hasDetails) {
 <table class="table table-sm">
   <tbody>
-    @for (detail of item.details; track detail) {
+    @for (detail of item.details; track $index) {
     <tr>
       <th class="text-right">
         @if (detail.icon) {

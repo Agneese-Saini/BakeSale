@@ -175,7 +175,7 @@ export class ItemChoice {
   <div class="max-h-64 overflow-y-auto">
     <table class="table w-full">
       <tbody>
-        @for (choice of choices; track choice) {
+        @for (choice of choices; track $index) {
         <tr>
           <td>
             <item-choice [value]="choice" [type]="type" [limit]="type.limit" (change)="onChange(choice)" />
@@ -317,11 +317,11 @@ export class ItemChoiceList {
   template: `
 <div class="flex flex-wrap gap-2">
   @let list = getChoiceList();
-  @for (entry of list | keyvalue; track entry.key) {
+  @for (entry of list | keyvalue; track $index) {
   @let selection = getSelection(entry.value);
   @let lastSelection = selection.at(selection.length - 1);
   <div class="flex text-xs">    
-    @for (choice of selection; track choice) {
+    @for (choice of selection; track $index) {
     <span>
       @if (choice.icon) {
       <fa-icon [icon]="choice.icon"></fa-icon>
@@ -398,7 +398,7 @@ export class ItemChoiceCatalog {
   selector: 'item-choice-summary',
   imports: [FormsModule, FontAwesomeModule, KeyValuePipe],
   template: `
-@for (entry of value | keyvalue; track entry.key) {
+@for (entry of value | keyvalue; track $index) {
 @if (numSelection(entry.value) > 0) {
 <label class="text-xs label">
   {{ entry.key.name }}{{ numChoices(entry.value) > 1 ? ('(' + numSelection(entry.value) + ')') : '' }}:
@@ -406,7 +406,7 @@ export class ItemChoiceCatalog {
 <br/>
 
 <span class="flex flex-col text-gray-500">
-  @for (choice of entry.value; track choice) {
+  @for (choice of entry.value; track $index) {
   @if (choice.amount && choice.amount > 0) {
   <label class="flex gap-1 text-xs px-1">
     @if (choice.icon) {

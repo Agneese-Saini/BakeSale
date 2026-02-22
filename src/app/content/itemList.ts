@@ -19,7 +19,7 @@ import { Recipe } from '../custom/recipe';
 } @else {
 
 <!-- Category name -->
-@if (category.customizer || (category.items && category.items.length > 0)) {
+@if (category.customizer != undefined || (category.items && category.items.length > 0)) {
 <div class="flex w-full justify-between">
   @if (category.fontSize != undefined) {
   @if (category.fontSize == 3) {
@@ -41,7 +41,7 @@ import { Recipe } from '../custom/recipe';
   <h1 class="font-bold">{{ category.name }}:</h1>
   }
 
-  @if (category.items && itemsPerPage && category.items.length > itemsPerPage) {
+  @if (category.items != undefined && itemsPerPage > 0 && category.items.length > itemsPerPage) {
   <button class="btn btn-ghost label" [routerLink]="['/content', {category: category.name}]">Show All</button>
   }
 </div>
@@ -51,31 +51,34 @@ import { Recipe } from '../custom/recipe';
 @if (category.customizer != undefined) {
 @switch (category.customizer.type) {
 @case (customizerType.Recipe) {
-<div class="flex flex-col gap-2 p-2 pb-4">
-  <button 
-    [class]="'btn btn-ghost rounded-box flex flex-col gap-2 py-4 bg-base-300 justify-center items-center ' + cardSize.width + ' ' + cardSize.height"
-    (click)="openItemCreateDialog(category)">
-    <fa-icon class="text-4xl" [icon]="category.customizer.icon"></fa-icon>
-    <button class="link w-fit text-xl font-extrabold" style="text-decoration: none;">Custom {{ category.customizer.name }}</button>
-  </button>
+<div class="card w-full lg:max-w-128 bg-base-300 shadow">
+  <div class="card-body">
+    <div class="flex justify-between items-center gap-2">
+      <h2 class="text-3xl font-bold">Create Custom {{ category.customizer.name }}</h2>
 
-  <div class="flex flex-col px-2">
-    <label class="label">
-      <fa-icon icon="coins" class="text-warning"></fa-icon> <b>{{ pointsRequiredForRecipe }}</b>(points required)
-    </label>
+      <div class="dropdown dropdown-bottom dropdown-end">
+        <button class="link label text-lg" tabindex="0" role="button" style="text-decoration: none;">
+          <fa-icon icon="coins" class="text-warning"></fa-icon> <b>{{ pointsRequiredForRecipe }}</b>
+        </button>
 
-    <div class="dropdown">
-      <button class="link label text-sm" tabindex="0" role="button" style="text-decoration: none;">
-        <fa-icon icon="info-circle"></fa-icon> How to earn points?
-      </button>
-
-      <div tabindex="0" class="dropdown-content card card-sm z-2 w-64 pt-2 shadow-xl">
-        <div tabindex="0" class="card-body text-wrap bg-neutral text-white rounded-box">
-          <h1 class="card-title"><fa-icon class="text-warning" icon="coins"></fa-icon> BakeSale Points Program</h1>
-          <p>Through BakeSale points program, you earn points on your purchases, recipes, and even social media!</p>
-          <p>You are automatically enrolled once you have an account with us: <a class="link">Sign In</a></p>
+        <div tabindex="0" class="dropdown-content card card-sm z-2 w-64 pt-2 shadow-xl">
+          <div tabindex="0" class="card-body text-wrap bg-neutral text-white rounded-box">
+            <h1 class="card-title"><fa-icon class="text-warning" icon="coins"></fa-icon> BakeSale Points Program</h1>
+            <p>
+              You require <b>{{ pointsRequiredForRecipe }}</b> points to use this feature.<br/><br/>
+              Through BakeSale points program, you earn points on your purchases, recipes, and even social media!<br/><br/>
+              You are automatically enrolled once you have an account with us: <a class="link">Sign In</a></p>
+          </div>
         </div>
       </div>
+    </div>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui.</p>
+
+    <div class="mt-6">
+      <button class="btn bg-red-500 text-white btn-block" routerLink="/create">
+        Get Started <fa-icon icon="arrow-right"></fa-icon>
+      </button>
     </div>
   </div>
 </div>
@@ -85,7 +88,7 @@ import { Recipe } from '../custom/recipe';
   <div class="card-body">
     <h2 class="text-3xl font-bold">Get {{ category.customizer.name }} daily</h2>
     @if (category.customizer.details != undefined && category.customizer.details.length > 0) {
-    @for (info of category.customizer.details; track info) {
+    @for (info of category.customizer.details; track $index) {
     <div class="flex gap-2">
       <fa-icon [icon]="info.icon"></fa-icon>
       <span>{{ info.label }}</span>
@@ -106,16 +109,16 @@ import { Recipe } from '../custom/recipe';
 }
 <!-- Category items -->
 @else {
-@if (category.items && category.items.length > 0) {
+@if (category.items != undefined && category.items.length > 0) {
 <div class="flex flex-col pt-2 pb-4">
   <div #widgetsContent (scroll)="onScroll()" [class]="wrap ? 'overflow-none' : 'overflow-x-auto'">
     <div [class]="'flex ' + (wrap ? 'flex-wrap' : 'flex-nowrap')">
-      @for (item of getItems(category); track item) {
+      @for (item of getItems(category); track $index) {
       <div class="flex-shrink-0 ml-2.5 pb-2">
         <item [value]="item"></item>
       </div>
       }
-      @if (category.items && itemsPerPage && category.items.length > itemsPerPage) {
+      @if (category.items != undefined && itemsPerPage > 0 && category.items.length > itemsPerPage) {
       <div class="flex-shrink-0 ml-2.5">
         <div class="flex flex-col h-full justify-center p-4">
           <a class="link" style="text-decoration: none;" [routerLink]="['/category', {name: category.name}]">
@@ -134,8 +137,8 @@ import { Recipe } from '../custom/recipe';
 }
 
 <!-- Sub Categories - Recursive -->
-@if (category.subcats && category.subcats.length > 0) {
-@for (subcat of category.subcats; track subcat) {
+@if (category.subcats != undefined) {
+@for (subcat of category.subcats; track $index) {
 <item-list [category]="subcat" [wrap]="wrap" [itemsPerPage]="itemsPerPage"></item-list>
 }
 }
@@ -144,7 +147,6 @@ import { Recipe } from '../custom/recipe';
 export class ItemList {
 
   protected customizerType = CustomizerType;
-  protected cardSize = Item.CardSize;
   protected pointsRequiredForRecipe = Recipe.PointsRequiredForRecipe;
 
   @Input({ required: true })

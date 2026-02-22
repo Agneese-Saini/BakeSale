@@ -11,7 +11,7 @@
 
       <div class="hidden lg:block">
         <ul class="menu menu-horizontal lg:text-lg">
-          @for (entry of categories | keyvalue; track entry.key) {
+          @for (entry of categories | keyvalue; track $index) {
           <li>
             <a [class]="getHomeCategory() == entry.key ? 'menu-active' : ''"
               (click)="setHomeCategory(entry.key);">
@@ -46,7 +46,7 @@
 
   <div class="flex justify-center px-4">
     <ul class="menu menu-horizontal justify-center">
-      @for (entry of categories | keyvalue; track entry.key) {
+      @for (entry of categories | keyvalue; track $index) {
       <li>
         <a [class]="getHomeCategory() == entry.key ? 'menu-active' : ''"
           (click)="setHomeCategory(entry.key);">

@@ -66,7 +66,7 @@ export class CategoryService {
 	private categoryList: ICategory[] = [
 		{
 			name: "Cake", icon: "cake-candles", hidden: true, subcats:
-				[{ name: "Create Your Own", fontSize: 2, customizer: this.customCake },
+				[{ name: "Custom Cake", fontSize: 0, customizer: this.customCake },
 				{ name: "Cakes", fontSize: 2 },
 				{ name: "Cheesecake", fontSize: 2 },
 				{
@@ -344,7 +344,7 @@ export class CategoryService {
 		</div>
 
 		<ul tabindex="0" class="dropdown-content menu bg-base-300 rounded-box z-1 w-52 p-2 shadow">
-			@for (sub of value.subcats; track sub) {
+			@for (sub of value.subcats; track $index) {
 			<li>
 				<label class="w-full">
 					<input type="checkbox" class="checkbox checkbox-sm" 
@@ -544,7 +544,7 @@ export class Category {
 	template: `
 <category [value]="selectAll" (change)="onSelectAll()">
 </category>
-@for (cat of categories; track cat) {
+@for (cat of categories; track $index) {
 <category [value]="cat" (change)="onSelectCategory(cat)" >
 </category>
 }

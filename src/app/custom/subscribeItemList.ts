@@ -47,7 +47,7 @@ import { Subscribe } from "./subscribe";
 <div [class]="'overflow-y-auto rounded-box w-full' + ' ' + (maxHeight ? ('max-h-' + maxHeight) : '')">
   <table class="table table-zebra">
     <tbody>
-      @for (item of category.items; track item) {
+      @for (item of category.items; track $index) {
       <tr>
         <td class="flex justify-between items-center">
           <div class="flex gap-2 items-center lg:items-start">
@@ -86,7 +86,7 @@ import { Subscribe } from "./subscribe";
               <!-- Label -->
               @if (item.tags) {
               <div class="flex flex-wrap gap-1">
-                @for (tag of item.tags; track tag) {
+                @for (tag of item.tags; track $index) {
                 <span class="badge badge-soft badge-xs font-semibold px-2">{{ tag }}</span>
                 }
               </div>
@@ -220,7 +220,7 @@ export class SubscribeItemList {
         <img class="h-56" [src]="displayImage" />
       </div>
       <div class="flex flex-wrap justify-center gap-2">
-        @for (img of data.image; track img) {
+        @for (img of data.image; track $index) {
         <img [class]="'link rounded-box h-12 w-12 ' + (displayImage == img ? 'ring ring-2' : '')" [src]="img"
           (click)="selectImage(img)" />
         }

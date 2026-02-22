@@ -1,6 +1,6 @@
 <div class="bg-base-200">
   <div mat-dialog-title>
-    @if (isValidAddress) {
+    @if (isAnExistingAddress) {
     <h1 class="text-4xl font-bold">Edit Address</h1>
     }
     @else {
@@ -9,50 +9,17 @@
   </div>
 
   <div mat-dialog-content>
-    <google-map height="32vh" width="full"></google-map>
+    <google-map height="32vh" width="full" [center]="mapCenter" [zoom]="mapZoom">
+      <map-marker [position]="markerPosition" [options]="markerOptions" />
+    </google-map>
     <br />
 
     <h1>Lookup Address:</h1>
-    <div class="form-control">
-      <div [class]="'w-full ' + ((showAddressInfo || isValidAddress) ? 'dropdown dropdown-bottom' : 'menu')">
-        <div class="flex justify-between gap-2 items-center">
-          <input type="search"
-            [class]="'input input-bordered placeholder-gray-350 w-full ' + (lookupAddress ? 'border border-neutral' : '')"
-            placeholder="Search an address" [(ngModel)]="lookupAddress" />
-          <div class="tooltip tooltip-left" data-tip="Use Current location">
-            <button class="btn btn-neutral" (click)="useCurrentLocation()">
-              <fa-icon icon="location-dot"></fa-icon>
-            </button>
-          </div>
-        </div>
-        @if (getError(errorTypes.LookupAddress)) {
-        <div class="flex gap-1 p-1">
-          <fa-icon class="text-error text-sm" icon="exclamation-circle"></fa-icon>
-          <p class="font-mono text-sm text-error pb-2">{{ getError(errorTypes.LookupAddress)?.message }}</p>
-        </div>
-        }
-
-        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-2xl bg-base-100 rounded-box w-full mt-1">
-          <li>
-            <div class="flex flex-col items-start gap-0 rounded-box p-2">
-              <b>Label</b>
-              <p>123 Manitoba ave., Winnipeg</p>
-              <p class="text-sm">Manitoba R1T 2G3</p>
-            </div>
-          </li>
-          <li>
-            <div class="flex flex-col items-start gap-0 rounded-box p-2">
-              <b>Label</b>
-              <p>123 Manitoba ave., Winnipeg</p>
-              <p class="text-sm">Manitoba R1T 2G3</p>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <maps-autocomplete [searchQuery]="searchQuery" (select)="onAutoCompleteSelect($event)"
+      (resultChange)="onAutoCompleteChange()"></maps-autocomplete>
     <br />
 
-    @if (showAddressInfo || isValidAddress) {
+    @if (showAddressInfo || isAnExistingAddress) {
     <fieldset class="fieldset w-full">
       <p class="fieldset-legend text-lg">Address line:</p>
 
@@ -61,8 +28,8 @@
         [(ngModel)]="address.addressLine" (change)="clearError(errorTypes.AddressLine)" />
 
       @let AddressError = getError(errorTypes.AddressLine);
-      @if (AddressError) {
-      <p class="font-mono text-sm text-error pb-2">{{ AddressError.message }}</p>
+      @if (AddressError != undefined) {
+      <p class="font-mono text-sm text-error pb-2">{{ AddressError }}</p>
       }
     </fieldset>
 
@@ -74,8 +41,8 @@
         [(ngModel)]="address.city" (change)="clearError(errorTypes.City)" />
 
       @let CityError = getError(errorTypes.City);
-      @if (CityError) {
-      <p class="font-mono text-sm text-error pb-2">{{ CityError.message }}</p>
+      @if (CityError != undefined) {
+      <p class="font-mono text-sm text-error pb-2">{{ CityError }}</p>
       }
     </fieldset>
 
@@ -84,7 +51,7 @@
         <p class="fieldset-legend text-lg">Province:</p>
 
         <select class="select w-full outline" [(ngModel)]="address.province">
-          @for (entry of provinceList; track entry) {
+          @for (entry of provinceList; track $index) {
           <option [ngValue]="entry">{{ entry }}</option>
           }
         </select>
@@ -98,34 +65,34 @@
           [(ngModel)]="address.postal" (change)="clearError(errorTypes.PostalCode)" />
 
         @let PostalCodeError = getError(errorTypes.PostalCode);
-        @if (PostalCodeError) {
-        <p class="font-mono text-sm text-error pb-2">{{ PostalCodeError.message }}</p>
+        @if (PostalCodeError != undefined) {
+        <p class="font-mono text-sm text-error pb-2">{{ PostalCodeError }}</p>
         }
       </fieldset>
     </div>
-
-    <fieldset class="fieldset w-full">
-      <p class="fieldset-legend text-lg justify-start">Apt / Suite / Floor:</p>
-
-      <input type="search" placeholder="Enter Brief Instrunction"
-        [class]="'input input-bordered placeholder-gray-350 w-full ' + (address.apt ? 'outline' : '') + ' ' + (getError(errorTypes.Apt) ? 'outline outline-error' : '')"
-        [(ngModel)]="address.apt" (change)="clearError(errorTypes.Apt)" />
-
-      @let AptError = getError(errorTypes.Apt);
-      @if (AptError) {
-      <p class="font-mono text-sm text-error pb-2">{{ AptError.message }}</p>
-      }
-      <p class="label justify-end w-full">Optional</p>
-    </fieldset>
 
     <fieldset class="fieldset">
       <legend class="fieldset-legend text-lg">Building Type:</legend>
 
       <select class="select w-full outline" [(ngModel)]="address.buildingType">
-        @for (entry of buildingTypes; track entry) {
+        @for (entry of buildingTypes; track $index) {
         <option [value]="entry">{{ entry }}</option>
         }
       </select>
+    </fieldset>
+
+    <fieldset class="fieldset w-full">
+      <p class="fieldset-legend text-lg justify-start">Apt / Suite / Floor:</p>
+
+      <input type="search" placeholder="Enter Apt./Suite/Floor info"
+        [class]="'input input-bordered placeholder-gray-350 w-full ' + (address.apt ? 'outline' : '') + ' ' + (getError(errorTypes.Apt) ? 'outline outline-error' : '')"
+        [(ngModel)]="address.apt" (change)="clearError(errorTypes.Apt)" />
+
+      @let AptError = getError(errorTypes.Apt);
+      @if (AptError != undefined) {
+      <p class="font-mono text-sm text-error pb-2">{{ AptError }}</p>
+      }
+      <p class="label justify-end w-full">Optional</p>
     </fieldset>
 
     <fieldset class="fieldset w-full">
@@ -134,7 +101,8 @@
       <div class="flex gap-2 w-full">
         <input type="search" placeholder="e.g. Home"
           [class]="'input rounded-box input-bordered placeholder-gray-350 w-full ' + (address.label ? 'outline' : '') + ' ' + (getError(errorTypes.Label) ? 'outline outline-error' : '')"
-          [(ngModel)]="address.label" (change)="clearError(errorTypes.Label)" />
+          [(ngModel)]="address.label" 
+          (input)="checkLabelForErrors()" />
 
         <button [class]="'btn text-lg tooltip ' + (address.isFavourite ? 'border-neutral' : '')"
           [attr.data-tip]="address.isFavourite ? 'Favourite' : 'Not Favourite'"
@@ -147,8 +115,9 @@
         </button>
       </div>
 
-      @if (getError(errorTypes.Label)) {
-      <p class="justify-end w-full font-mono text-sm text-error">{{ getError(errorTypes.Label)?.message }}</p>
+      @let LabelError = getError(errorTypes.Label);
+      @if (LabelError != undefined) {
+      <p class="justify-end w-full font-mono text-sm text-error">{{ LabelError }}</p>
       } @else if (address.isFavourite) {
       <p class="label justify-end w-full">Marked as Favourite</p>
       }
@@ -159,7 +128,7 @@
   <div mat-dialog-actions>
     <div class="flex justify-between w-full">
       <div class="flex gap-2">
-        @if (isValidAddress) {
+        @if (isAnExistingAddress) {
         <button class="btn btn-neutral" (click)="saveAddress()">
           Save
         </button>

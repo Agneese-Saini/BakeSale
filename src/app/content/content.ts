@@ -148,7 +148,7 @@ export class Content {
   <div mat-dialog-content>
     <table class="table table-zebra">
       <tbody>
-        @for (category of data.subcats; track category) {
+        @for (category of data.subcats; track $index) {
         <tr class="h-12">
           <td>
             <button 

@@ -42,7 +42,7 @@
 
       <select class="select select-sm min-w-28">
         <option selected class="font-bold">Show All Categories</option>
-        @for (category of deliverySettings.category.subcats; track category) {
+        @for (category of deliverySettings.category.subcats; track $index) {
         <option [disabled]="!(category.items || category.customizer)">
           {{ category.name }} {{ (!category.customizer && category.items) ? ('(' + category.items.length + ')') : '' }}
         </option>
@@ -55,7 +55,7 @@
 
     <div class="w-full">
       <!-- Page content here -->
-      @for (subcat of deliverySettings.category.subcats; track subcat) {
+      @for (subcat of deliverySettings.category.subcats; track $index) {
       <item-list [category]="subcat"></item-list>
       }
     </div>
@@ -77,7 +77,7 @@
         </div>
       </div>
 
-      @for (cat of deliverySettings.category.subcats; track cat)
+      @for (cat of deliverySettings.category.subcats; track $index)
       {
       <li (click)="focusCategory(cat)" [class]="(!cat.customizer && !cat.items) ? 'menu-disabled' : ''">
         @if (cat.subcats && cat.subcats.length > 0) {
@@ -92,7 +92,7 @@
           </summary>
 
           <ul>
-            @for (subcat of cat.subcats; track subcat) {
+            @for (subcat of cat.subcats; track $index) {
             <li (click)="focusCategory(subcat)" [class]="(!subcat.customizer && !subcat.items) ? 'menu-disabled' : ''">
               <span class="flex items-center gap-2">
                 <a [class]="isFocused(subcat) ? 'font-bold text-2xl' : 'font-light text-lg'">{{ subcat.name }}</a>

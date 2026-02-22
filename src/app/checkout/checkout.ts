@@ -305,7 +305,7 @@ export class CheckoutDetails {
   </div>
 
   <div class="collapse-content flex flex-col gap-1">
-    @for (cartItem of shoppingCart | keyvalue; track cartItem.key) {
+    @for (cartItem of shoppingCart | keyvalue; track $index) {
     <cart-item-list [items]="cartItem.value" />
     }
   </div>
@@ -492,7 +492,7 @@ export class Checkout {
     <div class="flex h-64 overflow-x-auto p-2">
       <table class="table table-zebra">
         <tbody>
-          @for (type of deliveryType | keyvalue; track type) {
+          @for (type of deliveryType | keyvalue; track $index) {
           <tr class="h-16">
             <td>
               <label class="label cursor-pointer flex justify-between">

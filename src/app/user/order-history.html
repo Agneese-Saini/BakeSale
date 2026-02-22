@@ -41,7 +41,7 @@
           All (4)
         </a>
       </li>
-      @for (filter of filters; track filter) {
+      @for (filter of filters; track $index) {
       <li>
         <a [class]="(filter == currentFilter ? 'menu-active text-lg' : 'bg-base-300')" (click)="onSelectFilter(filter)">
           {{ filter }} (4)
@@ -80,7 +80,7 @@
 
       @if (user.orders && user.orders.length > 0) {
       <div class="flex flex-col gap-4 lg:flex-row lg:flex-wrap justify-center">
-        @for (order of user.orders; track order) {
+        @for (order of user.orders; track $index) {
         <div
           [class]="'card bg-base-200 border-base-300 border shadow lg:min-w-128 ' + (order.inProgress ? 'shadow-success' : '')">
           <div class="card-body">
@@ -151,7 +151,7 @@
         </a>
       </li>
 
-      @for (filter of filters; track filter) {
+      @for (filter of filters; track $index) {
       <li>
         <a [class]="(filter == currentFilter ? 'menu-active font-bold text-lg' : 'font-light text-lg')"
           (click)="onSelectFilter(filter)">

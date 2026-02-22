@@ -57,7 +57,7 @@
 
         <div class="mt-[5%] flex w-full place-content-center gap-5 max-md:flex-wrap">
             <div class="flex flex-wrap px-[10%] gap-10 justify-center">
-                @for (partner of PartnersList; track partner) {
+                @for (partner of PartnersList; track $index) {
                 <div class="flex max-md:flex-col gap-10 max-md:gap-2 items-center">
                     <div class="w-48 h-26 overflow-hidden">
                         <img [src]="partner.img" alt="bakery" class="h-full w-full" />

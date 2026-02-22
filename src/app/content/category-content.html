@@ -25,7 +25,7 @@
           All (4)
         </a>
       </li>
-      @for (page of category.pages; track page) {
+      @for (page of category.pages; track $index) {
       <li>
         <a [class]="(page == currentPage ? 'menu-active text-lg' : 'bg-base-300')" (click)="onSelectPage(page)">
           {{ page }} (4)
@@ -56,7 +56,7 @@
         </a>
       </li>
       
-      @for (page of category.pages; track page) {
+      @for (page of category.pages; track $index) {
       <li>
           <a [class]="(page == currentPage ? 'menu-active font-bold text-lg' : 'font-light text-lg')" (click)="onSelectPage(page)">
             {{ page }} (4)

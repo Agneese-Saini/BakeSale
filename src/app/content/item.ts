@@ -62,8 +62,10 @@ export class Item {
 
   static readonly DefaultMaxAmount = 20;
 
-  static readonly CardSize = { height: 'h-38 lg:h-54', width: 'w-38 lg:w-54' };
-  protected cardSize = Item.CardSize;
+  protected readonly CardSize = { 
+    height: 'h-38 lg:h-54', 
+    width: 'w-38 lg:w-54' 
+  };
 
   @Input({ required: true })
   public value: IItem = Item.DefaultItem;
