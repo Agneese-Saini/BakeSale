@@ -46,32 +46,6 @@
         </div>
     </section>
 
-    <section class="flex flex-col place-items-center min-h-[90vh] py-[10vh]"
-        [hidden]="getHomeCategory() != homeCategories.Partners">
-        <h2 class="text-xl italic text-center">
-            Discover our 2026 Bakery Partners list
-        </h2>
-        <h3 class="primary-text-color text-4xl font-semibold">
-            Manitoba, Canada
-        </h3>
-
-        <div class="mt-[5%] flex w-full place-content-center gap-5 max-md:flex-wrap">
-            <div class="flex flex-wrap px-[10%] gap-10 justify-center">
-                @for (partner of PartnersList; track $index) {
-                <div class="flex max-md:flex-col gap-10 max-md:gap-2 items-center">
-                    <div class="w-48 h-26 overflow-hidden">
-                        <img [src]="partner.img" alt="bakery" class="h-full w-full" />
-                    </div>
-                    <div class="flex flex-col gap-2 max-md:place-items-center max-w-[200px]">
-                        <h3 class="text-2xl font-semibold">{{ partner.label }}</h3>
-                        <p class="max-md:text-center">{{ partner.about }}</p>
-                    </div>
-                </div>
-                }
-            </div>
-        </div>
-    </section>
-
     <section
         class="flex max-md:flex-col min-h-[90vh] max-md:items-center justify-center max-md:justify-start py-[10vh] max-md:pt-0"
         [hidden]="getHomeCategory() != homeCategories.DailyBread">
@@ -97,5 +71,44 @@
             </a>
         </div>
         <div></div>
+    </section>
+
+    <section class="flex flex-col place-items-center min-h-[90vh] py-[10vh]"
+        [hidden]="getHomeCategory() != homeCategories.Partners">
+        <h2 class="text-xl italic text-center">
+            Discover our 2026 Bakery Partners list
+        </h2>
+        <h3 class="primary-text-color text-4xl font-semibold">
+            Manitoba, Canada
+        </h3>
+
+        <div class="mt-[5%] flex w-full place-content-center gap-5 max-md:flex-wrap">
+            <div class="flex flex-wrap px-[10%] gap-10 justify-center">
+                @for (partner of PartnersList; track $index) {
+                <div class="flex max-md:flex-col gap-10 max-md:gap-2 items-center">
+                    <div class="w-48 h-26 overflow-hidden">
+                        <img [src]="partner.img" alt="bakery" class="h-full w-full" />
+                    </div>
+                    <div class="flex flex-col gap-2 max-md:place-items-center max-w-[200px]">
+                        <h3 class="text-2xl font-semibold">{{ partner.label }}</h3>
+                        <p class="max-md:text-center">Partner since {{ partner.joinDate | date:'dd/MM/yyyy' }}</p>
+                        <div class="flex gap-2">                            
+                            <div class="flex gap-0">
+                                @for (star of [1, 2, 3, 4, 5]; track $index) {
+                                    @if (partner.rating < star) {
+                                        <fa-icon [icon]="['far', 'star']"></fa-icon>
+                                    } @else {                                    
+                                        <fa-icon [icon]="['fas', 'star']"></fa-icon>
+                                    } 
+                                }
+                            </div>
+
+                            <i class="label">{{ partner.ratingCount }}+</i>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
     </section>
 </div>

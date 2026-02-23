@@ -121,16 +121,11 @@ export class DeliveryService {
 
     // Delivery
     if (mode == DeliveryMode.Delivery) {
-      this.addAddress({
-        label: "Home",
-        addressLine: "123 Manitoba ave.",
-        city: "Winnipeg",
-        province: Province.MB,
-        postal: "R1W 2G3"
-      });
+      // load user address book
     }
     // Pickup
     else if (mode == DeliveryMode.Pickup) {
+      // load pickup locations
       this.addAddress({
         label: "BakeSale",
         addressLine: "Area 51", 

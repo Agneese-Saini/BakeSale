@@ -11,6 +11,7 @@ import { AddressBook } from './addressBook';
 <div class="flex gap-2">
   <input 
     type="search" 
+    tabindex="-1"
     class="input input-bordered placeholder-gray-350 w-full" 
     placeholder="Search an address"
     [(ngModel)]="searchQuery" 
@@ -31,7 +32,7 @@ import { AddressBook } from './addressBook';
 }
 
 @if (hidden == false) {
-<div class="bg-base-100 border border-neutral-300 rounded-box overflow-y-auto max-h-98 w-full mt-2" >
+<div class="bg-base-100 border border-neutral-300 rounded-box w-full mt-2" >
   <div class="flex flex-col gap-1">
     <ul class="menu w-full gap-1">
       <div class="bg-base-200">

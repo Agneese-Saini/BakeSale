@@ -51,10 +51,10 @@ import { Recipe } from '../custom/recipe';
 @if (category.customizer != undefined) {
 @switch (category.customizer.type) {
 @case (customizerType.Recipe) {
-<div class="card w-full lg:max-w-128 bg-base-300 shadow">
+<div class="card w-full lg:max-w-98 bg-base-300 shadow">
   <div class="card-body">
     <div class="flex justify-between items-center gap-2">
-      <h2 class="text-3xl font-bold">Create Custom {{ category.customizer.name }}</h2>
+      <h2 class="text-2xl font-bold">Create Custom {{ category.customizer.name }}</h2>
 
       <div class="dropdown dropdown-bottom dropdown-end">
         <button class="link label text-lg" tabindex="0" role="button" style="text-decoration: none;">
@@ -84,9 +84,9 @@ import { Recipe } from '../custom/recipe';
 </div>
 }
 @case (customizerType.Subscription) {
-<div class="card w-full lg:max-w-128 bg-base-300 shadow">
+<div class="card w-full lg:max-w-98 bg-base-300 shadow">
   <div class="card-body">
-    <h2 class="text-3xl font-bold">Get {{ category.customizer.name }} daily</h2>
+    <h2 class="text-2xl font-bold">Get {{ category.customizer.name }} daily</h2>
     @if (category.customizer.details != undefined && category.customizer.details.length > 0) {
     @for (info of category.customizer.details; track $index) {
     <div class="flex gap-2">

@@ -13,7 +13,7 @@ import { CartService } from "./cart";
   imports: [FormsModule, FontAwesomeModule, ItemChoiceSummary, PriceTag],
   template: `
 <div class="flex flex-col gap-1">
-    @for (item of items; track item) {
+    @for (item of items; track $index) {
     <div [class]="'flex justify-between items-center p-2' + ' ' + background">
       <div class="flex gap-2 items-center w-full">
 

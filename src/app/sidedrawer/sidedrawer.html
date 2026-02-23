@@ -1,75 +1,104 @@
-<div class="flex flex-col gap-2 p-4">
-    <div class="flex gap-4 items-center">
-        <img class="w-16 h-16 mask mask-hexagon"
-            src="https://img.daisyui.com/images/stock/photo-1567653418876-5bb0e566e1c2.webp" />
-
-        <div class="flex flex-col">
-            @if (user.userRole == userRole.Guest) {
-            <a class="link text-info w-fit" style="text-decoration: none;" (click)="login()">Sign In</a>
-            <p class="text-xs">Or</p>
-            <a class="link text-info w-fit" style="text-decoration: none;">Create an Account</a>
-            } @else {
-            <h1 class="text-xl">
-                {{ user.name }}
-                @if (user.verified) {
-                <fa-icon class="text-sm text-info tooltip" data-tip="Verified" icon="check-circle"></fa-icon>
-                }
-            </h1>
-            <a class="link text-sm text-info">Manage Account</a>
-            }
-        </div>
-    </div>
-
-    <div class="divider"></div>
-
-    @if (user.userRole != userRole.Guest) {
-    <div class="flex flex-col gap-2 px-4">
+<div class="grid h-[95vh] w-full gap-6 grid-rows-[auto_1fr_auto] p-2">
+    <!-- Header -->
+    <header class="navbar gap-2">
+        @if (user.userRole == userRole.Guest) {
+        <button class="btn btn-neutral btn-lg lg:btn-xl font-mono" (click)="login()">Login</button>
+        <button class="btn btn-soft btn-lg lg:btn-xl font-mono">Sign Up</button>
+        }
+        @else {
         <div class="flex gap-4 items-center">
-            <fa-icon icon="receipt"></fa-icon>
-            <a class="link" style="text-decoration: none;" routerLink="/order-history">Order History</a>
-        </div>
-        <div class="flex gap-4 items-center">
-            <fa-icon icon="book"></fa-icon>
-            <a class="link" style="text-decoration: none;" routerLink="/recipe-book">
-                Recipe Book {{ user.recipeBook ? ('(' + user.recipeBook.length + ')') : '' }}
-            </a>
-        </div>
-        <div class="flex gap-4 items-center">
-            <fa-icon icon="s"></fa-icon>
-            <a class="link" style="text-decoration: none;" routerLink="/subscriptions">
-                Subscriptions {{ user.subscriptions ? ('(' + user.subscriptions.length + ')') : '' }}
-            </a>
-        </div>
-        <div class="flex gap-4 items-center">
-            <fa-icon icon="credit-card"></fa-icon>
-            <a class="link" style="text-decoration: none;">Payment Methods</a>
-        </div>
-    </div>
+            <div class="avatar">
+                <div class="w-18 rounded-full">
+                    <img src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
+                </div>
+            </div>
 
-    <div class="divider"></div>
-    }
-
-    <div class="flex flex-col gap-2 px-4">
-        <div class="flex gap-4">
-            <fa-icon icon="briefcase"></fa-icon>
             <div class="flex flex-col">
-                <a class="link" style="text-decoration: none;">Add your Restraunt</a>
-                <label class="text-xs text-gray-500">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac
-                    eros sit amet lo</label>
+                <h1 class="text-xl">
+                    {{ user.name }}
+                    @if (user.verified) {
+                    <fa-icon class="text-sm text-info tooltip" data-tip="Verified" icon="check-circle"></fa-icon>
+                    }
+                </h1>
+                <a class="link text-sm text-info">Manage Account</a>
             </div>
         </div>
-        <div class="flex gap-4">
-            <fa-icon icon="user"></fa-icon>
-            <a class="link" style="text-decoration: none;">Sign up to Deliver</a>
+        }
+    </header>
+
+    <!-- Main Content Area (stretches) -->
+    <main class="flex flex-col gap-1 overflow-y-auto">
+        @if (user.userRole != userRole.Guest) {
+        <div class="flex flex-col gap-2">
+            <div class="flex gap-4 items-center">
+                <fa-icon icon="receipt"></fa-icon>
+                <div class="flex justify-between items-center w-full">
+                    <a class="link font-bold" style="text-decoration: none;" routerLink="/order-history">Order History</a>
+                    <label class="badge badge-xs badge-success text-white">2 Active</label>
+                </div>
+            </div>
+            <div class="flex gap-4 items-center">
+                <fa-icon icon="book"></fa-icon>
+                <div class="flex justify-between items-center w-full">
+                    <a class="link font-bold" style="text-decoration: none;" routerLink="/recipe-book">Recipe Book</a>
+                    @if (user.recipeBook && user.recipeBook.length > 0) {
+                    <label class="badge badge-sm">{{ user.recipeBook.length }}</label>
+                    }
+                </div>
+            </div>
+            <div class="flex gap-4 items-center">
+                <fa-icon icon="s"></fa-icon>
+                <div class="flex justify-between items-center w-full">
+                    <a class="link font-bold" style="text-decoration: none;" routerLink="/subscriptions">Subscriptions</a>
+                    @if (user.subscriptions && user.subscriptions.length > 0) {
+                    <label class="badge badge-sm">{{ user.subscriptions.length }}</label>
+                    }
+                </div>
+            </div>
+            <div class="flex gap-4 items-center">
+                <fa-icon icon="credit-card"></fa-icon>
+                <a class="link font-bold" style="text-decoration: none;">Payment Methods</a>
+            </div>
+            <div class="flex gap-4 items-center">
+                <fa-icon icon="floppy-disk"></fa-icon>
+                <div class="flex justify-between items-center w-full">
+                    <a class="link font-bold" style="text-decoration: none;">Saved</a>
+                    <label class="badge badge-sm">3</label>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="divider"></div>
+        <div class="divider"></div>
+        }
 
-    <a class="link px-4" style="text-decoration: none;">About Us</a>
-    <a class="link px-4" style="text-decoration: none;">Contact Us</a>
+        <div class="flex flex-col gap-2">
+            <div class="flex gap-4">
+                <fa-icon icon="briefcase"></fa-icon>
+                <div class="flex flex-col">
+                    <a class="link font-bold" style="text-decoration: none;">Add your Restraunt</a>
+                    <label class="text-xs text-gray-500">
+                        Currently doing business with 100+ bakeries in Winnipeg.
+                    </label>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <fa-icon icon="car"></fa-icon>
+                <a class="link font-bold" style="text-decoration: none;">Sign up to Deliver</a>
+            </div>
+        </div>
 
-    @if (user.userRole != userRole.Guest) {
-    <a class="link text-error px-4" style="text-decoration: none;" (click)="logout()">Sign Out</a>
-    }
+        <div class="divider"></div>
+
+        <div class="flex flex-col gap-2">
+            <a class="link font-bold" style="text-decoration: none;">About Us</a>
+            <a class="link font-bold" style="text-decoration: none;">Contact Us</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="flex flex-col">
+        @if (user.userRole != userRole.Guest) {
+        <button class="btn btn-soft btn-lg lg:btn-xl font-mono text-error" (click)="logout()">Logout</button>
+        }
+    </footer>
 </div>
