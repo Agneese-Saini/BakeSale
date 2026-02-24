@@ -5,11 +5,9 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule, MatDialog } from "@angu
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { IItem, Item } from "./item";
-import { CustomizerType, ICategory, ICustomizer } from "../header/category";
 import { CartService } from "../checkout/cart";
 import { RouterModule } from "@angular/router";
 import { ItemChoiceList } from "./itemChoice";
-import { Recipe } from "../custom/recipe";
 
 @Component({
   selector: 'text-read-more',
@@ -328,50 +326,4 @@ export class ItemDialog {
     }
     return ret;
   };
-};
-
-
-@Component({
-  imports: [FormsModule, FontAwesomeModule, RouterModule],
-  template: `
-<div class="bg-base-200 p-4">
-  <div class="flex justify-between items-center">
-    <div class="flex flex-col">
-      <h2 mat-dialog-title class="text-4xl font-bold">Create Your Own</h2>
-      <label class="label tooltip tooltip-right w-fit" data-tip="Points needed to use this option.">
-        <fa-icon icon="coins" class="text-warning"></fa-icon> <b>{{ pointsRequiredForRecipe }}</b>
-      </label>
-    </div>
-
-    <div class="flex flex-col items-center">
-      <fa-icon [icon]="customizer.icon" class="text-4xl"></fa-icon>
-      <h2 mat-dialog-title class="font-bold">{{ customizer.name }}</h2>
-    </div>
-  </div>
-
-  <p class="mt-4">{{ customizer.description }}</p>
-
-  <div class="grid mt-4">
-    <button class="btn btn-neutral m-1" (click)="dialogRef.close()" routerLink="/create">
-      Start Building
-    </button>
-    <button class="btn bg-base-100 m-1" (click)="dialogRef.close()">
-      Cancel
-    </button>
-  </div>
-</div>
-`
-})
-export class ItemCreateDialog {
-
-  protected customizer: ICustomizer;
-
-  protected readonly pointsRequiredForRecipe = Recipe.PointsRequiredForRecipe;
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) protected data: ICategory,
-    protected dialogRef: MatDialogRef<ItemCreateDialog>) {
-
-    this.customizer = data.customizer ?? { name: '', description: '', icon: '', type: CustomizerType.Subscription };
-  }
 };

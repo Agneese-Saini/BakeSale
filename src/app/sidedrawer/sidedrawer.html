@@ -1,6 +1,6 @@
 <div class="grid h-[95vh] w-full gap-6 grid-rows-[auto_1fr_auto] p-2">
     <!-- Header -->
-    <header class="navbar gap-2">
+    <header class="flex flex-col gap-2">
         @if (user.userRole == userRole.Guest) {
         <button class="btn btn-neutral btn-lg lg:btn-xl font-mono" (click)="login()">Login</button>
         <button class="btn btn-soft btn-lg lg:btn-xl font-mono">Sign Up</button>
@@ -8,7 +8,7 @@
         @else {
         <div class="flex gap-4 items-center">
             <div class="avatar">
-                <div class="w-18 rounded-full">
+                <div class="w-12 rounded-full">
                     <img src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
                 </div>
             </div>
@@ -17,10 +17,10 @@
                 <h1 class="text-xl">
                     {{ user.name }}
                     @if (user.verified) {
-                    <fa-icon class="text-sm text-info tooltip" data-tip="Verified" icon="check-circle"></fa-icon>
+                    <fa-icon class="text-lg text-info tooltip" data-tip="Verified" icon="check-circle"></fa-icon>
                     }
                 </h1>
-                <a class="link text-sm text-info">Manage Account</a>
+                <a class="link text-sm text-info" style="text-decoration: none;">Account Settings</a>
             </div>
         </div>
         }
@@ -28,7 +28,9 @@
 
     <!-- Main Content Area (stretches) -->
     <main class="flex flex-col gap-1 overflow-y-auto">
-        @if (user.userRole != userRole.Guest) {
+        @if (user.userRole != userRole.Guest) {            
+        <div class="divider"></div>
+
         <div class="flex flex-col gap-2">
             <div class="flex gap-4 items-center">
                 <fa-icon icon="receipt"></fa-icon>
@@ -42,7 +44,7 @@
                 <div class="flex justify-between items-center w-full">
                     <a class="link font-bold" style="text-decoration: none;" routerLink="/recipe-book">Recipe Book</a>
                     @if (user.recipeBook && user.recipeBook.length > 0) {
-                    <label class="badge badge-sm">{{ user.recipeBook.length }}</label>
+                    <label class="text-sm">{{ user.recipeBook.length }}</label>
                     }
                 </div>
             </div>
@@ -51,7 +53,7 @@
                 <div class="flex justify-between items-center w-full">
                     <a class="link font-bold" style="text-decoration: none;" routerLink="/subscriptions">Subscriptions</a>
                     @if (user.subscriptions && user.subscriptions.length > 0) {
-                    <label class="badge badge-sm">{{ user.subscriptions.length }}</label>
+                    <label class="text-sm">{{ user.subscriptions.length }}</label>
                     }
                 </div>
             </div>
@@ -60,11 +62,8 @@
                 <a class="link font-bold" style="text-decoration: none;">Payment Methods</a>
             </div>
             <div class="flex gap-4 items-center">
-                <fa-icon icon="floppy-disk"></fa-icon>
-                <div class="flex justify-between items-center w-full">
-                    <a class="link font-bold" style="text-decoration: none;">Saved</a>
-                    <label class="badge badge-sm">3</label>
-                </div>
+                <fa-icon icon="heart"></fa-icon>
+                <a class="link font-bold" style="text-decoration: none;">Saved</a>
             </div>
         </div>
 
@@ -86,19 +85,16 @@
                 <a class="link font-bold" style="text-decoration: none;">Sign up to Deliver</a>
             </div>
         </div>
-
-        <div class="divider"></div>
-
-        <div class="flex flex-col gap-2">
-            <a class="link font-bold" style="text-decoration: none;">About Us</a>
-            <a class="link font-bold" style="text-decoration: none;">Contact Us</a>
-        </div>
     </main>
 
     <!-- Footer -->
-    <footer class="flex flex-col">
-        @if (user.userRole != userRole.Guest) {
-        <button class="btn btn-soft btn-lg lg:btn-xl font-mono text-error" (click)="logout()">Logout</button>
-        }
+    <footer class="flex flex-col p-2 gap-2">
+        <div class="flex gap-2 justify-end">
+            <a class="link">About Us</a>
+            <a class="link">Contact Us</a>
+            @if (user.userRole != userRole.Guest) {
+            <a class="link text-error" (click)="logout()">Logout</a>
+            }
+        </div>
     </footer>
 </div>

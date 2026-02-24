@@ -22,7 +22,6 @@ export interface IPayMethod {
 export interface IUser {
   name: string,
   userRole: UserRole,
-  points?: number,
   verified?: boolean,
   image?: string,
   orders?: IOrderHistory[],

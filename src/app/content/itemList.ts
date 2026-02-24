@@ -3,10 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Category, CustomizerType, ICategory } from '../header/category';
-import { ItemCreateDialog } from './itemDialog';
+import { Category, Customizer, ICategory } from '../header/category';
 import { IItem, Item } from './item';
-import { Recipe } from '../custom/recipe';
 
 @Component({
   selector: 'item-list',
@@ -19,8 +17,8 @@ import { Recipe } from '../custom/recipe';
 } @else {
 
 <!-- Category name -->
-@if (category.customizer != undefined || (category.items && category.items.length > 0)) {
-<div class="flex w-full justify-between">
+@if (category.customizer != undefined || (category.items != undefined && category.items.length > 0)) {
+<div class="flex w-full justify-between pb-2">
   @if (category.fontSize != undefined) {
   @if (category.fontSize == 3) {
   <h1 class="text-4xl font-bold font-serif">{{ category.name }}:</h1>
@@ -31,9 +29,7 @@ import { Recipe } from '../custom/recipe';
   @else if (category.fontSize == 1) {
   <h1 class="text-lg font-bold">{{ category.name }}:</h1>
   }
-  @else if (category.fontSize == 0) {
-  }
-  @else {
+  @else if (category.fontSize != 0) {
   <h1 class="font-bold">{{ category.name }}:</h1>
   }
   }
@@ -49,29 +45,11 @@ import { Recipe } from '../custom/recipe';
 
 <!-- Category customizer -->
 @if (category.customizer != undefined) {
-@switch (category.customizer.type) {
-@case (customizerType.Recipe) {
+@switch (category.customizer) {
+@case (customizer.Recipe) {
 <div class="card w-full lg:max-w-98 bg-base-300 shadow">
   <div class="card-body">
-    <div class="flex justify-between items-center gap-2">
-      <h2 class="text-2xl font-bold">Create Custom {{ category.customizer.name }}</h2>
-
-      <div class="dropdown dropdown-bottom dropdown-end">
-        <button class="link label text-lg" tabindex="0" role="button" style="text-decoration: none;">
-          <fa-icon icon="coins" class="text-warning"></fa-icon> <b>{{ pointsRequiredForRecipe }}</b>
-        </button>
-
-        <div tabindex="0" class="dropdown-content card card-sm z-2 w-64 pt-2 shadow-xl">
-          <div tabindex="0" class="card-body text-wrap bg-neutral text-white rounded-box">
-            <h1 class="card-title"><fa-icon class="text-warning" icon="coins"></fa-icon> BakeSale Points Program</h1>
-            <p>
-              You require <b>{{ pointsRequiredForRecipe }}</b> points to use this feature.<br/><br/>
-              Through BakeSale points program, you earn points on your purchases, recipes, and even social media!<br/><br/>
-              You are automatically enrolled once you have an account with us: <a class="link">Sign In</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <h2 class="text-2xl font-bold">Create Custom Cake</h2>
 
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui.</p>
 
@@ -83,23 +61,42 @@ import { Recipe } from '../custom/recipe';
   </div>
 </div>
 }
-@case (customizerType.Subscription) {
+@case (customizer.Subscription) {
 <div class="card w-full lg:max-w-98 bg-base-300 shadow">
   <div class="card-body">
-    <h2 class="text-2xl font-bold">Get {{ category.customizer.name }} daily</h2>
-    @if (category.customizer.details != undefined && category.customizer.details.length > 0) {
-    @for (info of category.customizer.details; track $index) {
+    <h2 class="text-2xl font-bold">Get Bread daily</h2>
     <div class="flex gap-2">
-      <fa-icon [icon]="info.icon"></fa-icon>
-      <span>{{ info.label }}</span>
+      <fa-icon icon="bread-slice"></fa-icon>
+      <span>Made fresh everyday</span>
     </div>
-    }
-    }
+    <div class="flex gap-2">
+      <fa-icon icon="money-bill"></fa-icon>
+      <span>Save money on daily bread</span>
+    </div>
+    <div class="flex gap-2">
+      <fa-icon icon="car-side"></fa-icon>
+      <span>Free Delivery</span>
+    </div>
     <div class="mt-6">
-      <button class="btn bg-orange-500 text-white btn-block" [routerLink]="['/subscribe', {type: category.customizer.name}]">
+      <button class="btn bg-orange-500 text-white btn-block" [routerLink]="['/subscribe', 'bread']">
         Get Started <fa-icon icon="arrow-right"></fa-icon>
       </button>
     </div>
+  </div>
+</div>
+}
+@case (customizer.Marketplace) {
+<div class="flex flex-col gap-2">
+  <h2 class="text-2xl font-bold">Welcome to Marketplace</h2>
+  <p>Here you can buy/sell your homemade bakery through BakeSale (secured and delivered by BakeSale).</p>
+
+  <div class="flex gap-2 w-full lg:w-fit">
+    <button class="flex-1 btn text-nowrap">
+      How this works <fa-icon icon="question"></fa-icon>
+    </button>
+    <button class="flex-1 btn bg-neutral text-white text-nowrap">
+      Start Selling <fa-icon icon="arrow-right"></fa-icon>
+    </button>
   </div>
 </div>
 }
@@ -107,8 +104,8 @@ import { Recipe } from '../custom/recipe';
 
 <div class="divider m-0"></div>
 }
-<!-- Category items -->
 @else {
+<!-- Category items -->
 @if (category.items != undefined && category.items.length > 0) {
 <div class="flex flex-col pt-2 pb-4">
   <div #widgetsContent (scroll)="onScroll()" [class]="wrap ? 'overflow-none' : 'overflow-x-auto'">
@@ -146,8 +143,7 @@ import { Recipe } from '../custom/recipe';
 })
 export class ItemList {
 
-  protected customizerType = CustomizerType;
-  protected pointsRequiredForRecipe = Recipe.PointsRequiredForRecipe;
+  protected customizer = Customizer;
 
   @Input({ required: true })
   public category: ICategory = Category.DefaultCategory;
@@ -199,19 +195,6 @@ export class ItemList {
     }
 
     return displayItems;
-  }
-
-  protected openItemCreateDialog(category: ICategory) {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.panelClass = "";
-    dialogConfig.data = category;
-    dialogConfig.width = '90%';
-
-    const dialogRef = this.dialog.open(ItemCreateDialog, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.cdr.detectChanges();
-    });
   }
 
   protected onScroll() {

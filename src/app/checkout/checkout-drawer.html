@@ -20,7 +20,7 @@
     </header>
 
     <!-- Main Content Area (stretches) -->
-    <main class="flex flex-col gap-1 overflow-y-auto">
+    <main class="flex flex-col gap-1 overflow-y-auto bg-base-300 p-1">
       @for (cartItem of shoppingCart | keyvalue; track $index) {
       <cart-item-list [items]="cartItem.value" />
       }

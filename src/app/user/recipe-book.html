@@ -69,12 +69,7 @@
           </div>
 
           <div class="flex flex-col px-2">
-            <div class="flex justify-between items-center">
-              <h1 class="font-extrabold text-2xl">{{ recipe.name }}</h1>
-              @if (recipe.isPrivate) {
-              <span class="badge badge-error badge-soft tooltip" data-tip="This recipe is Private">Private</span>
-              }
-            </div>
+            <h1 class="font-extrabold text-2xl">{{ recipe.name }}</h1>
             <h2 class="label text-sm">Create on {{ recipe.date }}</h2>
           </div>
 
@@ -123,25 +118,6 @@
                                 recipe.buyHistory.size }}</b> customers.</p>
                             <p class="label text-wrap">Note: Your recipe has to be published (public) in order for
                               others to view/buy it.</p>
-                          </div>
-                        </div>
-                      </div>
-                    </th>
-                  </tr>
-                  <tr>
-                    <th>Points</th>
-                    <th class="label">
-                      <fa-icon class="text-warning" icon="coins"></fa-icon> {{ getPoints(recipe) }}
-                      <div class="dropdown dropdown-end">
-                        <fa-icon class="link" tabindex="0" role="button" icon="info-circle"></fa-icon>
-                        <div tabindex="0" class="card card-sm dropdown-content z-1 w-64 shadow-xl">
-                          <div tabindex="0" class="card-body text-wrap bg-neutral text-white rounded-box">
-                            <div class="flex justify-between">
-                              <h1 class="card-title">Points Earned</h1>
-                              <h2 class="card-title"><fa-icon class="text-warning" icon="coins"></fa-icon> 0</h2>
-                            </div>
-                            <p>You have made <b>{{ getPoints(recipe) }} points</b> from this recipe.</p>
-                            <p>Each purcahse made (either by You or other Customers) grants you BakeSale points.</p>
                           </div>
                         </div>
                       </div>

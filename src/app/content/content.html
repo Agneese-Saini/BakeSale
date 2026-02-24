@@ -79,31 +79,29 @@
 
       @for (cat of deliverySettings.category.subcats; track $index)
       {
-      <li (click)="focusCategory(cat)" [class]="(!cat.customizer && !cat.items) ? 'menu-disabled' : ''">
+      <li (click)="focusCategory(cat)"
+        [class]="(cat.customizer == undefined && cat.items == undefined) ? 'menu-disabled' : ''">
         @if (cat.subcats && cat.subcats.length > 0) {
-        <details open>
-          <summary>
+        <span class="flex items-center gap-2">
+          <a [class]="isFocused(cat) ? 'font-bold text-2xl' : 'font-light text-lg'">{{ cat.name }}</a>
+          @if (isActive(cat)) {
+          <span class="status status-lg status-warning animate-bounce"></span>
+          }
+        </span>
+
+        <ul>
+          @for (subcat of cat.subcats; track $index) {
+          <li (click)="focusCategory(subcat)"
+            [class]="(subcat.customizer == undefined && subcat.items == undefined) ? 'menu-disabled' : ''">
             <span class="flex items-center gap-2">
-              <a [class]="isFocused(cat) ? 'font-bold text-2xl' : 'font-light text-lg'">{{ cat.name }}</a>
-              @if (isActive(cat)) {
-              <span class="status status-lg status-warning animate-bounce"></span>
+              <a [class]="isFocused(subcat) ? 'font-bold text-2xl' : 'font-light text-lg'">{{ subcat.name }}</a>
+              @if (isActive(subcat)) {
+              <span class="status status-warning status-lg animate-bounce"></span>
               }
             </span>
-          </summary>
-
-          <ul>
-            @for (subcat of cat.subcats; track $index) {
-            <li (click)="focusCategory(subcat)" [class]="(!subcat.customizer && !subcat.items) ? 'menu-disabled' : ''">
-              <span class="flex items-center gap-2">
-                <a [class]="isFocused(subcat) ? 'font-bold text-2xl' : 'font-light text-lg'">{{ subcat.name }}</a>
-                @if (isActive(subcat)) {
-                <span class="status status-warning status-lg animate-bounce"></span>
-                }
-              </span>
-            </li>
-            }
-          </ul>
-        </details>
+          </li>
+          }
+        </ul>
         }
         @else {
         <span class="flex items-center gap-2">

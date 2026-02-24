@@ -6,7 +6,6 @@ import { Router, RouterModule } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { IUser, UserService } from '../user/user';
-import { ICustomizer } from '../header/category';
 
 export enum ButtonType {
   Finish,
@@ -43,7 +42,6 @@ export interface IRecipe {
   recipe: Map<Category, IRecipeGroup>,
   buyHistory: Map<IUser, number>,
   date: number,
-  isPrivate?: boolean,
   desc?: string,
 }
 
@@ -54,9 +52,6 @@ export interface IRecipe {
   styleUrl: './recipe.css'
 })
 export class Recipe {
-
-  static readonly PointsPerRecipe = 15;
-  static readonly PointsRequiredForRecipe = 0;
 
   static readonly CustomTypes: Map<RecipeType, { label: string, icon: string }> = new Map([
     [RecipeType.Cake, {
@@ -135,17 +130,8 @@ export class Recipe {
   protected recipeNameError?: string;
   protected recipeDescription?: string;
   protected recipeInstructions?: string;
-  protected publicRecipe: boolean = false;
 
   protected user: IUser = UserService.DefaultUser;
-
-  protected get requiredPoints(): number {
-    return Recipe.PointsRequiredForRecipe * (this.publicRecipe ? 9.5 : 1);
-  }
-
-  protected get hasEnoughPoints(): boolean {
-    return (this.requiredPoints == 0 || (this.user.points != undefined && this.user.points >= this.requiredPoints));
-  }
 
   protected get numLayers() {
     return Recipe.numLayers(this.categories);
@@ -446,7 +432,6 @@ export class Recipe {
       value: 25,
       recipe: this.categories,
       buyHistory: new Map(),
-      isPrivate: this.publicRecipe,
       date: Date.now()
     };
 
@@ -513,9 +498,5 @@ export class Recipe {
     }
 
     return null;
-  }
-
-  static getPoints(recipe: IRecipe) {
-    return recipe.buyHistory.size * Recipe.PointsPerRecipe;
   }
 }

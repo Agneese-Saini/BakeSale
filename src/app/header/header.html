@@ -45,25 +45,15 @@
 
       <div class="flex gap-2 items-center">
         @if (user.userRole != userRole.Guest) {
-        <div class="dropdown dropdown-end">
-          <button class="link font-bold flex gap-1 items-center" tabindex="0" role="button"
-            style="text-decoration: none;">
-            <fa-icon class="text-warning" icon="coins"></fa-icon>
-            <p class="text-lg">{{ user.points ? user.points : 0 }}</p>
-          </button>
+        <button class="btn btn-square btn-ghost text-2xl">
+          <div class="indicator">
+            <p class="indicator-item badge badge-xs badge-warning rounded-full">
+              <b>2</b>
+            </p>
 
-          <div tabindex="0" class="card card-sm dropdown-content z-1 w-64 shadow-xl">
-            <div tabindex="0" class="card-body text-wrap bg-neutral text-white rounded-box">
-              <div class="flex justify-between">
-                <h1 class="card-title">BakeSale Points</h1>
-                <h2 class="card-title"><fa-icon class="text-warning" icon="coins"></fa-icon> {{ user.points ?
-                  user.points : 0 }}</h2>
-              </div>
-              <p>You can redeem your points and use them at checkout for discounts or other BakeSale promotions (e.g.
-                Custom cakes, etc.)</p>
-            </div>
+            <fa-icon icon="bell"></fa-icon>
           </div>
-        </div>
+        </button>
         }
 
         <label [for]="checkoutDrawer" aria-label="open sidebar" class="btn btn-square btn-ghost text-2xl">
@@ -73,9 +63,7 @@
               <b>{{ numItems }}</b>
             </p>
             }
-            <a class="link rounded-full text-2xl">
-              <fa-icon icon="shopping-cart"></fa-icon>
-            </a>
+            <fa-icon icon="shopping-cart"></fa-icon>
           </div>
         </label>
       </div>

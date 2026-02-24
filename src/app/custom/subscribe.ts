@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { Category, CategoryService, ICategory, ICustomizer } from "../header/category";
+import { Category, CategoryService, Customizer, ICategory } from "../header/category";
 import { IItem, Item } from "../content/item";
 import { MatDialog, MatDialogConfig, MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -65,10 +65,6 @@ export class Subscribe {
   protected selectedDeliveryFrequency: number = this.deliveryFrequencies[0];
   protected selectedDeliveryDaysError?: string;
 
-  protected get customizer(): ICustomizer {
-    return this.category!.customizer!;
-  }
-
   protected get totalSelectedItems(): number {
     let num: number = 0;
     if (this.category) {
@@ -121,10 +117,10 @@ export class Subscribe {
 
   protected ngOnInit() {
     const type = this.route.snapshot.paramMap.get('type');
-    if (type) {
+    if (type == 'bread') {
       this.categoryService.categories$.subscribe(data => {
         for (let cat of data) {
-          let find = this.findCustomizer(cat, type);
+          let find = this.findCustomizer(cat, Customizer.Subscription);
           if (find != undefined) {
             this.category = structuredClone(find);
             break;
@@ -136,14 +132,14 @@ export class Subscribe {
     }
   }
 
-  protected findCustomizer(category: ICategory, type: string): ICategory | undefined {
-    if (category.customizer && category.customizer.name == type) {
+  protected findCustomizer(category: ICategory, customizer: Customizer): ICategory | undefined {
+    if (category.customizer && category.customizer == customizer) {
       return category;
     }
 
     if (category.subcats) {
       for (let subcat of category.subcats) {
-        const find = this.findCustomizer(subcat, type);
+        const find = this.findCustomizer(subcat, customizer);
         if (find != undefined) {
           return find;
         }

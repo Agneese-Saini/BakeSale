@@ -54,13 +54,12 @@
       <table class="table bg-base-300">
         <tbody>
           @for (sub of user.subscriptions; track $index) {
-          @let subName = sub.category.customizer!.name + ($index + 1);
           @for (day of sub.days | keyvalue; track $index) {
           <tr>
             <td>
               <div class="flex flex-col">
                 <div class="flex justify-between">
-                  <p><b>{{ subName }}</b>: {{ sub.date | date }} - {{ day.value.name }}</p>
+                  <p><b>Bread Subscription {{ $index > 0 ? $index : '' }}</b>: {{ sub.date | date }} - {{ day.value.name }}</p>
                 </div>
                 <p></p>
                 <div class="flex gap-2 px-2">
@@ -84,9 +83,9 @@
 
           <div class="collapse-title flex justify-between items-center text-xl">
             <div class="flex gap-2 items-center">
-              <fa-icon class="text-success" [icon]="sub.category.customizer!.icon"></fa-icon>
+              <fa-icon class="text-success" icon="bread-slice"></fa-icon>
               <div class="flex flex-col">
-                <h2 class="font-bold"> {{ sub.category.customizer!.name }} {{ $index + 1 }}</h2>
+                <h2 class="font-bold">Bread Subscription {{ $index > 0 ? $index : '' }}</h2>
                 <p class="text-sm text-gray-500">{{ getTotalItems(getSelectedItems(sub.category)) }} items</p>
               </div>
             </div>

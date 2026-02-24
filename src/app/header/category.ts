@@ -5,17 +5,10 @@ import { BehaviorSubject } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IItem } from '../content/item';
 
-export enum CustomizerType {
+export enum Customizer {
 	Recipe,
-	Subscription
-};
-
-export interface ICustomizer {
-	name: string,
-	description: string,
-	icon: string,
-	type: CustomizerType,
-	details?: { icon: string, label: string }[]
+	Subscription,
+	Marketplace
 };
 
 export interface ICategory {
@@ -24,7 +17,7 @@ export interface ICategory {
 	checked?: boolean,
 	about?: string,
 	subcats?: ICategory[],
-	customizer?: ICustomizer,
+	customizer?: Customizer,
 	items?: IItem[],
 	pages?: string[],
 	hidden?: boolean,
@@ -36,85 +29,49 @@ export interface ICategory {
 })
 export class CategoryService {
 
-	readonly customCake: ICustomizer = {
-		name: 'Cake',
-		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui. \
-			Aenean tempus ligula nec suscipit venenatis. Fusce luctus ipsum diam, aliquet dictum ligula imperdiet et. \
-			In lectus velit, semper ut iaculis vel, congue nec ipsum. Cras ultrices eros elit, gravida euismod mi lobortis \
-			vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
-			posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i',
-		icon: 'cake',
-		type: CustomizerType.Recipe
-	};
-
-	readonly subscribeBread: ICustomizer = {
-		name: 'Bread',
-		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui. \
-			Aenean tempus ligula nec suscipit venenatis. Fusce luctus ipsum diam, aliquet dictum ligula imperdiet et. \
-			In lectus velit, semper ut iaculis vel, congue nec ipsum. Cras ultrices eros elit, gravida euismod mi lobortis \
-			vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
-			posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i',
-		icon: 'bread-slice',
-		type: CustomizerType.Subscription,
-		details: [
-			{ icon: "car-side", label: "Free Delivery" },
-			{ icon: "bread-slice", label: "Made fresh everyday" },
-			{ icon: "basket-shopping", label: "Many options to choose from" }
-		]
-	};
-
 	private categoryList: ICategory[] = [
 		{
 			name: "Cake", icon: "cake-candles", hidden: true, subcats:
-				[{ name: "Custom Cake", fontSize: 0, customizer: this.customCake },
+				[{ name: "Creat Your Own", fontSize: 0, customizer: Customizer.Recipe },
 				{ name: "Cakes", fontSize: 2 },
 				{ name: "Cheesecake", fontSize: 2 },
 				{
-					name: "Local Bakery", fontSize: 2, pages:
+					name: "Custom Cakes", fontSize: 2, pages:
 						["Chocolate", "Fruit", "Trending", "Local"]
 				},
-				{
-					name: "User Creations", fontSize: 2, pages:
-						["Chocolate", "Fruit", "Trending", "Local"]
-				},
-				{ name: "Birthday Cake", fontSize: 2 },
 				{ name: "Cupcakes", fontSize: 2 },
-				{ name: "Pound Cake", fontSize: 2 },
-				{ name: "Frostings", fontSize: 2 }
+				{ name: "Pound Cake", fontSize: 2 }
 				]
 		},
 		{
-			name: "Baked Goods", icon: "cookie", hidden: true, subcats:
-				[{ name: "Cookies", fontSize: 2 },
-				{ name: "Brownies", fontSize: 2 },
-				{ name: "Pastry", fontSize: 2 },
-				{ name: "Donuts", fontSize: 2 },
-				{ name: "Pies", fontSize: 2 },
-				{ name: "Biscuits", fontSize: 2 },
-				{ name: "Sweets", fontSize: 2 }
+			name: "Pastry", icon: "cheese", hidden: true, subcats:
+				[{ name: "Flaky Pastry", fontSize: 2 },
+				{ name: "Puff Pastry", fontSize: 2 },
+				{ name: "Mille-feuille", fontSize: 2 },
+				{ name: "Tarts", fontSize: 2 },
+				{ name: "Macarons", fontSize: 2 },
+				]
+		},
+		{
+			name: "Cookies", icon: "cookie", hidden: true, subcats:
+				[{ name: "Drop Cookies", fontSize: 2 },
+				{ name: "Filled Cookies", fontSize: 2 },
+				{ name: "Sandwich Cookies", fontSize: 2 },
+				{ name: "Protein Cookies", fontSize: 2 },
+				{ name: "Biscotti", fontSize: 2 },
+				{ name: "Brownies", fontSize: 2 }
 				]
 		},
 		{
 			name: "Bread", icon: "bread-slice", hidden: true, subcats:
-				[{ name: "Daily Bread", fontSize: 0, customizer: this.subscribeBread },
+				[{ name: "Daily Bread", fontSize: 0, customizer: Customizer.Subscription },
 				{ name: "Sandwich Loaves", fontSize: 2 },
-				{ name: "Buns & Doughs", fontSize: 2 },
-				{ name: "European", fontSize: 2 },
-				{ name: "Middle Eastern", fontSize: 2 },
+				{ name: "Buns", fontSize: 2 },
+				{ name: "Brioche", fontSize: 2 },
+				{ name: "French", fontSize: 2 },
 				{ name: "Mediterranean", fontSize: 2 },
-				{ name: "Naan & Pita", fontSize: 2 },
-				{ name: "Gluten Free", fontSize: 2 }
-				]
-		},
-		{
-			name: "Cheese", icon: "cheese", hidden: true, subcats:
-				[{ name: "Cheese Blocks", fontSize: 2 },
-				{ name: "Shredded Cheese", fontSize: 2 },
-				{ name: "Sliced Cheese", fontSize: 2 },
-				{ name: "Cream Cheese", fontSize: 2 },
-				{ name: "Cottage Cheese", fontSize: 2 },
-				{ name: "Deli Cheese", fontSize: 2 },
-				{ name: "Alternate Cheese", fontSize: 2 }
+				{ name: "Asian", fontSize: 2 },
+				{ name: "Doughs", fontSize: 2 }
 				]
 		},
 		{
@@ -129,7 +86,7 @@ export class CategoryService {
 		{
 			name: "Canna Bar", icon: "blender", hidden: true, subcats:
 				[{ name: "Canna Milkshakes", fontSize: 2 },
-				{ name: "Kombucha", fontSize: 2 },
+				{ name: "Canna Kombucha", fontSize: 2 },
 				{ name: "Wake'n'Bake", fontSize: 2 },
 				{ name: "Canna Pop", fontSize: 2 }
 				]
@@ -141,9 +98,13 @@ export class CategoryService {
 				]
 		},
 		{
-			name: "Canna Cigars", icon: "smoking", hidden: true, subcats:
-				[{ name: "Premium Canna Cigars", fontSize: 2 },
-				{ name: "10 Packs", fontSize: 2 }
+			name: "Marketplace", icon: "shop", hidden: true, subcats:
+				[{ name: "Get Started", fontSize: 0, customizer: Customizer.Marketplace },
+				{ name: "Cakes", fontSize: 2 },
+				{ name: "Pastry", fontSize: 2 },
+				{ name: "Cookies", fontSize: 2 },
+				{ name: "Sweets", fontSize: 2 },
+				{ name: "Other Bakery", fontSize: 2 }
 				]
 		}
 	];
@@ -184,7 +145,7 @@ export class CategoryService {
 			});
 		}
 
-		category = Category.findCategory("Local Bakery", this.categoryList, "Cake");
+		category = Category.findCategory("Cakes", this.categoryList, "Cake");
 		if (category) {
 			Category.addItem(category, {
 				name: 'Sprinkle Cake',
@@ -208,7 +169,7 @@ export class CategoryService {
 			});
 		}
 
-		category = Category.findCategory("User Creations", this.categoryList, "Cake");
+		category = Category.findCategory("Custom Cakes", this.categoryList, "Cake");
 		if (category) {
 			Category.addItem(category, {
 				name: 'Red Velvet',
@@ -256,6 +217,28 @@ export class CategoryService {
 				])
 			});
 		}
+		
+		category = Category.findCategory("Marketplace", this.categoryList, "Cake");
+		if (category) {
+			Category.addItem(category, {
+				name: 'Red Velvet',
+				about: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui. \
+						Aenean tempus ligula nec suscipit venenatis. Fusce luctus ipsum diam, aliquet dictum ligula imperdiet et. \
+						In lectus velit, semper ut iaculis vel, congue nec ipsum. Cras ultrices eros elit, gravida euismod mi lobortis \
+						vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
+						 posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i",
+				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt, and flavor (vanilla extract)",
+				image: [ "https://cdn.prod.website-files.com/614a379840dbad1848e598c2/679906d29abceb2bbceb0696_679905de4268ad4dc4eae460_IMG_1630.jpeg" ],
+				amount: 0,
+				author: "MyNameIsShady",
+				details: [
+					{ header: 'Gluten Free', detail: 'Yes' },
+					{ header: 'Dairy Free', detail: 'No' },
+					{ header: 'Flavors', detail: 'Vanila, Candy, Butterscotch' }
+				],
+				price: { value: 19.99 }
+			});
+		}
 
 		category = Category.findCategory("Canna Milkshakes", this.categoryList, "Canna Bar");
 		if (category) {
@@ -272,10 +255,10 @@ export class CategoryService {
 			});
 		}
 
-		category = Category.findCategory("Kombucha", this.categoryList, "Canna Bar");
+		category = Category.findCategory("Canna Kombucha", this.categoryList, "Canna Bar");
 		if (category) {
 			Category.addItem(category, {
-				name: 'Canna Kombucha',
+				name: 'Kombucha Tea',
 				tags: ["THC: 12%", "CBD: < 1%"],
 				price: { value: 5 },
 				image: ["https://wellnessmama.com/wp-content/uploads/How-to-make-Kombucha-recipe-and-tutorial.jpg"],
