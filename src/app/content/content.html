@@ -56,7 +56,7 @@
     <div class="w-full">
       <!-- Page content here -->
       @for (subcat of deliverySettings.category.subcats; track $index) {
-      <item-list [category]="subcat"></item-list>
+      <category-items [category]="subcat"></category-items>
       }
     </div>
   </div>

@@ -6,7 +6,7 @@ import { DeliveryMode } from '../header/addressBook';
 import { CartService, Cart, EmptyCartLinks } from './cart';
 import { KeyValuePipe } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { TimeslotsDialog } from '../header/timeslots';
 import { Router, RouterModule } from '@angular/router';
 import { IOrderHistory } from '../user/order-history';
@@ -14,7 +14,7 @@ import { UserService } from '../user/user';
 import { ItemChoiceList } from '../content/itemChoice';
 import { Tip } from "./order";
 import { CartItemList } from './cartItemList';
-import { Receipt } from '../custom/receipt';
+import { Receipt } from './receipt';
 
 export enum DriverTip {
   Tip_10 = 10,
@@ -238,7 +238,7 @@ export class CheckoutDetails {
       this.cdr.detectChanges();
     });
   }
-  
+
   protected getLastFourDigits(cardNumber: string): string {
     return cardNumber.slice(-4);
   }
@@ -344,7 +344,7 @@ export class Checkout {
   public get deliveryMode() {
     return AddressBook.DeliveryModes.get(this.deliverySettings.mode)!;
   }
-  
+
   protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
   protected shoppingCart: Cart = new Map();
   protected couponDiscount: number = 0;
@@ -473,53 +473,63 @@ export class Checkout {
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, KeyValuePipe],
+  imports: [FormsModule, FontAwesomeModule, KeyValuePipe, MatDialogContent, MatDialogActions],
   template: `
-<div class="flex flex-col bg-base-200 min-w-84 p-4">
-  <h2 mat-dialog-title class="text-4xl font-bold">Delivery Options</h2>
-  <br />
+<div class="bg-base-200">
+  <div mat-dialog-content class="flex flex-col"> 
+    <h2 class="text-4xl font-bold">Delivery Options</h2>
+    <br />
 
-  <label>Address:</label>
-  <p class="px-2 font-mono">
-    <b>{{ deliverySettings.address!.addressLine }}</b>
-    @if (deliverySettings.address!.buildingType) {
-    <br/>
-    <fa-icon class="pr-2" icon="house"></fa-icon> <b>{{ deliverySettings.address!.buildingType }}</b>
-    }
-  </p>
-  
-  <div class="bg-base-300 rounded-box mt-2 overflow-x-auto">
-    <div class="flex h-64 overflow-x-auto p-2">
-      <table class="table table-zebra">
-        <tbody>
-          @for (type of deliveryType | keyvalue; track $index) {
-          <tr class="h-16">
-            <td>
-              <label class="label cursor-pointer flex justify-between">
-                <span class="label-text text-xl">
-                  {{ type.value }}
-                </span>
-                <input type="radio" name="times" class="radio" [checked]="this.selectedOption == type.value" [value]="type.value" [(ngModel)]="selectedOption" />
-              </label>
-            </td>
-          </tr>
-          }
-        </tbody>
-      </table>
+    <h1>Address:</h1>
+    <p class="font-mono px-2">
+      @if (deliverySettings.address) {
+      <b>{{ deliverySettings.address.addressLine }}</b>
+      @if (deliverySettings.address.buildingType) {
+      <br/>
+      <fa-icon class="pr-2" icon="house"></fa-icon> <b>{{ deliverySettings.address.buildingType }}</b>
+      }
+      }
+      @else {
+      Unknown  
+      }
+    </p>
+    
+    <div class="bg-base-300 rounded-box mt-2 overflow-x-auto">
+      <div class="flex">
+        <table class="table table-zebra">
+          <tbody>
+            @for (type of deliveryType | keyvalue; track $index) {
+            <tr class="h-12">
+              <td>
+                <label class="label cursor-pointer flex justify-between">
+                  <span class="label-text text-xl">
+                    {{ type.value }}
+                  </span>
+                  <input type="radio" name="times" class="radio" [checked]="this.selectedOption == type.value" [value]="type.value" [(ngModel)]="selectedOption" />
+                </label>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
+    <br />
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend text-lg">Delivery Instructions:</legend>
+      <input type="search" [class]="'input placeholder-gray-350 w-full ' + (instructions ? 'border border-neutral' : '')" 
+        placeholder="e.g. Don't ring the door bell." [(ngModel)]="instructions" />
+      <p class="flex justify-end label">Optional</p>
+    </fieldset>
+    <br />
   </div>
-  <br />
 
-  <label class="text-xl">Delivery Instructions:</label>
-  <label class="text-gray-500">Please write (if)any Delivery instructions for your courier:</label>
-  <input [class]="'input placeholder-gray-350 w-full ' + (instructions ? 'border border-neutral' : '')" type="search" placeholder="e.g. Don't ring the door bell." [(ngModel)]="instructions" />
-  <br />
-
-  <div class="grid items-stretch pt-4">
-    <button class="btn btn-neutral m-1" (click)="onSave()">
+  <div mat-dialog-actions class="flex flex-col gap-2">
+    <button class="btn btn-neutral w-full" (click)="onSave()">
       Save
     </button>
-    <button class="btn bg-base-100 m-1" (click)="onClose()">
+    <button class="btn bg-base-100 w-full" (click)="onClose()">
       Cancel
     </button>
   </div>

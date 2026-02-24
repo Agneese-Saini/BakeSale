@@ -63,8 +63,8 @@ export class Item {
   static readonly DefaultMaxAmount = 20;
 
   protected readonly CardSize = { 
-    height: 'h-38 lg:h-54', 
-    width: 'w-38 lg:w-54' 
+    height: 'h-32 lg:h-52', 
+    width: 'w-32 lg:w-52' 
   };
 
   @Input({ required: true })

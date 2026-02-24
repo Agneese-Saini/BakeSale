@@ -9,7 +9,7 @@ import { IOrderHistory } from "./order-history";
 import { Item } from "../content/item";
 import { CartService } from "../checkout/cart";
 import { DeliveryType } from "../header/addressBook";
-import { Receipt } from "../custom/receipt";
+import { Receipt } from "../checkout/receipt";
 
 @Component({
   selector: 'order-items',

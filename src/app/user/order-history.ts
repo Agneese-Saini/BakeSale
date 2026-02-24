@@ -4,11 +4,13 @@ import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { IPayMethod, IUser, UserService } from './user';
 import { Cart, CartService } from '../checkout/cart';
-import { DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { DeliveryService, DeliveryType } from '../header/addressBook';
 import { OrderItems } from "./view-receipt";
 import { IAddress } from '../header/addressDialog';
 import { ITime } from '../header/timeslots';
+import { IItem } from '../content/item';
+import { ItemsList } from "../content/itemList";
 
 export interface IOrderHistory {
   tipAmount: number,
@@ -28,7 +30,7 @@ export interface IOrderHistory {
 
 @Component({
   selector: 'order-history',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe, OrderItems],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe, DatePipe, OrderItems, ItemsList],
   templateUrl: "order-history.html"
 })
 export class OrderHistory {
@@ -36,10 +38,50 @@ export class OrderHistory {
   protected user: IUser = UserService.DefaultUser;
 
   protected filters: string[] = [
-    "Today", "Tomorrow", "3 days old"
+    "Today", "Yesterday", "2 Weeks", "1 Month", "3 Months", "1 Year", "2 Years", "3 Years"
   ];
 
   protected currentFilter?: string;
+
+  protected get buyAgain(): IItem[] {
+    let items: IItem[] = [
+      {
+				name: 'Red Velvet',
+				about: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui. \
+						Aenean tempus ligula nec suscipit venenatis. Fusce luctus ipsum diam, aliquet dictum ligula imperdiet et. \
+						In lectus velit, semper ut iaculis vel, congue nec ipsum. Cras ultrices eros elit, gravida euismod mi lobortis \
+						vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
+						 posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i",
+				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt, and flavor (vanilla extract)",
+				image: [ "https://cdn.prod.website-files.com/614a379840dbad1848e598c2/679906d29abceb2bbceb0696_679905de4268ad4dc4eae460_IMG_1630.jpeg" ],
+				amount: 0,
+				details: [
+					{ header: 'Gluten Free', detail: 'Yes' },
+					{ header: 'Dairy Free', detail: 'No' },
+					{ header: 'Flavors', detail: 'Vanila, Candy, Butterscotch' }
+				],
+				price: { value: 19.99 }
+			},
+      {
+				name: 'Red Velvet',
+				about: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui. \
+						Aenean tempus ligula nec suscipit venenatis. Fusce luctus ipsum diam, aliquet dictum ligula imperdiet et. \
+						In lectus velit, semper ut iaculis vel, congue nec ipsum. Cras ultrices eros elit, gravida euismod mi lobortis \
+						vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
+						 posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i",
+				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt, and flavor (vanilla extract)",
+				image: [ "https://cdn.prod.website-files.com/614a379840dbad1848e598c2/679906d29abceb2bbceb0696_679905de4268ad4dc4eae460_IMG_1630.jpeg" ],
+				amount: 0,
+				details: [
+					{ header: 'Gluten Free', detail: 'Yes' },
+					{ header: 'Dairy Free', detail: 'No' },
+					{ header: 'Flavors', detail: 'Vanila, Candy, Butterscotch' }
+				],
+				price: { value: 19.99 }
+			}
+    ];
+    return items;
+  }
 
   constructor(
     private service: UserService,

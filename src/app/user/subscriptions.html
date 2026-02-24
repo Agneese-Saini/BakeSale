@@ -97,8 +97,7 @@
               <h2 class="font-bold">Items:</h2>
               <span class="flex">
                 @for (item of getSelectedItems(sub.category); track $index) {
-                {{ item.name }}{{ item.amount > 1 ? (' (' + item.amount + ')') : '' }}{{ item !=
-                getLastItem(sub) ? ', ' : '' }}
+                {{ item.name }}{{ item.amount > 1 ? (' (' + item.amount + ')') : '' }}{{ item != getLastItem(sub) ? ', ' : '' }}
                 }
               </span>
               <br />
@@ -147,8 +146,9 @@
       </div>
       }
       @else {
-      <div class="py-20 px-4 text-center bg-base-200 w-full">
-        <h1 class="text-6xl font-bold text-neutral mb-4"><fa-icon icon="folder-open"></fa-icon> Empty</h1>
+      <div class="py-20 px-4 text-center w-full">
+        <fa-icon class="text-6xl text-gray-500" icon="face-grin-tongue"></fa-icon>
+        <h1 class="text-4xl font-bold text-gray-500 mb-4">No Subscriptions Found</h1>
         <p class="text-gray-600 mb-6">
           Looks like you have no current active Subscriptions.
         </p>

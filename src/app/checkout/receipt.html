@@ -30,7 +30,7 @@
 @if (getCouponDiscount() > 0) {
 <div class="flex justify-between items-center pt-1">
   <p>Coupon discount:</p>
-  <p>-{{ '$' }}{{ getCouponDiscount() | number: '1.2-2' }}</p>
+  <p class="text-success">-{{ '$' }}{{ getCouponDiscount() | number: '1.2-2' }}</p>
 </div>
 }
 

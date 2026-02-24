@@ -41,14 +41,13 @@
         </div>
       </div>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at
-        non
-        dui.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Nullam ac eros sit amet lorem facilisis vulputate at non dui.
       </p>
     </div>
     <br />
 
-    <label class="input w-full mb-6">
+    <label class="input w-full">
       <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
           <circle cx="11" cy="11" r="8"></circle>
@@ -57,93 +56,52 @@
       </svg>
       <input type="search" class="grow placeholder-gray-500 input-lg" placeholder="Search" />
     </label>
+  </div>
 
+  <div class="bg-base-300 h-2"></div>
+
+  <div class="w-full lg:w-[65vw] p-4">
     @if (user.recipeBook && user.recipeBook.length > 0) {
-    <div class="flex flex-col gap-4 lg:flex-row lg:flex-wrap justify-center items-center lg:bg-base-300 lg:p-2">
+    <p class="text-lg"><b>{{ user.recipeBook.length }}</b> {{ user.recipeBook.length == 1 ? 'Recipe' : 'Recipes' }} found</p>
+    <br />
+
+    <div class="flex flex-col gap-4 justify-center items-center">
       @for (recipe of user.recipeBook; track $index) {
-      <div class="rounded-box border border-dashed border-2 border-base-content/35 bg-base-200 shadow p-2">
-        <div class="flex flex-col gap-2">
-          <div class="flex justify-center rounded-box bg-base-300 w-full">
-            <img class="max-h-64"
-              src="https://png.pngtree.com/png-vector/20230808/ourmid/pngtree-cake-on-stand-vector-png-image_6946410.png" />
-          </div>
-
-          <div class="flex flex-col px-2">
-            <h1 class="font-extrabold text-2xl">{{ recipe.name }}</h1>
-            <h2 class="label text-sm">Create on {{ recipe.date }}</h2>
-          </div>
-
-          <div class="rounded-box bg-base-300 flex w-full p-2">
-            <div class="grid grow place-items-center">
-              <table class="table table-sm">
-                <tbody>
-                  <tr>
-                    <th>Type</th>
-                    <th class="label">{{ customTypes.get(recipe.type)?.label }}</th>
-                  </tr>
-                  <tr>
-                    <th>Theme</th>
-                    <th class="label">{{ getTheme(recipe.recipe) }}</th>
-                  </tr>
-                  <tr>
-                    <th>Layers</th>
-                    <th class="label">{{ numLayers(recipe.recipe) }}</th>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div class="divider divider-horizontal"></div>
-
-            <div class="grid grow place-items-center">
-              <table class="table table-sm">
-                <tbody>
-                  <tr>
-                    <th>Value</th>
-                    <th class="label font-extrabold">${{ recipe.value | number: '1.2-2' }}</th>
-                  </tr>
-                  <tr>
-                    <th>Buys</th>
-                    <th class="label">
-                      {{ recipe.buyHistory.size }}
-                      <div class="dropdown dropdown-end">
-                        <fa-icon class="link" tabindex="0" role="button" icon="info-circle"></fa-icon>
-                        <div tabindex="0" class="card card-sm dropdown-content z-1 w-64 shadow-xl">
-                          <div tabindex="0" class="card-body text-wrap bg-neutral text-white rounded-box">
-                            <div class="flex justify-between">
-                              <h1 class="card-title">Number of Buys</h1>
-                              <h1 class="card-title">{{ recipe.buyHistory.size }}</h1>
-                            </div>
-                            <p>This recipe has been purchased <b>{{ recipe.buyHistory.size }}</b> times by <b>{{
-                                recipe.buyHistory.size }}</b> customers.</p>
-                            <p class="label text-wrap">Note: Your recipe has to be published (public) in order for
-                              others to view/buy it.</p>
-                          </div>
-                        </div>
-                      </div>
-                    </th>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+      <div class="w-full">
+        <div class="flex justify-end">
+          <i class="label text-sm">Created on {{ recipe.date | date:'mediumDate' }}</i>
         </div>
-        <br />
+        <div class="flex flex-col lg:flex-row justify-between rounded-box border border-base-300 bg-base-100 shadow p-2 w-full">
+          <div class="flex gap-2">
+            <div class="flex justify-center rounded-box bg-base-300 w-28 lg:w-32 h-28 lg:h-32">
+              <img src="https://png.pngtree.com/png-vector/20230808/ourmid/pngtree-cake-on-stand-vector-png-image_6946410.png" />
+            </div>
 
-        <div class="card-actions justify-end">
-          <button class="btn btn-neutral">View item</button>
-          <button class="btn btn-neutral" (click)="addToCart(recipe)">Add to cart</button>
-          <button class="btn text-error"><fa-icon icon="trash-can"></fa-icon> Delete</button>
+            <div class="flex flex-col">
+              <p class="label text-sm">
+                {{ getTheme(recipe.recipe) }} {{ customTypes.get(recipe.type)?.label }} &bull; <b>${{ recipe.value }}</b>
+              </p>
+              <a class="link font-extrabold text-2xl w-fit" style="text-decoration: none;" (click)="true">{{ recipe.name }}</a>
+            </div>
+          </div>
+          <br />
+
+          <div class="flex flex-row lg:flex-col gap-1 justify-center">
+            <button class="btn btn-neutral btn-soft rounded-full btn-sm px-6">View item</button>
+            <button class="btn btn-neutral btn-soft rounded-full btn-sm px-6" (click)="addToCart(recipe)">Add to cart</button>
+            <button class="btn btn-error btn-soft rounded-full btn-sm px-6"><fa-icon icon="trash-can"></fa-icon> Delete</button>
+          </div>
         </div>
       </div>
       }
     </div>
     }
     @else {
-    <div class="py-20 px-4 text-center bg-base-200 w-full">
-      <h1 class="text-6xl font-bold text-neutral mb-4"><fa-icon icon="folder-open"></fa-icon> Empty</h1>
+    <div class="py-20 px-4 text-center w-full">
+      <fa-icon class="text-6xl text-gray-500" icon="face-grin-tongue"></fa-icon>
+      <h1 class="text-4xl font-bold text-gray-500 mb-4">No Recipes Found</h1>
       <p class="text-gray-600 mb-6">
-        Looks like your recipe book is empty, lets start chefing some cake recipies.
+        Looks like your recipe book is empty, lets start chefing some cake recipies!
       </p>
       <!-- CTA Button -->
       <div class="flex flex-wrap gap-2 justify-center">

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule, FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faYoutube, faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { Category, CategoryService, ICategory } from '../header/category';
-import { ItemList } from './itemList';
+import { CategoryItemsList } from './itemList';
 import { Logo, Header } from "../header/header";
 import { ISocialPost, MediaType } from "./socialPost";
 import { IUser, UserRole, UserService } from '../user/user';
@@ -15,7 +15,7 @@ import { CartItemsDialog } from '../checkout/cartItemDialog';
 
 @Component({
   selector: 'app-content',
-  imports: [FormsModule, FontAwesomeModule, ItemList, Logo, Header, MatBottomSheetModule],
+  imports: [FormsModule, FontAwesomeModule, CategoryItemsList, Logo, Header, MatBottomSheetModule],
   templateUrl: './content.html',
   styleUrl: './content.css'
 })

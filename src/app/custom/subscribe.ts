@@ -10,7 +10,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { IPayMethod } from "../user/user";
 import { IAddress } from "../header/addressDialog";
 import { SubscribeItemList } from "./subscribeItemList";
-import { CheckoutDialog, Receipt } from "./receipt";
+import { CheckoutDialog, Receipt } from "../checkout/receipt";
 
 export interface ISubscription {
   category: ICategory,

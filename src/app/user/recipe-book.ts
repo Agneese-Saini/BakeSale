@@ -4,16 +4,16 @@ import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { IUser, UserService } from './user';
 import { CartService } from '../checkout/cart';
-import { DecimalPipe } from '@angular/common';
 import { IItem } from '../content/item';
 import { Category, Recipe, IRecipe, RecipeGroup } from '../custom/recipe';
 import { ItemChoiceList } from '../content/itemChoice';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { IOrderHistory } from './order-history';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'recipe-book',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, DatePipe],
   templateUrl: "recipe-book.html"
 })
 export class RecipeBook {

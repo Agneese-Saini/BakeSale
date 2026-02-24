@@ -1,7 +1,15 @@
 <div class="navbar">
   <div class="flex-none">
     <label [for]="appDrawer" aria-label="open sidebar" class="btn btn-square btn-ghost">
-      <fa-icon class="text-xl" icon="bars"></fa-icon>
+      <div class="indicator">
+        @if (user.userRole != userRole.Guest) {
+        <p class="indicator-item badge badge-xs badge-success rounded-full">
+          <b>2</b>
+        </p>
+        }
+
+        <fa-icon class="text-xl" icon="bars"></fa-icon>
+      </div>
     </label>
   </div>
 
@@ -13,9 +21,9 @@
         <ul class="menu menu-horizontal lg:text-lg">
           @for (entry of categories | keyvalue; track $index) {
           <li>
-            <a [class]="getHomeCategory() == entry.key ? 'menu-active' : ''"
-              (click)="setHomeCategory(entry.key);">
-              {{ entry.value }}@if (entry.key == homeCategories.Shop){ <fa-icon icon="arrow-up-right-from-square"></fa-icon> }
+            <a [class]="getHomeCategory() == entry.key ? 'menu-active' : ''" (click)="setHomeCategory(entry.key);">
+              {{ entry.value }}@if (entry.key == homeCategories.Shop){ <fa-icon
+                icon="arrow-up-right-from-square"></fa-icon> }
             </a>
           </li>
           }
@@ -48,9 +56,9 @@
     <ul class="menu menu-horizontal justify-center">
       @for (entry of categories | keyvalue; track $index) {
       <li>
-        <a [class]="getHomeCategory() == entry.key ? 'menu-active' : ''"
-          (click)="setHomeCategory(entry.key);">
-          {{ entry.value }}@if (entry.key == homeCategories.Shop){ <fa-icon icon="arrow-up-right-from-square"></fa-icon> }
+        <a [class]="getHomeCategory() == entry.key ? 'menu-active' : ''" (click)="setHomeCategory(entry.key);">
+          {{ entry.value }}@if (entry.key == homeCategories.Shop){ <fa-icon icon="arrow-up-right-from-square"></fa-icon>
+          }
         </a>
       </li>
       }

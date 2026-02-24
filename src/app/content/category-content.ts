@@ -3,11 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLinkActive, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { Category, CategoryService, ICategory } from '../header/category';
-import { ItemList } from './itemList';
+import { CategoryItemsList } from './itemList';
 
 @Component({
     selector: 'category-content',
-    imports: [FormsModule, FontAwesomeModule, RouterModule, ItemList],
+    imports: [FormsModule, FontAwesomeModule, RouterModule, CategoryItemsList],
     templateUrl: "category-content.html"
 })
 export class CategoryContent {

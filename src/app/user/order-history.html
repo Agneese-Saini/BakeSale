@@ -16,7 +16,7 @@
   </div>
 
   <div class="navbar-end">
-    <div class="flex justify-between items-center gap-2">    
+    <div class="flex justify-between items-center gap-2">
       <div class="flex flex-col items-end">
         <label class="text-gray-500 font-serif text-xs lg:hidden"><b>Bake</b>Sale</label>
         <p class="font-mono text-xl text-nowrap">
@@ -31,44 +31,23 @@
 
 <div class="bg-base-300 h-2 my-2"></div>
 
-@if (filters.length > 0) {
-<div class="flex justify-center px-4 lg:hidden">
-  <div class="overflow-x-auto">
-    <ul class="menu menu-horizontal min-w-max items-center gap-2">
-      <li>
-        <a [class]="(currentFilter == undefined ? 'menu-active text-lg' : 'bg-base-300')"
-          (click)="onSelectFilter(undefined)">
-          All (4)
-        </a>
-      </li>
-      @for (filter of filters; track $index) {
-      <li>
-        <a [class]="(filter == currentFilter ? 'menu-active text-lg' : 'bg-base-300')" (click)="onSelectFilter(filter)">
-          {{ filter }} (4)
-        </a>
-      </li>
-      }
-    </ul>
-  </div>
-</div>
-<br />
-}
-
 <div class="drawer lg:drawer-open">
   <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
 
-  <div class="drawer-content flex flex-col gap-2 p-4 items-center">
-    <div class="w-full">
-      <!-- Page content here -->
-      <div class="hidden lg:block">
-        <div class="flex items-center gap-4">
-          <fa-icon class="text-2xl" icon="receipt"></fa-icon>
-          <h1 class="font-bold text-5xl">Order History</h1>
-        </div>
-        <div class="divider"></div>
+  <div class="drawer-content flex flex-col w-full lg:max-w-256">
+    <div class="w-full hidden lg:block px-4">
+      <div class="flex items-center gap-4">
+        <fa-icon class="text-2xl" icon="receipt"></fa-icon>
+        <h1 class="font-bold text-5xl">Order History</h1>
       </div>
+    </div>
+    
+    <div class="w-full p-4">
+      @if (user.orders != undefined && user.orders.length > 0) {
+      <p><b>{{ user.orders.length }}</b> Orders</p>
+      }
 
-      <label class="input w-full mb-6">
+      <label class="input w-full">
         <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
           <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
             <circle cx="11" cy="11" r="8"></circle>
@@ -77,46 +56,106 @@
         </svg>
         <input type="search" class="grow placeholder-gray-500 input-lg" placeholder="Search" />
       </label>
+    </div>
+    <div class="bg-base-300 h-2 lg:hidden"></div>
+
+    @if (buyAgain.length > 0) {
+    <div class="flex flex-col gap-2 w-full p-4">
+      <div class="flex justify-between items-center w-full">
+        <h1 class="text-xl font-bold">Buy Again:</h1>
+        <button class="btn btn-ghost rounded-full label p-1" style="text-decoration: none;">See more</button>
+      </div>
+
+      <items-list [items]="buyAgain"></items-list>
+    </div>
+
+    <div class="bg-base-300 h-2 w-full lg:hidden"></div>
+    }
+
+    <div class="flex flex-col w-full p-4">
+      <h1 class="text-xl font-bold">Orders:</h1>
+
+      @if (filters.length > 0) {
+      <div class="flex justify-center lg:hidden">
+        <div class="overflow-x-auto">
+          <ul class="menu menu-horizontal min-w-max items-center gap-2">
+            <li>
+              <a [class]="(currentFilter == undefined ? 'menu-active text-lg' : 'bg-base-300')"
+                (click)="onSelectFilter(undefined)">
+                All (4)
+              </a>
+            </li>
+            @for (filter of filters; track $index) {
+            <li>
+              <a [class]="(filter == currentFilter ? 'menu-active text-lg' : 'bg-base-300')"
+                (click)="onSelectFilter(filter)">
+                {{ filter }} (4)
+              </a>
+            </li>
+            }
+          </ul>
+        </div>
+      </div>
+      }
+      <br />
 
       @if (user.orders && user.orders.length > 0) {
       <div class="flex flex-col gap-4 lg:flex-row lg:flex-wrap justify-center">
         @for (order of user.orders; track $index) {
-        <div
-          [class]="'card bg-base-200 border-base-300 border shadow lg:min-w-128 ' + (order.inProgress ? 'shadow-success' : '')">
-          <div class="card-body">
-            <div class="grid">
-              <div class="flex flex-col items-end w-full">
-                <span [class]="'badge badge-lg badge-soft ' + (order.inProgress ? 'badge-success' : '')">
-                  @if (order.inProgress) {
-                  IN PROGRESS
-                  } @else if (order.deliveryType != undefined) {
-                  DELIVERED
-                  } @else {
-                  PICKUP
-                  }
-                </span>
-                <span class="text-xs label">#5542</span>
+        <div class="flex flex-col gap-1 w-full">
+          <div class="flex justify-end w-full">
+            <i class="label">{{ order.date | date:'fullDate' }} at {{ order.date | date:'shortTime' }}</i>
+          </div>
+
+          <div class="card bg-base-100 border-base-300 border shadow w-full">
+            <div class="card-body p-0">
+              <div class="flex justify-between items-center w-full bg-base-300 p-4">
+                <div class="flex gap-6">
+                  <div class="flex flex-col">
+                    <p class="label">Items:</p>
+                    <p class="text-lg font-bold">{{ numItems(order.cart) }}</p>
+                  </div>
+                  <div class="flex flex-col">
+                    <p class="label">Order Total:</p>
+                    <p class="text-lg font-bold">${{ checkoutPrice(order) | number: '1.2-2' }}</p>
+                  </div>
+                </div>
+
+                <div class="flex flex-col items-end w-full">
+                  <span [class]="'' + (order.inProgress ? 'text-success' : '')">
+                    @if (order.inProgress) {
+                    <span class="text-success font-bold">
+                      <span class="loading loading-dots"></span> IN PROGRESS
+                    </span>
+                    } @else if (order.deliveryType != undefined) {
+                    <span class="badge badge-soft badge-success p-1">
+                      <fa-icon icon="check-circle"></fa-icon> DELIVERED
+                    </span>
+                    } @else {
+                    <span class="badge badge-soft badge-warning p-1">
+                      <fa-icon icon="bag-shopping"></fa-icon> PICKUP
+                    </span>
+                    }
+                  </span>
+                  <span class="text-xs label">#5542</span>
+                </div>
               </div>
 
-              <span class="text-lg font-bold">
-                {{ numItems(order.cart) }} Items for ${{ checkoutPrice(order) | number: '1.2-2' }}
-              </span>
-              <span class="font-thin text-lg"><b class="font-extrabold text-neutral-500">June 30</b> at {{ order.date
-                }}:00 pm</span>
-            </div>
-            <div class="overflow-y-auto max-h-56 lg:h-full">
-              <order-items [order]="order" [hidePrice]="true"></order-items>
-            </div>
-            <br />
-            <div class="card-actions justify-end">
-              @if (order.inProgress) {
-              <button class="btn btn-success text-white text-lg">Track Order</button>
-              } @else {
-              <button class="btn btn-neutral text-lg">Reorder</button>
-              }
+              <div class="overflow-y-auto max-h-56 lg:h-full px-2">
+                <order-items [order]="order" [hidePrice]="true"></order-items>
+              </div>
 
-              <button class="btn btn-neutral text-lg" [routerLink]="['/view-receipt', {date: order.date}]">View
-                Receipt</button>
+              <div class="card-actions justify-end p-2">
+                @if (order.inProgress) {
+                <button class="btn btn-success btn-soft rounded-full text-white">Track Order</button>
+                } @else {
+                <button class="btn btn-neutral btn-soft rounded-full">Reorder</button>
+                }
+
+                <button class="btn btn-neutral btn-soft rounded-full"
+                  [routerLink]="['/view-receipt', { date: order.date }]">View Receipt
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -124,13 +163,13 @@
       </div>
       }
       @else {
-      <div class="py-20 px-4 text-center bg-base-200 w-full">
-        <h1 class="text-6xl font-bold text-neutral mb-4"><fa-icon icon="folder-open"></fa-icon> Empty</h1>
-        <p class="text-gray-600 mb-6">
-          No orders found. Its time to go shopping!
+      <div class="flex flex-col gap-4 p-4">
+        <h1 class="text-4xl font-bold text-gray-500">No Orders Found</h1>
+        <p class="text-gray-600">
+          Its time to go shopping!
         </p>
         <!-- CTA Button -->
-        <div class="flex flex-wrap gap-2 justify-center">
+        <div class="flex flex-wrap gap-2">
           <a class="link text-primary">Start Shopping</a>
           <a class="link text-primary">BakeSale Points Program</a>
           <a class="link text-primary">Contact Us</a>
@@ -138,6 +177,7 @@
       </div>
       }
     </div>
+    <br />
   </div>
 
   <div class="drawer-side">

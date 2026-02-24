@@ -11,7 +11,7 @@ import { CartItemsDialog } from '../checkout/cartItemDialog';
 import { ICategory } from '../header/category';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SubscribeItemList } from '../custom/subscribeItemList';
-import { Receipt } from "../custom/receipt";
+import { Receipt } from "../checkout/receipt";
 
 @Component({
   selector: 'subscriptions',

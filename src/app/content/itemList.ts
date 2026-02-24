@@ -1,14 +1,13 @@
-import { ChangeDetectorRef, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, forwardRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Category, Customizer, ICategory } from '../header/category';
 import { IItem, Item } from './item';
 
 @Component({
-  selector: 'item-list',
-  imports: [FormsModule, FontAwesomeModule, Item, RouterModule],
+  selector: 'category-items',
+  imports: [FormsModule, FontAwesomeModule, RouterModule, forwardRef(() => ItemsList)],
   template: `
 @if (category.hidden) { 
 
@@ -38,7 +37,7 @@ import { IItem, Item } from './item';
   }
 
   @if (category.items != undefined && itemsPerPage > 0 && category.items.length > itemsPerPage) {
-  <button class="btn btn-ghost label" [routerLink]="['/content', {category: category.name}]">Show All</button>
+  <button class="btn btn-ghost rounded-full label p-1" [routerLink]="['/content', {category: category.name}]">Show All</button>
   }
 </div>
 }
@@ -107,27 +106,7 @@ import { IItem, Item } from './item';
 @else {
 <!-- Category items -->
 @if (category.items != undefined && category.items.length > 0) {
-<div class="flex flex-col pt-2 pb-4">
-  <div #widgetsContent (scroll)="onScroll()" [class]="wrap ? 'overflow-none' : 'overflow-x-auto'">
-    <div [class]="'flex ' + (wrap ? 'flex-wrap' : 'flex-nowrap')">
-      @for (item of getItems(category); track $index) {
-      <div class="flex-shrink-0 ml-2.5 pb-2">
-        <item [value]="item"></item>
-      </div>
-      }
-      @if (category.items != undefined && itemsPerPage > 0 && category.items.length > itemsPerPage) {
-      <div class="flex-shrink-0 ml-2.5">
-        <div class="flex flex-col h-full justify-center p-4">
-          <a class="link" style="text-decoration: none;" [routerLink]="['/category', {name: category.name}]">
-            <p class="label text-xl font-mono">+{{ category.items.length - itemsPerPage }}</p><br/>
-            <p class="label font-mono">more items</p>
-          </a>
-        </div>
-      </div>
-      }
-    </div>
-  </div>
-</div>
+<items-list [items]="category.items" [category]="category.name" [wrap]="wrap" [itemsPerPage]="itemsPerPage"></items-list>
 <div class="divider m-0"></div>
 }
 }
@@ -136,12 +115,12 @@ import { IItem, Item } from './item';
 <!-- Sub Categories - Recursive -->
 @if (category.subcats != undefined) {
 @for (subcat of category.subcats; track $index) {
-<item-list [category]="subcat" [wrap]="wrap" [itemsPerPage]="itemsPerPage"></item-list>
+<category-items [category]="subcat" [wrap]="wrap" [itemsPerPage]="itemsPerPage"></category-items>
 }
 }
 `
 })
-export class ItemList {
+export class CategoryItemsList {
 
   protected customizer = Customizer;
 
@@ -167,14 +146,7 @@ export class ItemList {
     return undefined;
   }
 
-  constructor(
-    private dialog: MatDialog,
-    private cdr: ChangeDetectorRef) { }
-
-  protected ngOnInit() { }
-
-  protected ngAfterViewInit() {
-  }
+  constructor() { }
 
   protected getItems(category: ICategory): IItem[] {
     let displayItems: IItem[] = [];
@@ -192,6 +164,92 @@ export class ItemList {
       else {
         displayItems = category.items;
       }
+    }
+
+    return displayItems;
+  }
+
+  protected onScroll() {
+    const element = this.widgetsContent.nativeElement;
+    // The button should be shown if scrollLeft is greater than 0
+    this.showLeftScroll = element.scrollLeft > 0;
+    // The button should be shown if scrollRight is greater than 0
+    this.showRightScroll = element.scrollRight > 0;
+  }
+
+  public scrollRight(): void {
+    this.widgetsContent.nativeElement.scrollTo({ left: (this.widgetsContent.nativeElement.scrollLeft + 150), behavior: 'smooth' });
+  }
+
+  public scrollLeft(): void {
+    this.widgetsContent.nativeElement.scrollTo({ left: (this.widgetsContent.nativeElement.scrollLeft - 150), behavior: 'smooth' });
+  }
+};
+
+
+@Component({
+  selector: 'items-list',
+  imports: [FormsModule, FontAwesomeModule, Item, RouterModule],
+  template: `
+<div class="flex flex-col pt-2">
+  <div #widgetsContent (scroll)="onScroll()" [class]="wrap ? 'overflow-none' : 'overflow-x-auto'">
+    <div [class]="'flex ' + (wrap ? 'flex-wrap' : 'flex-nowrap')">
+      @for (item of getItems(); track $index) {
+      <div class="flex-shrink-0 ml-2.5 pb-2">
+        <item [value]="item"></item>
+      </div>
+      }
+      @if (items != undefined && itemsPerPage > 0 && items.length > itemsPerPage) {
+      <div class="flex-shrink-0 ml-2.5">
+        <div class="flex flex-col h-full justify-center p-4">
+          <a class="link" style="text-decoration: none;" [routerLink]="['/category', category]">
+            <p class="label text-xl font-mono">+{{ items.length - itemsPerPage }}</p><br/>
+            <p class="label font-mono">more items</p>
+          </a>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+`
+})
+export class ItemsList {
+
+  @Input({ required: true })
+  public items!: IItem[];
+
+  @Input()
+  public category?: string;
+
+  @Input()
+  public wrap: boolean = false;
+
+  @Input()
+  public itemsPerPage: number = 6;
+
+  @ViewChild('widgetsContent', { read: ElementRef })
+  public widgetsContent!: ElementRef<any>;
+
+  protected showLeftScroll: boolean = false;
+  protected showRightScroll: boolean = false;
+
+  constructor() { }
+
+  protected getItems(): IItem[] {
+    let displayItems: IItem[] = [];
+    let count = 0;
+
+    if (this.itemsPerPage) {
+      for (let item of this.items) {
+        if (count++ == this.itemsPerPage)
+          break;
+
+        displayItems.push(item);
+      }
+    }
+    else {
+      displayItems = this.items;
     }
 
     return displayItems;
