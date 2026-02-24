@@ -100,6 +100,7 @@ export class CategoryService {
 		{
 			name: "Marketplace", icon: "shop", hidden: true, subcats:
 				[{ name: "Get Started", fontSize: 0, customizer: Customizer.Marketplace },
+				{ name: "Newly Added", fontSize: 2 },
 				{ name: "Cakes", fontSize: 2 },
 				{ name: "Pastry", fontSize: 2 },
 				{ name: "Cookies", fontSize: 2 },
@@ -517,6 +518,21 @@ export class Category {
 		item.id = undefined;
 
 		category.items.push(item);
+	}
+
+	static numItems(category: ICategory): number {
+		let num = 0;
+		if (category.items != undefined) {
+			num += category.items.length;
+		}
+
+		if (category.subcats != undefined) {
+			for (let subcat of category.subcats) {
+				num += this.numItems(subcat);
+			}
+		}
+		
+		return num;
 	}
 };
 

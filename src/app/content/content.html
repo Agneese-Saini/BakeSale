@@ -81,36 +81,19 @@
       {
       <li (click)="focusCategory(cat)"
         [class]="(cat.customizer == undefined && cat.items == undefined) ? 'menu-disabled' : ''">
-        @if (cat.subcats && cat.subcats.length > 0) {
+        
+        <span class="flex items-center justify-between">
         <span class="flex items-center gap-2">
           <a [class]="isFocused(cat) ? 'font-bold text-2xl' : 'font-light text-lg'">{{ cat.name }}</a>
           @if (isActive(cat)) {
           <span class="status status-lg status-warning animate-bounce"></span>
           }
         </span>
-
-        <ul>
-          @for (subcat of cat.subcats; track $index) {
-          <li (click)="focusCategory(subcat)"
-            [class]="(subcat.customizer == undefined && subcat.items == undefined) ? 'menu-disabled' : ''">
-            <span class="flex items-center gap-2">
-              <a [class]="isFocused(subcat) ? 'font-bold text-2xl' : 'font-light text-lg'">{{ subcat.name }}</a>
-              @if (isActive(subcat)) {
-              <span class="status status-warning status-lg animate-bounce"></span>
-              }
-            </span>
-          </li>
-          }
-        </ul>
+        @if (cat.items != undefined) {
+        @let num = numItems(cat);
+        <p class="text-sm text-gray-500 pr-6">{{ num > 100 ? '100+' : num }}</p>
         }
-        @else {
-        <span class="flex items-center gap-2">
-          <a [class]="isFocused(cat) ? 'font-bold text-2xl' : 'font-light text-lg'">{{ cat.name }}</a>
-          @if (isActive(cat)) {
-          <span class="status status-lg status-warning animate-bounce"></span>
-          }
         </span>
-        }
       </li>
       }
     </ul>

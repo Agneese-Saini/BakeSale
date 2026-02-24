@@ -353,11 +353,9 @@ export class AddressBook {
       this.addressBook = data;
 
       if (this.settings.address) {
-        this.selectedAddress = data.find(addy => (addy.label == this.settings.address!.label));
+        this.selectedAddress = data.length > 0 ? data[0] : undefined;
         // update deliverySettings.address
-        if (this.selectedAddress) {
-          this.onAddressChange(this.selectedAddress);
-        }
+        this.onAddressChange(this.selectedAddress);
       }
 
       if (data && data.length > 0 && !this.selectedAddress) {

@@ -26,6 +26,7 @@ export class Content {
   readonly userRole = UserRole;
 
   protected isActive = Category.isActive;
+  protected numItems = Category.numItems;
 
   protected categories: ICategory[] = [];
   protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
