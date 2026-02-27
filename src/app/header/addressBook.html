@@ -1,184 +1,114 @@
 @if (isDelivery) {
 <div class="flex flex-col gap-2">
-  @if (searchMode != searchModes.None) {
-  <a class="link p-2 w-fit" style="text-decoration: none;" (click)="back()">
-    <fa-icon icon="arrow-left"></fa-icon> Go Back
-  </a>
-  }
+  <div class="flex justify-between items-center p-2">
+    <h1 class="text-2xl font-extrabold">Address Book</h1>
 
-  @if (searchMode != searchModes.AddFavourite) {
-  <maps-autocomplete [hidden]="searchMode != searchModes.ShowResults" (select)="onAutoCompleteSelect($event)"
-    (resultChange)="onAutoCompleteChange()"></maps-autocomplete>
-  }
-
-  @if (searchMode != searchModes.ShowResults) {
-  <div class="flex gap-2 overflow-x-auto py-2">
-    @for (addy of addressBook; track $index) {
-    @if (addy.isFavourite) {
-    <button [class]="'btn btn-soft rounded-full h-14 ' + (searchMode == searchModes.AddFavourite ? 'opacity-50' : '')"
-      [disabled]="searchMode == searchModes.AddFavourite" (click)="onAddressChange(addy, true)">
-      <span class="flex flex-col">
-        @if (addy.label.toLowerCase() == "home") {
-        <span class="text-primary">
-          <fa-icon icon="home"></fa-icon> Home
-        </span>
-        } @else if (addy.label.toLowerCase() == "work") {
-        <span class="text-secondary">
-          <fa-icon icon="suitcase"></fa-icon> Work
-        </span>
-        } @else {
-        <span>
-          <fa-icon class="text-warning" icon="star"></fa-icon> {{ addy.label }}
-        </span>
-        }
-
-        <i class="text-xs text-gray-500 font-medium">{{ addy.addressLine | truncate: 24 }}</i>
-      </span>
-    </button>
-    }
-    }
-
-    @if (!homeAddressExist) {
-    <button
-      [class]="'btn rounded-full h-14 ' + (searchMode == searchModes.AddFavourite && favouriteLabel == 'Home' ? 'btn-outline' : 'btn-soft')"
-      (click)="setSelectLabel('Home')">
-      <span>
-        <fa-icon class="text-primary" icon="home"></fa-icon> Set Home
-      </span>
-    </button>
-    }
-
-    @if (!workAddressExist) {
-    <button
-      [class]="'btn rounded-full h-14 ' + (searchMode == searchModes.AddFavourite && favouriteLabel == 'Work' ? 'btn-outline' : 'btn-soft')"
-      (click)="setSelectLabel('Work')">
-      <span>
-        <fa-icon class="text-secondary" icon="suitcase"></fa-icon> Set Work
-      </span>
-    </button>
-    }
-
-    <button
-      [class]="'btn rounded-full h-14 ' + (searchMode == searchModes.AddFavourite && favouriteLabel == undefined ? 'btn-outline' : 'btn-soft')"
-      (click)="setSelectLabel(undefined)">
-      <fa-icon icon="star"></fa-icon> Add Favourite
+    <button class="btn btn-info btn-circle text-white text-lg" (click)="openAddressBookDialog()">
+      <fa-icon icon="plus"></fa-icon>
     </button>
   </div>
-  }
-</div>
-<br />
-}
 
-@if (searchMode == searchModes.AddFavourite) {
-<h1 class="text-lg">
-  Select an address to add as
-  @if (favouriteLabel) {
-  <b>{{ favouriteLabel }} </b>
-  } @else {
-  Favourite
-  }
-</h1>
-<div class="flex flex-col gap-2">
-  <div class="bg-base-100 border border-neutral-300 rounded-box overflow-x-auto min-h-64 lg:min-h-72 max-h-98">
-    <ul class="menu w-full gap-1">
-      @if (addressBook.length > 0 && hasFavouritesToAdd) {
-      @for (addy of addressBook; track $index) {
-      @if (favouriteLabel != undefined || !addy.isFavourite) {
-      <div class="bg-base-200 flex justify-between items-center">
-        <li class="flex-1" (click)="selectLabelAddress(addy)">
-          <span class="flex flex-col text-wrap gap-0 items-start">
-            <b class="text-lg">{{ addy.label }} @if (addy.isFavourite) { <fa-icon class="opacity-65 text-xs"
-                icon="star"></fa-icon>}</b>
-            <p class="text-xs">{{ addy.addressLine }}, {{ addy.city }}</p>
-            <p class="text-xs">{{ addy.province }} {{ addy.postal }}</p>
-          </span>
-        </li>
-
-        <span class="label tooltip tooltip-left" data-tip="View on Map">
-          <a class="btn btn-ghost btn-circle text-xl">
-            <fa-icon icon="map-location-dot"></fa-icon>
-          </a>
-        </span>
+  <div class="tabs tabs-border">
+    <input type="radio" name="addressBook" class="tab" aria-label="All" checked />
+    <div class="tab-content border-base-300 bg-base-100 p-2 h-75 overflow-y-auto">
+      @let hasResults = (favouriteAddresses.length + addresses.length) > 0;
+      @if (!hasResults) {
+      <div class="flex flex-col items-center justify-center h-full">
+        <p class="text-gray-500 text-2xl">No Address Found</p>
+        <p class="label">
+          Click on the <button class="btn btn-info btn-circle text-white btn-xs opacity-65"
+            (click)="openAddressBookDialog()"><fa-icon icon="plus"></fa-icon></button> to add an address
+        </p>
+        <p class="label">
+          Or <a class="link">Use Current Location</a>
+        </p>
       </div>
-      }
-      }
       }
       @else {
-      <div class="flex justify-center p-4">
-        <i>No address to add!</i>
-      </div>
+      @if (favouriteAddresses.length > 0) {
+      <h1 class="label font-medium">
+        Favourites:
+      </h1>
+      <address-list [list]="favouriteAddresses" [selected]="this.settings.address"
+        (onSelect)="onAddressChange($event)"></address-list>
+      <br />
       }
-    </ul>
-  </div>
-</div>
-}
-@else if (searchMode == searchModes.None) {
-<h1 class="font-medium">
-  @if (isDelivery) {
-  Saved Address:
-  } @else {
-  Pickup Locations:
-  }
-</h1>
-<div class="bg-base-100 border border-neutral-300 rounded-box overflow-x-auto min-h-48 max-h-86 p-2">
-  <div class="flex flex-col gap-1">
-    @if (isDelivery) {
-    <button class="btn p-4" (click)="openAddressBookDialog()">
-      <fa-icon icon="plus-circle"></fa-icon> Add an Address
-    </button>
-    }
 
-    @if (addressBook.length > 0) {
-    @for (addy of addressBook; track $index) {
-    <div [class]="'rounded-box p-2' + ' ' + (selectedAddress == addy ? 'bg-base-300' : 'bg-base-200')">
-      <div class="flex justify-between items-center">
-        <label class="label cursor-pointer text-neutral">
-          <input type="radio" class="radio radio-neutral" [value]="addy" [(ngModel)]="selectedAddress"
-            (change)="onAddressChange(addy)" />
-          <span class="flex flex-col text-wrap">
-            <b class="text-lg">{{ addy.label }} @if (addy.isFavourite) { <fa-icon class="opacity-65 text-xs"
-                icon="star"></fa-icon>}</b>
-            <p class="text-xs">{{ addy.addressLine }}, {{ addy.city }}</p>
-            <p class="text-xs">{{ addy.province }} {{ addy.postal }}</p>
-          </span>
-        </label>
+      @if (addresses.length > 0) {
+      <h1 class="label font-medium">
+        Saved Addresses:
+      </h1>
+      <address-list [list]="addresses" [selected]="this.settings.address"
+        (onSelect)="onAddressChange($event)"></address-list>
+      }
+      }
+    </div>
 
-        @if (isDelivery) {
-        <span class="label tooltip tooltip-left" data-tip="Edit Address">
-          <a class="btn btn-ghost btn-circle text-xl" (click)="openAddressBookDialog(addy)">
-            <fa-icon icon="pencil"></fa-icon>
-          </a>
-        </span>
-        }
-        @else {
-        <span class="label tooltip tooltip-left" data-tip="View on Map">
-          <a class="btn btn-ghost btn-circle text-xl">
-            <fa-icon icon="map-location-dot"></fa-icon>
-          </a>
-        </span>
-        }
-      </div>
+    @let hasRecents = false;
+    <input type="radio" name="addressBook" class="tab" aria-label="Recent" [disabled]="!hasRecents" />
+    <div class="tab-content border-base-300 bg-base-100 p-2 h-75 overflow-y-auto">
     </div>
-    }
-    }
-    @else {
-    <div class="flex justify-center p-4">
-      <i>No address found!</i>
-    </div>
-    }
   </div>
 </div>
 <br />
+}
+@else {
+<div class="flex flex-col gap-2">
+  <div class="flex justify-between items-center p-2">
+    <h1 class="text-2xl font-extrabold">Pickup Locations</h1>
+  </div>
+
+  <div class="tabs tabs-border">
+    <input type="radio" name="myTabs" class="tab" aria-label="All" checked />
+    <div class="tab-content border-base-300 bg-base-100 p-2 h-75 overflow-y-auto">
+      @let hasResults = (addresses.length) > 0;
+      @if (!hasResults) {
+      <div class="p-4">
+        <p class="text-gray-500 text-2xl">No Address Found</p>
+        <p class="label">
+          Click on the <button class="btn btn-info btn-circle text-white btn-xs opacity-65"
+            (click)="openAddressBookDialog()"><fa-icon icon="plus"></fa-icon></button> to add an address
+        </p>
+        <p class="label">
+          Or <a class="link">Use Current Location</a>
+        </p>
+      </div>
+      }
+      @else {
+      <h1 class="label font-medium">
+        Pickup Locations:
+      </h1>
+      <address-list [list]="addresses" [selected]="this.settings.address"
+        (onSelect)="onAddressChange($event)" [editable]="false"></address-list>
+      }
+    </div>
+
+    @let hasRecents = false;
+    <input type="radio" name="myTabs" class="tab" aria-label="Recent" [disabled]="!hasRecents" />
+    <div class="tab-content border-base-300 bg-base-100 p-2 max-h-64 overflow-y-auto">      
+    </div>
+  </div>
+</div>
+<br />
+}
 
 <div class="flex flex-col">
   <h1 class="font-medium">Time preference:</h1>
   <div class="bg-base-100 border border-neutral-300 rounded-box p-2">
-    <div class="flex justify-between items-center px-2">
-      <label>
-        <fa-icon icon="clock"></fa-icon> {{ settings.timeslot ? settings.timeslot.label : 'Select a timeslot' }}
-      </label>
+    <div class="flex justify-between items-center gap-2 px-2">
+      <a class="link flex items-center" style="text-decoration: none;" (click)="openTimeslotsDialog()">
+        <fa-icon icon="clock"></fa-icon>&nbsp;<p [class]="settings.timeslot ? '' : 'label'">
+        @if (settings.timeslot) {
+        <p>
+          <b>{{ settings.timeslot.label }}</b><br />
+          {{ settings.time ? printTimeslot(settings.time) : '' }}
+        </p>
+        } @else {
+        <p>Select a timeslot</p>
+        }
+      </a>
+
       <button class="btn btn-sm btn-neutral" (click)="openTimeslotsDialog()">Schedule</button>
     </div>
   </div>
 </div>
-}

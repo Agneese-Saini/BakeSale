@@ -7,8 +7,9 @@ import { IDeliverySettings, AddressBook, DeliveryService } from "./addressBook";
 import { MatDialogModule } from "@angular/material/dialog";
 
 export interface ITime {
-  start?: number,
-  end?: number
+  start: number,
+  end: number,
+  am: boolean
 };
 
 export interface ITimeSlot {
@@ -23,6 +24,8 @@ export interface ITimeSlot {
 })
 export class TimeslotsDialog {
 
+  protected printTimeslot = AddressBook.printTimeslot;
+
   protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
   protected timeSlots?: ITimeSlot[];
 
@@ -31,7 +34,7 @@ export class TimeslotsDialog {
 
   constructor(
     private deliveryService: DeliveryService,
-    protected dialogRef: MatDialogRef<TimeslotsDialog>,
+    private dialogRef: MatDialogRef<TimeslotsDialog>,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef) { }
 

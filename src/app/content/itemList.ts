@@ -77,7 +77,7 @@ import { IItem, Item } from './item';
       <span>Free Delivery</span>
     </div>
     <div class="mt-6">
-      <button class="btn bg-orange-500 text-white btn-block" [routerLink]="['/subscribe', 'bread']">
+      <button class="btn bg-orange-500 text-white btn-block" [routerLink]="['/subscribe', { type: 'Bread' }]">
         Get Started <fa-icon icon="arrow-right"></fa-icon>
       </button>
     </div>
@@ -122,6 +122,8 @@ import { IItem, Item } from './item';
 })
 export class CategoryItemsList {
 
+  static readonly ItemsPerPage: number = 6;
+
   protected customizer = Customizer;
 
   @Input({ required: true })
@@ -131,7 +133,7 @@ export class CategoryItemsList {
   public wrap: boolean = false;
 
   @Input()
-  public itemsPerPage: number = 6;
+  public itemsPerPage: number = CategoryItemsList.ItemsPerPage;
 
   @ViewChild('widgetsContent', { read: ElementRef })
   public widgetsContent!: ElementRef<any>;

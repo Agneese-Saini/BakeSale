@@ -164,17 +164,17 @@ export class AddressDialog {
       return;
     }
 
-    // Save address
+    // Update address
     if (this.isAnExistingAddress) {
       this.deliveryService.editAddress(this.originalName, this.address);
     }
     // Add address
     else {
       this.deliveryService.addAddress(this.address);
+      // Update delivery settings
+      this.deliverySettings.address = this.address;
+      this.deliveryService.setDeliverySetting(this.deliverySettings);
     }
-
-    this.deliverySettings.address = this.address;
-    this.deliveryService.setDeliverySetting(this.deliverySettings);
 
     this.dialogRef.close();
   }

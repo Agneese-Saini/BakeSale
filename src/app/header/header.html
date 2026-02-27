@@ -53,7 +53,7 @@
 
       <div class="flex gap-2 items-center">
         @if (user.userRole != userRole.Guest) {
-        <button class="btn btn-square btn-ghost text-2xl">
+        <button class="btn btn-square btn-ghost text-2xl" (click)="openBottomSheet()">
           <div class="indicator">
             <p class="indicator-item badge badge-xs badge-warning rounded-full">
               <b>2</b>

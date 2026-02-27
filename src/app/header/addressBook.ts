@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ITime, ITimeSlot, TimeslotsDialog } from './timeslots';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
-import { AddressBookAction, AddressDialog, IAddress, Province } from './addressDialog';
+import { AddressBookAction, AddressDialog, BuildingType, IAddress, Province } from './addressDialog';
 import { Category, ICategory } from './category';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DriverTip } from '../checkout/checkout';
@@ -21,12 +21,6 @@ export enum DeliveryType {
   MeetAtDoor = 'Meet At Door',
   LeaveAtDoor = 'Leave At Door',
   LeaveAtLobby = 'Leave At Lobby (Hotel)'
-};
-
-export enum SearchModes {
-  None,
-  ShowResults,
-  AddFavourite
 };
 
 export interface IDeliverySettings {
@@ -98,15 +92,15 @@ export class DeliveryService {
     if (mode == DeliveryMode.Delivery) {
       slots = [
         { label: "Today", time: 0 },
-        { label: "Tomorrow", time: 0, slots: [{ start: 10, end: 12 }, { start: 10, end: 12 }, { start: 10, end: 12 }, { start: 10, end: 12 }, { start: 10, end: 12 }, { start: 10, end: 12 }] },
-        { label: "Day After", time: 200, slots: [{ start: 10, end: 12 }, { start: 10, end: 12 }, { start: 10, end: 12 }] }
+        { label: "Tomorrow", time: 0, slots: [{ start: 10, end: 12, am: true }, { start: 10, end: 12, am: true }, { start: 10, end: 12, am: true }, { start: 10, end: 12, am: true }, { start: 10, end: 12, am: true }, { start: 10, end: 12, am: true }] },
+        { label: "Day After", time: 200, slots: [{ start: 10, end: 12, am: true }, { start: 10, end: 12, am: true }, { start: 10, end: 12, am: true }] }
       ];
     }
     // Pickup
     else if (mode == DeliveryMode.Pickup) {
       slots = [
         { label: "Today", time: 0 },
-        { label: "Tomorrow", time: 0, slots: [{ start: 10, end: 12 }, { start: 10, end: 12 }, { start: 10, end: 12 }] },
+        { label: "Tomorrow", time: 0, slots: [{ start: 10, end: 12, am: true }, { start: 10, end: 12, am: true }, { start: 10, end: 12, am: true }] },
         { label: "Wednessday", time: 500 }
       ];
     }
@@ -128,9 +122,9 @@ export class DeliveryService {
       // load pickup locations
       this.addAddress({
         label: "BakeSale",
-        addressLine: "Area 51", 
-        city: "Winnipeg", 
-        province: Province.MB, 
+        addressLine: "Area 51",
+        city: "Winnipeg",
+        province: Province.MB,
         postal: "R1W 2G3"
       });
     }
@@ -243,9 +237,119 @@ export class DeliverySwitch {
   }
 };
 
+
+@Component({
+  selector: 'address-list',
+  imports: [FormsModule, FontAwesomeModule],
+  template: `
+@for (addy of list; track $index) {
+<div [class]="'rounded-box p-2' + ' ' + (selected == addy ? 'bg-base-300' : '')">
+  <div class="flex items-center gap-4">
+    @switch (addy.buildingType) {
+    @case (buildingType.Appartment) {
+    <fa-icon class="text-xl" icon="building"></fa-icon>
+    }
+    @case (buildingType.Hotel) {
+    <fa-icon class="text-xl" icon="hotel"></fa-icon>
+    }
+    @case (buildingType.House) {
+    <fa-icon class="text-xl" icon="house"></fa-icon>
+    }
+    @case (buildingType.Office) {
+    <fa-icon class="text-xl" icon="building"></fa-icon>
+    }
+    @default {
+    <fa-icon class="text-xl" icon="location-dot"></fa-icon>
+    }
+    }
+
+    <div class="flex flex-col w-full">        
+      <a class="cursor-pointer" (click)="select(addy)">
+        <p class="text-lg text-wrap font-bold">
+          {{ addy.label }}
+          @if (addy.isFavourite) {
+          <fa-icon class="opacity-65 text-xs" icon="star"></fa-icon>
+          }
+        </p>
+      </a>
+
+      <div class="flex justify-between gap-2 items-start">
+        <a class="cursor-pointer" (click)="select(addy)">
+          <p class="text-left text-xs text-wrap">
+            {{ printAddress(addy) }}         
+          </p>
+        </a>
+
+        <div class="flex gap-2">
+          @if (editable) {
+          <a class="link font-medium" style="text-decoration: 1;" (click)="openAddressBookDialog(addy)">
+            Edit
+          </a>
+          }
+          @if (viewable) {
+          <a class="link font-medium text-nowrap" style="text-decoration: 1;">
+            View Map
+          </a>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}   
+`
+})
+export class AddressList {
+
+  protected readonly buildingType = BuildingType;
+
+  protected printAddress = AddressBook.printAddress;
+
+  @Input()
+  public list: IAddress[] = [];
+
+  @Input()
+  public selected?: IAddress;
+
+  @Input()
+  public editable: boolean = true;
+
+  @Input()
+  public viewable: boolean = true;
+
+  @Output()
+  public onSelect = new EventEmitter<IAddress>();
+
+  constructor(
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef) { }
+
+  protected openAddressBookDialog(address?: IAddress, lookup?: string) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = "";
+    dialogConfig.data = { address: address, lookup: lookup };
+    dialogConfig.width = '90%';
+
+    const dialogRef = this.dialog.open(AddressDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cdr.detectChanges();
+    });
+  }
+
+  protected select(address: IAddress) {
+    if (this.selected != address) {
+      this.selected = address;
+
+      this.onSelect.emit(address);
+    }
+  }
+}
+
+
 @Component({
   selector: 'address-book',
-  imports: [FormsModule, FontAwesomeModule, TruncatePipe, AutoComplete],
+  imports: [FormsModule, FontAwesomeModule, AddressList],
   templateUrl: './addressBook.html'
 })
 export class AddressBook {
@@ -277,28 +381,22 @@ export class AddressBook {
     category: Category.DefaultCategory
   };
 
+  protected printTimeslot = AddressBook.printTimeslot;
+
   @Input()
   public timeslot: boolean = false;
 
   @Output()
   public change = new EventEmitter<void>();
 
-  @Output()
-  public clickFavourite = new EventEmitter<void>();
-
   protected readonly addressBookAction = AddressBookAction;
   protected readonly currentLocation = AddressBook.CurrentLocation;
-  protected readonly searchModes = SearchModes;
 
   protected settings: IDeliverySettings = AddressBook.DefaultSettings;
   protected addressBook: IAddress[] = [];
   protected timeSlots: ITimeSlot[] = [];
 
   protected selectedAddress: IAddress | undefined = undefined;
-
-  protected searchMode: SearchModes = SearchModes.None;
-  protected searchQuery?: string;
-  protected favouriteLabel?: string;
 
   protected get deliveryModes() {
     return Array.from(AddressBook.DeliveryModes.entries());
@@ -312,23 +410,24 @@ export class AddressBook {
     return (this.settings.mode == DeliveryMode.Delivery);
   }
 
-  protected get homeAddressExist(): boolean {
-    const ret = this.addressBook.filter(value => (value.label.toLowerCase() == "home"));
-    return ret.length != 0;
-  }
-
-  protected get workAddressExist(): boolean {
-    const ret = this.addressBook.filter(value => (value.label.toLowerCase() == "work"));
-    return ret.length != 0;
-  }
-
-  protected get hasFavouritesToAdd(): boolean {
+  protected get favouriteAddresses(): IAddress[] {
+    let ret: IAddress[] = [];
     for (let addy of this.addressBook) {
-      if (this.favouriteLabel != undefined || !addy.isFavourite) {
-        return true;
+      if (addy.isFavourite) {
+        ret.push(addy);
       }
     }
-    return false;
+    return ret;
+  }
+
+  protected get addresses(): IAddress[] {
+    let ret: IAddress[] = [];
+    for (let addy of this.addressBook) {
+      if (addy.isFavourite == undefined || addy.isFavourite == false) {
+        ret.push(addy);
+      }
+    }
+    return ret;
   }
 
   constructor(
@@ -339,36 +438,29 @@ export class AddressBook {
   protected ngOnInit() {
     this.deliveryService.deliverySettings$.subscribe(data => {
       this.settings = data;
+      this.cdr.detectChanges();
+    });
 
-      // update address selection
-      this.selectedAddress = undefined;
-      if (this.settings.address) {
-        this.selectedAddress = this.addressBook.find(addy => (addy.label == this.settings.address?.label));
-      }
-
+    this.deliveryService.timeSlots$.subscribe(data => {
+      this.timeSlots = data;
       this.cdr.detectChanges();
     });
 
     this.deliveryService.addressBook$.subscribe(data => {
       this.addressBook = data;
 
+      // Check if previously selected address exists
       if (this.settings.address) {
+        this.selectedAddress = this.addressBook.find(addy => (addy == this.settings.address));
+      }
+
+      // Select first address if the current selection is undefined
+      if (!this.selectedAddress) {
         this.selectedAddress = data.length > 0 ? data[0] : undefined;
-        // update deliverySettings.address
+        // update deliverySettings
         this.onAddressChange(this.selectedAddress);
       }
 
-      if (data && data.length > 0 && !this.selectedAddress) {
-        this.selectedAddress = data[0];
-        // update deliverySettings.address
-        this.onAddressChange(this.selectedAddress);
-      }
-
-      this.cdr.detectChanges();
-    });
-
-    this.deliveryService.timeSlots$.subscribe(data => {
-      this.timeSlots = data;
       this.cdr.detectChanges();
     });
   }
@@ -378,19 +470,6 @@ export class AddressBook {
     this.deliveryService.setDeliverySetting(this.settings);
 
     this.change.emit();
-
-    if (favourite) {
-      this.clickFavourite.emit();
-    }
-  }
-
-  protected onAutoCompleteSelect(params: { address: IAddress, prediction: string }) {
-    this.openAddressBookDialog(params.address, params.prediction);
-    this.searchMode = SearchModes.None;
-  }
-
-  protected onAutoCompleteChange() {
-    this.searchMode = SearchModes.ShowResults;
   }
 
   protected openTimeslotsDialog() {
@@ -418,38 +497,26 @@ export class AddressBook {
     });
   }
 
-  protected setSelectLabel(label?: string) {
-    this.favouriteLabel = label;
-    this.searchMode = SearchModes.AddFavourite;
+  static printAddress(address: IAddress): string {
+    return address.addressLine
+    + (address.apt ? (' #' + address.apt) : '') + ', ' 
+    + address.city + ' • ' 
+    + address.province + ' ' 
+    + address.postal;
   }
 
-  protected back() {
-    this.searchMode = SearchModes.None;
-  }
-
-  protected selectLabelAddress(address: IAddress) {
-    address.isFavourite = true;
-    if (this.favouriteLabel != undefined) {
-      address.label = this.favouriteLabel;
-    }
-
-    this.searchMode = SearchModes.None;
+  static printTimeslot(timeslot: ITime): string {
+    return timeslot.start + ':00 - ' + timeslot.end + ':00 ' + (timeslot.am ? 'AM' : 'PM');
   }
 };
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, AddressBook, MatDialogClose, MatDialogContent],
+  imports: [FormsModule, FontAwesomeModule, AddressBook, MatDialogContent],
   template: `
 <div class="bg-base-200">
   <div mat-dialog-content>
-  <address-book [timeslot]="showTimeslots" (clickFavourite)="onClickFavourite()" />
-  </div>
-
-  <div mat-dialog-actions class="p-4">
-    <button mat-dialog-close class="btn btn-soft w-full">
-        Close
-    </button>
+    <address-book [timeslot]="showTimeslots" />
   </div>
 </div>
 `
@@ -463,9 +530,5 @@ export class AddressBookDialog {
     if (data) {
       this.showTimeslots = data.timeslot;
     }
-  }
-
-  protected onClickFavourite() {
-    this.dialogRef.close();
   }
 };

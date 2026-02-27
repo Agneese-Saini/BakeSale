@@ -15,7 +15,8 @@ import { AddressBook } from './addressBook';
     class="input input-bordered placeholder-gray-350 w-full" 
     placeholder="Search an address"
     [(ngModel)]="searchQuery" 
-    (input)="onInputChange()" />
+    (input)="onInputChange()" 
+    (click)="onInputChange()" />
 
   @if (hidden == true) {
   <button class="btn btn-neutral tooltip tooltip-left" data-tip="Use Current Location" (click)="useCurrentLocation()">
@@ -106,11 +107,10 @@ export class AutoComplete {
   protected error?: string;
 
   protected onInputChange() {
-    const input = this.searchQuery ? this.searchQuery.trim() : '';
-
-    if (input.length > 1) {
-      this.searchPlaces(input);
-    } else {
+    if (this.searchQuery && this.searchQuery.length > 1) {
+      this.searchPlaces(this.searchQuery.trim());
+    } 
+    else {
       this.searchResults = [];
       this.addressBookResults = [];
     }

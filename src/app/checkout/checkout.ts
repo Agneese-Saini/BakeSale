@@ -15,6 +15,7 @@ import { ItemChoiceList } from '../content/itemChoice';
 import { Tip } from "./order";
 import { CartItemList } from './cartItemList';
 import { Receipt } from './receipt';
+import { BuildingType } from '../header/addressDialog';
 
 export enum DriverTip {
   Tip_10 = 10,
@@ -108,9 +109,7 @@ export class CheckoutCoupon {
               @if (isDelivery) {
               @if (deliverySettings.address) {
               <a class="link flex flex-col" style="text-decoration: none;" (click)="openAddressBookDialog()">
-                <b>{{ deliverySettings.address.addressLine }}</b>
-                <p class="text-sm">{{ deliverySettings.address.city }}, {{ deliverySettings.address.province }} {{
-                  deliverySettings.address.postal }}</p>
+                {{ printAddress(deliverySettings.address) }}
               </a>
               } @else {
               <a class="link text-error" style="text-decoration: none;" (click)="openAddressBookDialog()">
@@ -120,9 +119,7 @@ export class CheckoutCoupon {
               } @else {
               @if (deliverySettings.address) {
               <label class="flex flex-col">
-                <b>{{ deliverySettings.address.addressLine }}</b>
-                <p class="text-sm">{{ deliverySettings.address.city }}, {{ deliverySettings.address.province }} {{
-                  deliverySettings.address.postal }}</p>
+                {{ printAddress(deliverySettings.address) }}
               </label>
               } @else {
               <span class="loading loading-dots loading-xl text-error"></span>
@@ -144,12 +141,12 @@ export class CheckoutCoupon {
               <a class="link flex flex-col text-lg" style="text-decoration: none;" (click)="openTimeslotsDialog()">
                 @if (deliverySettings.timeslot) {                
                 <p class="text-xs">
-                  {{ deliveryMode.label }} Time:
+                  Scheduled Time:
                 </p>
                 <b>{{ deliverySettings.timeslot.label }}</b>
-                @if (deliverySettings.timeslot.slots && deliverySettings.timeslot.slots.length > 1) {
+                @if (deliverySettings.time) {
                 <p class="text-sm">
-                  Between <b>{{ deliverySettings.time?.start }}</b> - <b>{{ deliverySettings.time?.end }}</b>
+                  {{ printTimeslot(deliverySettings.time) }}
                 </p>
                 }
                 } @else {
@@ -207,6 +204,9 @@ export class CheckoutCoupon {
 export class CheckoutDetails {
 
   protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
+
+  protected printAddress = AddressBook.printAddress;
+  protected printTimeslot = AddressBook.printTimeslot;
 
   protected get isDelivery(): boolean {
     return (this.deliverySettings.mode == DeliveryMode.Delivery);
@@ -340,10 +340,6 @@ export class CheckoutCart {
   styleUrl: './checkout.css'
 })
 export class Checkout {
-
-  public get deliveryMode() {
-    return AddressBook.DeliveryModes.get(this.deliverySettings.mode)!;
-  }
 
   protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
   protected shoppingCart: Cart = new Map();
@@ -483,10 +479,29 @@ export class Checkout {
     <h1>Address:</h1>
     <p class="font-mono px-2">
       @if (deliverySettings.address) {
-      <b>{{ deliverySettings.address.addressLine }}</b>
+      <b>{{ deliverySettings.address.addressLine }}</b>      
       @if (deliverySettings.address.buildingType) {
       <br/>
-      <fa-icon class="pr-2" icon="house"></fa-icon> <b>{{ deliverySettings.address.buildingType }}</b>
+      <p class="flex gap-1">
+        @switch (deliverySettings.address.buildingType) {
+        @case (buildingType.Appartment) {
+        <fa-icon icon="building"></fa-icon>
+        }
+        @case (buildingType.Hotel) {
+        <fa-icon icon="hotel"></fa-icon>
+        }
+        @case (buildingType.House) {
+        <fa-icon icon="house"></fa-icon>
+        }
+        @case (buildingType.Office) {
+        <fa-icon icon="building"></fa-icon>
+        }
+        @default {
+        <fa-icon icon="location-dot"></fa-icon>
+        }
+        }
+        <b>{{ deliverySettings.address.buildingType }}</b>
+      </p>
       }
       }
       @else {
@@ -539,6 +554,7 @@ export class Checkout {
 export class DeliveryInstructionsDialog {
 
   protected readonly deliveryType = DeliveryType;
+  protected readonly buildingType = BuildingType;
 
   protected selectedOption: DeliveryType = DeliveryType.LeaveAtDoor;
   protected instructions?: string;

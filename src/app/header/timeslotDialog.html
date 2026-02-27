@@ -32,23 +32,16 @@
         <table class="table table-zebra">
           <tbody>
             @if (selectedTimeslot && selectedTimeslot.slots) {
-            @for (slot of selectedTimeslot.slots; track $index) {
+            @for (time of selectedTimeslot.slots; track $index) {
             <tr class="h-16">
               <td>
-                @if (deliverySettings.time == slot) {
                 <label class="label cursor-pointer flex justify-between">
-                  <span class="label-text font-extrabold text-xl">{{ slot.start }} - {{ slot.end }}</span>
-                  <input type="radio" name="times" class="radio" checked="true" [value]="slot"
+                  <span [class]="'label-text text-xl' + ' ' + (deliverySettings.time == time ? 'font-extrabold' : 'font-normal')">
+                    {{ printTimeslot(time) }}
+                  </span>
+                  <input type="radio" name="times" class="radio" [checked]="deliverySettings.time == time" [value]="time"
                     [(ngModel)]="selectedTimeInterval" />
                 </label>
-                }
-                @else {
-                <label class="label cursor-pointer flex justify-between">
-                  <span class="label-text font-normal text-xl">{{ slot.start }} - {{ slot.end }}</span>
-                  <input type="radio" name="times" class="radio" checked="false" [value]="slot"
-                    [(ngModel)]="selectedTimeInterval" />
-                </label>
-                }
               </td>
             </tr>
             }

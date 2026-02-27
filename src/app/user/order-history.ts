@@ -10,7 +10,7 @@ import { OrderItems } from "./view-receipt";
 import { IAddress } from '../header/addressDialog';
 import { ITime } from '../header/timeslots';
 import { IItem } from '../content/item';
-import { ItemsList } from "../content/itemList";
+import { CategoryItemsList, ItemsList } from "../content/itemList";
 
 export interface IOrderHistory {
   tipAmount: number,
@@ -34,6 +34,8 @@ export interface IOrderHistory {
   templateUrl: "order-history.html"
 })
 export class OrderHistory {
+
+  protected readonly ItemsPerPage = CategoryItemsList.ItemsPerPage;
 
   protected user: IUser = UserService.DefaultUser;
 

@@ -63,10 +63,16 @@
     <div class="flex flex-col gap-2 w-full p-4">
       <div class="flex justify-between items-center w-full">
         <h1 class="text-xl font-bold">Buy Again:</h1>
+        @if (buyAgain.length > ItemsPerPage) {
         <button class="btn btn-ghost rounded-full label p-1" style="text-decoration: none;">See more</button>
+        }
       </div>
 
       <items-list [items]="buyAgain"></items-list>
+
+      <div class="hidden lg:block">
+        <div class="divider m-0"></div>
+      </div>
     </div>
 
     <div class="bg-base-300 h-2 w-full lg:hidden"></div>

@@ -116,37 +116,14 @@ export class Subscribe {
     private cdr: ChangeDetectorRef) { }
 
   protected ngOnInit() {
-    const type = this.route.snapshot.paramMap.get('type');
+    const type = this.route.snapshot.paramMap.get('type')?.toLowerCase().trim();
+
     if (type == 'bread') {
       this.categoryService.categories$.subscribe(data => {
-        for (let cat of data) {
-          let find = this.findCustomizer(cat, Customizer.Subscription);
-          if (find != undefined) {
-            this.category = structuredClone(find);
-            break;
-          }
-        }
-
+        this.category = Category.findCategory("Daily Bread", data, "Bread");
         this.cdr.detectChanges();
       });
     }
-  }
-
-  protected findCustomizer(category: ICategory, customizer: Customizer): ICategory | undefined {
-    if (category.customizer && category.customizer == customizer) {
-      return category;
-    }
-
-    if (category.subcats) {
-      for (let subcat of category.subcats) {
-        const find = this.findCustomizer(subcat, customizer);
-        if (find != undefined) {
-          return find;
-        }
-      }
-    }
-
-    return undefined;
   }
 
   protected onDaysChange() {
