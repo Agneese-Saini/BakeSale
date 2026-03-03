@@ -10,6 +10,7 @@ import { ItemPage } from './content/itemPage';
 import { Subscribe } from './custom/subscribe';
 import { Subscriptions } from './user/subscriptions';
 import { Home } from './home/home';
+import { PageNotFound } from './app.404';
 
 export const routes: Routes = [
     {
@@ -59,6 +60,6 @@ export const routes: Routes = [
     // Add a wildcard route for unknown URLs
     {
         path: '**',
-        redirectTo: ''
+        component: PageNotFound
     }
 ];

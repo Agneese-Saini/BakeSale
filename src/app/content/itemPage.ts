@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, ParamMap, RouterModule } from "@angular/router";
+import { ActivatedRoute, ParamMap, Router, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { DecimalPipe, KeyValuePipe } from '@angular/common';
 import { Recipe } from '../custom/recipe';
@@ -61,6 +61,7 @@ export class ItemPage {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private categoryService: CategoryService,
     private userService: UserService,
     private cartService: CartService,
@@ -86,6 +87,11 @@ export class ItemPage {
         if (this.item) {
           this.itemOnInit();
         }
+      }
+      
+      // If invalid item, show 404
+      if (!this.item) {
+        this.router.navigate(['/']);
       }
 
       this.cdr.detectChanges();

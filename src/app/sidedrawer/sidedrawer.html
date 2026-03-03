@@ -23,78 +23,75 @@
                 <a class="link text-sm text-info" style="text-decoration: none;">Account Settings</a>
             </div>
         </div>
+        <div class="divider m-0"></div>
         }
     </header>
 
     <!-- Main Content Area (stretches) -->
-    <main class="flex flex-col gap-1 overflow-y-auto">
-        @if (user.userRole != userRole.Guest) {            
-        <div class="divider"></div>
-
-        <div class="flex flex-col gap-2">
-            <div class="flex gap-4 items-center">
-                <fa-icon icon="receipt"></fa-icon>
-                <div class="flex justify-between items-center w-full">
-                    <a class="link font-bold" style="text-decoration: none;" routerLink="/order-history">Order History</a>
-                    <label class="badge badge-xs badge-success text-white">2 Active</label>
-                </div>
-            </div>
-            <div class="flex gap-4 items-center">
-                <fa-icon icon="book"></fa-icon>
-                <div class="flex justify-between items-center w-full">
-                    <a class="link font-bold" style="text-decoration: none;" routerLink="/recipe-book">Recipe Book</a>
-                    @if (user.recipeBook && user.recipeBook.length > 0) {
-                    <label class="text-sm">{{ user.recipeBook.length }}</label>
-                    }
-                </div>
-            </div>
-            <div class="flex gap-4 items-center">
-                <fa-icon icon="s"></fa-icon>
-                <div class="flex justify-between items-center w-full">
-                    <a class="link font-bold" style="text-decoration: none;" routerLink="/subscriptions">Subscriptions</a>
-                    @if (user.subscriptions && user.subscriptions.length > 0) {
-                    <label class="text-sm">{{ user.subscriptions.length }}</label>
-                    }
-                </div>
-            </div>
-            <div class="flex gap-4 items-center">
-                <fa-icon icon="credit-card"></fa-icon>
-                <a class="link font-bold" style="text-decoration: none;">Payment Methods</a>
-            </div>
-            <div class="flex gap-4 items-center">
-                <fa-icon icon="heart"></fa-icon>
-                <a class="link font-bold" style="text-decoration: none;">Saved</a>
+    <main class="flex flex-col gap-4 overflow-y-auto">
+        @if (user.userRole != userRole.Guest) {
+        <div class="flex gap-4 items-center">
+            <fa-icon class="text-lg" icon="receipt"></fa-icon>
+            <div class="flex justify-between items-center w-full">
+                <a class="link font-bold" style="text-decoration: none;" routerLink="/order-history">Order
+                    History</a>
+                <label class="badge badge-xs badge-success text-white">2 Active</label>
             </div>
         </div>
-
-        <div class="divider"></div>
+        <div class="flex gap-4 items-center">
+            <fa-icon class="text-lg" icon="book"></fa-icon>
+            <div class="flex justify-between items-center w-full">
+                <a class="link font-bold" style="text-decoration: none;" routerLink="/recipe-book">Recipe Book</a>
+                @if (user.recipeBook && user.recipeBook.length > 0) {
+                <label class="text-sm">{{ user.recipeBook.length }}</label>
+                }
+            </div>
+        </div>
+        <div class="flex gap-4 items-center">
+            <fa-icon class="text-lg" icon="s"></fa-icon>
+            <div class="flex justify-between items-center w-full">
+                <a class="link font-bold" style="text-decoration: none;" routerLink="/subscriptions">Subscriptions</a>
+                @if (user.subscriptions && user.subscriptions.length > 0) {
+                <label class="text-sm">{{ user.subscriptions.length }}</label>
+                }
+            </div>
+        </div>
+        <div class="flex gap-4 items-center">
+            <fa-icon class="text-lg" icon="credit-card"></fa-icon>
+            <a class="link font-bold" style="text-decoration: none;">Payment Methods</a>
+        </div>
+        <div class="flex gap-4 items-center">
+            <fa-icon class="text-lg" icon="heart"></fa-icon>
+            <a class="link font-bold" style="text-decoration: none;">Saved</a>
+        </div>
         }
 
-        <div class="flex flex-col gap-2">
-            <div class="flex gap-4">
-                <fa-icon icon="briefcase"></fa-icon>
-                <div class="flex flex-col">
-                    <a class="link font-bold" style="text-decoration: none;">Add your Restraunt</a>
-                    <label class="text-xs text-gray-500">
-                        Currently doing business with 100+ bakeries in Winnipeg.
-                    </label>
-                </div>
+        <div class="flex gap-4 ">
+            <fa-icon class="text-lg" icon="shop"></fa-icon>
+            <a class="link font-bold" style="text-decoration: none;" routerLink="/shop">Visit Shop</a>
+        </div>
+
+        <div class="flex gap-4">
+            <fa-icon class="text-lg" icon="briefcase"></fa-icon>
+            <div class="flex flex-col">
+                <a class="link font-bold" style="text-decoration: none;">Add your Bakery</a>
+                <label class="text-xs text-gray-500">
+                    Currently doing business with 100+ bakeries in Winnipeg.
+                </label>
             </div>
-            <div class="flex gap-4">
-                <fa-icon icon="car"></fa-icon>
-                <a class="link font-bold" style="text-decoration: none;">Sign up to Deliver</a>
-            </div>
+        </div>
+        <div class="flex gap-4 items-center">
+            <fa-icon class="text-lg" icon="car"></fa-icon>
+            <a class="link font-bold" style="text-decoration: none;">Sign up to Deliver</a>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="flex flex-col p-2 gap-2">
-        <div class="flex gap-2 justify-end">
-            <a class="link">About Us</a>
-            <a class="link">Contact Us</a>
-            @if (user.userRole != userRole.Guest) {
-            <a class="link text-error" (click)="logout()">Logout</a>
-            }
-        </div>
+    <footer class="flex gap-2 justify-end p-2">
+        <a class="link" routerLink="/">Home</a>
+        <a class="link">Contact Us</a>
+        @if (user.userRole != userRole.Guest) {
+        <a class="link text-error" (click)="logout()">Logout</a>
+        }
     </footer>
 </div>

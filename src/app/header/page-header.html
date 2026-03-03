@@ -1,0 +1,34 @@
+<div class="navbar">
+  <div class="navbar-start">
+    <label [for]="appDrawer" aria-label="open sidebar" class="btn btn-square btn-ghost">
+      <div class="indicator">
+        @if (user.userRole != userRole.Guest) {
+        <p class="indicator-item badge badge-xs badge-success rounded-full">
+          <b>2</b>
+        </p>
+        }
+
+        <fa-icon class="text-xl" icon="bars"></fa-icon>
+      </div>
+    </label>
+  </div>
+
+  <div class="navbar-center hidden lg:block">
+    <a class="link text-2xl font-serif" style="text-decoration: none" (click)="onClickHome()">
+      <b class="text-neutral-700">Bake</b>Sale
+    </a>
+  </div>
+
+  <div class="navbar-end">
+    <div class="flex justify-between items-center gap-2 lg:hidden">
+      <div class="flex flex-col items-end">
+        <label class="text-gray-500 font-serif text-xs "><b>Bake</b>Sale</label>
+        <p class="font-mono text-xl text-nowrap">
+          {{ page }}
+        </p>
+      </div>
+
+      <fa-icon class="text-2xl" [icon]="icon"></fa-icon>
+    </div>
+  </div>
+</div>

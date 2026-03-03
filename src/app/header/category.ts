@@ -452,13 +452,15 @@ export class Category {
 	}
 
 	static findCategory(name: string, categories: ICategory[], parent?: string): ICategory | undefined {
-		const lowerName = name.toLowerCase();
-		const parentName = parent ? parent.toLowerCase() : null;
+		const lowerName = name.toLowerCase().trim();
+		const parentName = parent ? parent.toLowerCase().trim() : null;
+
+		const isMain = parentName == 'main';
 
 		for (const cat of categories) {
 			const catName = cat.name.toLowerCase();
 
-			if (parentName != null) {
+			if (!isMain && parentName != null) {
 				if (parentName == catName) {
 					if (cat.subcats && cat.subcats.length > 0) {
 						for (const sub of cat.subcats) {
@@ -474,10 +476,12 @@ export class Category {
 				return cat;
 			}
 
-			if (cat.subcats && cat.subcats.length > 0) {
-				const ret = this.findCategory(name, cat.subcats, parent);
-				if (ret != undefined) {
-					return ret;
+			if (!isMain) {
+				if (cat.subcats && cat.subcats.length > 0) {
+					const ret = this.findCategory(name, cat.subcats, parent);
+					if (ret != undefined) {
+						return ret;
+					}
 				}
 			}
 		}

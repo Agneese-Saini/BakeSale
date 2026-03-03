@@ -19,7 +19,7 @@ export class HomeHeader {
   protected readonly homeCategories = HomeCategories;
 
   protected readonly categories: Map<HomeCategories, string> = new Map([
-    [HomeCategories.AboutUs, "Home"],
+    [HomeCategories.Home, "Home"],
     [HomeCategories.Shop, "Shop"],
     [HomeCategories.DailyBread, "Daily Bread"],
     [HomeCategories.Partners, "Partners List"]
@@ -38,7 +38,7 @@ export class HomeHeader {
     private cdr: ChangeDetectorRef) { }
 
   protected ngOnInit() {    
-    this.setHomeCategory(HomeCategories.AboutUs);
+    this.setHomeCategory(HomeCategories.Home);
 
     this.userService.user$.subscribe(data => {
       this.user = data;

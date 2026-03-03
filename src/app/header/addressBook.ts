@@ -274,24 +274,25 @@ export class DeliverySwitch {
       </a>
 
       <div class="flex justify-between gap-2 items-start">
-        <a class="cursor-pointer" (click)="select(addy)">
-          <p class="text-left text-xs text-wrap">
-            {{ printAddress(addy) }}         
-          </p>
-        </a>
-
-        <div class="flex gap-2">
-          @if (editable) {
-          <a class="link font-medium" style="text-decoration: 1;" (click)="openAddressBookDialog(addy)">
-            Edit
+        <div class="flex flex-col">
+          <a class="cursor-pointer" (click)="select(addy)">
+            <p class="text-left text-xs text-wrap">
+              {{ printAddress(addy) }}         
+            </p>
           </a>
-          }
+          
           @if (viewable) {
-          <a class="link font-medium text-nowrap" style="text-decoration: 1;">
-            View Map
+          <a class="link font-medium text-xs">
+            View on Map
           </a>
           }
         </div>
+
+        @if (editable) {
+        <a class="btn btn-ghost p-1 font-medium" (click)="openAddressBookDialog(addy)">
+          Edit
+        </a>
+        }
       </div>
     </div>
   </div>
@@ -499,10 +500,10 @@ export class AddressBook {
 
   static printAddress(address: IAddress): string {
     return address.addressLine
-    + (address.apt ? (' #' + address.apt) : '') + ', ' 
-    + address.city + ' • ' 
-    + address.province + ' ' 
-    + address.postal;
+      + (address.apt ? (' #' + address.apt) : '') + ', '
+      + address.city + ' • '
+      + address.province + ' '
+      + address.postal;
   }
 
   static printTimeslot(timeslot: ITime): string {

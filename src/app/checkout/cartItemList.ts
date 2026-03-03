@@ -16,7 +16,6 @@ import { CartService } from "./cart";
     @for (item of items; track $index) {
     <div [class]="'flex justify-between items-center p-2' + ' ' + background">
       <div class="flex gap-2 items-center w-full">
-
         <div class="flex-1">
           @if (numChoices(item) > 0) {
           <div class="collapse">
@@ -27,7 +26,7 @@ import { CartService } from "./cart";
 
               <div class="flex flex-col">
                 <div class="flex gap-2 items-center">
-                  <h1>
+                  <h1 class="font-semibold">
                     {{ item.name }}
                     @if (item.price.buyOneGetOne) {
                     <b>({{ item.amount * 2 }})</b>
@@ -57,7 +56,7 @@ import { CartService } from "./cart";
 
             <span class="flex flex-col">
               <div class="flex gap-2 items-center">
-                <h1>
+                <h1 class="font-semibold">
                   {{ item.name }}
                   @if (item.price.buyOneGetOne) {
                   <b>({{ item.amount * 2 }})</b>

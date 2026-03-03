@@ -10,7 +10,8 @@ import { OrderItems } from "./view-receipt";
 import { IAddress } from '../header/addressDialog';
 import { ITime } from '../header/timeslots';
 import { IItem } from '../content/item';
-import { CategoryItemsList, ItemsList } from "../content/itemList";
+import { CategoryItemsList } from "../content/itemList";
+import { PageHeader } from "../header/page-header";
 
 export interface IOrderHistory {
   tipAmount: number,
@@ -30,7 +31,7 @@ export interface IOrderHistory {
 
 @Component({
   selector: 'order-history',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe, DatePipe, OrderItems, ItemsList],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe, DatePipe, OrderItems, PageHeader],
   templateUrl: "order-history.html"
 })
 export class OrderHistory {
@@ -40,7 +41,7 @@ export class OrderHistory {
   protected user: IUser = UserService.DefaultUser;
 
   protected filters: string[] = [
-    "Today", "Yesterday", "2 Weeks", "1 Month", "3 Months", "1 Year", "2 Years", "3 Years"
+    "1 Week", "2 Weeks", "1 Month", "3 Months", "1 Year", "2 Years", "3 Years"
   ];
 
   protected currentFilter?: string;
@@ -116,3 +117,4 @@ export class OrderHistory {
     this.currentFilter = filter;
   }
 };
+

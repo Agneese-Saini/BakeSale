@@ -11,6 +11,7 @@ import { IUser, UserRole, UserService } from '../user/user';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatBottomSheet, MatBottomSheetModule, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { CartItemsDialog } from '../checkout/cartItemDialog';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -53,6 +54,7 @@ export class Content {
   }
 
   constructor(
+    private route: ActivatedRoute,
     private userService: UserService,
     private deliveryService: DeliveryService,
     private categoryService: CategoryService,
@@ -68,9 +70,19 @@ export class Content {
 
     this.categoryService.categories$.subscribe(data => {
       this.categories = data;
+
+      const categoryName = this.route.snapshot.paramMap.get('category')?.toLowerCase().trim();
+      if (categoryName) {
+        const find = Category.findCategory(categoryName, data, "main");
+        if (find != undefined) {
+          this.onSelectCategory(find);
+        }
+      }
+
       if (this.deliverySettings.category == Category.DefaultCategory) {
         this.onSelectCategory(data[0]);
       }
+
       this.cdr.detectChanges();
     });
 

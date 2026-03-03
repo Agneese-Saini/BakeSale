@@ -83,11 +83,11 @@
     }
 
     <!-- Price -->
-    <item-price-tag [value]="value" size="md" saleSize="xs"></item-price-tag>
+    <item-price-tag [value]="value" size="lg" ></item-price-tag>
 
     <!-- Label -->
     @if (value.tags) {
-    <div class="flex flex-wrap gap-1 justify-start">
+    <div class="flex flex-wrap gap-1 justify-start pt-1">
       @for (tag of value.tags; track $index) {
       <span class="badge badge-soft badge-xs lg:badge-sm font-semibold p-1">{{ tag }}</span>
       }

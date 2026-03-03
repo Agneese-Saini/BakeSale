@@ -11,6 +11,7 @@ import { IPayMethod } from "../user/user";
 import { IAddress } from "../header/addressDialog";
 import { SubscribeItemList } from "./subscribeItemList";
 import { CheckoutDialog, Receipt } from "../checkout/receipt";
+import { PageHeader } from "../header/page-header";
 
 export interface ISubscription {
   category: ICategory,
@@ -36,7 +37,7 @@ export type DaysOfWeekSetting = Map<DaysOfWeek, { name: string, checked: boolean
 
 @Component({
   selector: 'subscribe',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, MatDialogModule, SubscribeItemList],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, MatDialogModule, SubscribeItemList, PageHeader],
   templateUrl: "subscribe.html"
 })
 export class Subscribe {

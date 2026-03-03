@@ -3,9 +3,14 @@
   <div class="flex justify-between items-center p-2">
     <h1 class="text-2xl font-extrabold">Address Book</h1>
 
-    <button class="btn btn-info btn-circle text-white text-lg" (click)="openAddressBookDialog()">
-      <fa-icon icon="plus"></fa-icon>
-    </button>
+    <div class="flex gap-2">
+      <button class="btn btn-info btn-circle text-white text-lg" (click)="openAddressBookDialog()">
+        <fa-icon icon="location-crosshairs"></fa-icon>
+      </button>
+      <button class="btn btn-info btn-circle text-white text-lg" (click)="openAddressBookDialog()">
+        <fa-icon icon="plus"></fa-icon>
+      </button>
+    </div>
   </div>
 
   <div class="tabs tabs-border">
@@ -97,14 +102,14 @@
   <div class="bg-base-100 border border-neutral-300 rounded-box p-2">
     <div class="flex justify-between items-center gap-2 px-2">
       <a class="link flex items-center" style="text-decoration: none;" (click)="openTimeslotsDialog()">
-        <fa-icon icon="clock"></fa-icon>&nbsp;<p [class]="settings.timeslot ? '' : 'label'">
-        @if (settings.timeslot) {
+        <fa-icon icon="clock"></fa-icon>&nbsp;
+        @if (settings.timeslot != undefined) {
         <p>
           <b>{{ settings.timeslot.label }}</b><br />
           {{ settings.time ? printTimeslot(settings.time) : '' }}
         </p>
         } @else {
-        <p>Select a timeslot</p>
+        <p class="label">Select a timeslot</p>
         }
       </a>
 

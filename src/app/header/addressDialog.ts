@@ -43,7 +43,7 @@ export interface IGoogleMap {
 
 export interface IAddress {
   label: string,
-  addressLine: string, // larger font
+  addressLine?: string, // larger font
   city?: string,
   province?: Province,
   postal?: string,
@@ -66,7 +66,7 @@ export class AddressDialog {
   protected errorTypes = ErrorTypes;
   protected buildingType = BuildingType;
 
-  protected address: IAddress;
+  protected address: IAddress = { label: "" };
   protected originalName: string;
 
   protected addressBook: IAddress[] = [];
@@ -102,31 +102,27 @@ export class AddressDialog {
   }
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) private data: { address?: IAddress, lookup?: string },
+    @Inject(MAT_DIALOG_DATA) private data: { address?: IAddress, lookup?: string } | undefined,
     private deliveryService: DeliveryService,
     private dialogRef: MatDialogRef<AddressDialog>,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef) {
 
-    this.searchQuery = data.lookup;
+    if (data) {
+      if (data.address) {
+        this.address = structuredClone(data.address);
 
-    if (data.address) {
-      this.address = structuredClone(data.address);
+        // When "CurrentLocation" is supplied, that means we are trying to Add new address
+        if (data.address == AddressBook.CurrentLocation) {
+          this.useCurrentLocation();
+        }
 
-      // When "CurrentLocation" is supplied, that means we are trying to Add new address
-      if (this.data.address == AddressBook.CurrentLocation) {
-        this.useCurrentLocation();
+        if (this.isValidAddress) {
+          this.showAddressInfo = true;
+        }
       }
 
-      if (this.isValidAddress) {
-        this.showAddressInfo = true;
-      }
-    }
-    else {
-      this.address = {
-        label: "", 
-        addressLine: ""
-      };
+      this.searchQuery = data.lookup;
     }
 
     this.originalName = this.address.label;
@@ -211,7 +207,8 @@ export class AddressDialog {
     }
 
     for (let addr of this.addressBook) {
-      if (addr != this.data.address && label == addr.label.toLowerCase().trim()) {
+      if (((this.data != undefined && addr != this.data.address) || this.data == undefined) && 
+          label == addr.label.toLowerCase().trim()) {
         this.errors.set(ErrorTypes.Label, "Name already exists");
         return;
       }

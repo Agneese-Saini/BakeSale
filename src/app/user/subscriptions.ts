@@ -12,10 +12,11 @@ import { ICategory } from '../header/category';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SubscribeItemList } from '../custom/subscribeItemList';
 import { Receipt } from "../checkout/receipt";
+import { PageHeader } from "../header/page-header";
 
 @Component({
   selector: 'subscriptions',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, DecimalPipe, DatePipe],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, DecimalPipe, DatePipe, PageHeader],
   templateUrl: "subscriptions.html"
 })
 export class Subscriptions {

@@ -10,15 +10,16 @@ import { SideDrawer } from '../sidedrawer/sidedrawer';
 import { CheckoutDrawer } from '../checkout/checkout-drawer';
 import { IUser, UserRole, UserService } from '../user/user';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { AddressDialog, IAddress } from './addressDialog';
 
 
 @Component({
   selector: 'app-logo',
-  imports: [FormsModule, FontAwesomeModule],
+  imports: [FontAwesomeModule],
   template: `
 @switch (style) {
 @case (0) {
-<a class="link text-2xl font-serif" style="text-decoration: none" (click)="click.emit();">
+<a class="link text-2xl font-serif" style="text-decoration: none" (click)="onClick.emit();">
   <b class="text-neutral-700">{{ firstName }}</b>{{ lastName }}
 </a>
 }
@@ -45,7 +46,7 @@ export class Logo {
   public style: number = 0;
 
   @Output()
-  public click = new EventEmitter<void>();
+  public onClick = new EventEmitter<void>();
 
 };
 
@@ -56,25 +57,28 @@ export class Logo {
   template: `
 
 <fieldset class="fieldset">
-  <label class="input w-full">
-    <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
-        <circle cx="11" cy="11" r="8"></circle>
-        <path d="m21 21-4.3-4.3"></path>
-      </g>
-    </svg>
-    <input type="search" class="w-full lg:min-w-84" placeholder="Search BakeSale" />
-  </label>
+  <div class="join">
+    <label class="input w-full join-item">
+      <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </g>
+      </svg>
+      <input type="search" class="w-full lg:min-w-84" placeholder="Search BakeSale" />
+    </label>
 
-  @if (categoryMenu) {
-  <div class="dropdown px-4">
-    Search in <i tabindex="0" role="button" class="link w-54"><u>{{ getFilterLabel() }} <fa-icon
-          icon="filter"></fa-icon></u></i>
-    <ul tabindex="0" class="dropdown-content menu bg-base-300 rounded-box z-50 w-65 p-2 shadow-2xl">
-      <category-list />
-    </ul>
+    @if (categoryMenu) {
+    <div class="dropdown dropdown-bottom dropdown-end join-item">
+      @let num = getSelectedCategories().length;
+      <button tabindex="0" role="button" class="btn text-nowrap">Filter {{ num != categories.length ? ('('+num+')') : '' }} <fa-icon icon="filter"></fa-icon></button>
+
+      <ul tabindex="0" class="dropdown-content menu bg-base-300 rounded-box z-50 w-65 p-2 shadow-2xl">
+        <category-list />
+      </ul>
+    </div>
+    }
   </div>
-  }
 </fieldset>
 
 `
@@ -97,7 +101,7 @@ export class SearchBar {
     });
   }
 
-  private getSelectedCategories() {
+  protected getSelectedCategories() {
     let selected = [];
     for (let cat of this.categories) {
       if (cat.checked || Category.isPartiallyChecked(cat)) {
@@ -105,25 +109,6 @@ export class SearchBar {
       }
     }
     return selected;
-  }
-
-  protected getFilterLabel() {
-    const toatlCount = this.categories.length;
-    const selectedCount = this.getSelectedCategories().length;
-
-    if (selectedCount == 1) {
-      return this.getSelectedCategories()[0].name;
-    }
-
-    if (selectedCount == toatlCount) {
-      return "All Departments";
-    }
-
-    if (selectedCount > 0) {
-      return selectedCount + " Departments";
-    }
-
-    return "Home";
   }
 
 };
@@ -223,6 +208,7 @@ export class Header {
   protected printTimeslot = AddressBook.printTimeslot;
 
   protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
+  protected addressBook: IAddress[] = [];
   protected shoppingCart: Cart = new Map();
   protected user: IUser = UserService.DefaultUser;
 
@@ -261,6 +247,11 @@ export class Header {
       this.cdr.detectChanges();
     });
 
+    this.deliveryService.addressBook$.subscribe(data => {
+      this.addressBook = data;
+      this.cdr.detectChanges();
+    });
+
     this.cartService.shoppingCart$.subscribe(data => {
       this.shoppingCart = data;
       this.cdr.detectChanges();
@@ -278,7 +269,9 @@ export class Header {
     dialogConfig.data = undefined;
     dialogConfig.width = '90%';
 
-    const dialogRef = this.dialog.open(AddressBookDialog, dialogConfig);
+    const dialogRef = this.addressBook.length > 0
+      ? this.dialog.open(AddressBookDialog, dialogConfig)
+      : this.dialog.open(AddressDialog, dialogConfig);
 
     dialogRef.afterClosed().subscribe(() => {
       this.cdr.detectChanges();

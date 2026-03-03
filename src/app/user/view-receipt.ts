@@ -8,7 +8,7 @@ import { UserService } from "./user";
 import { IOrderHistory } from "./order-history";
 import { Item } from "../content/item";
 import { CartService } from "../checkout/cart";
-import { DeliveryType } from "../header/addressBook";
+import { AddressBook, DeliveryType } from "../header/addressBook";
 import { Receipt } from "../checkout/receipt";
 
 @Component({
@@ -23,57 +23,54 @@ import { Receipt } from "../checkout/receipt";
     <tr>
       <td>
         <div class="flex items-center justify-between">
-          <div class="flex gap-4 items-center w-full">            
-            <img class="rounded-box w-12 h-12" [src]="getImage(item)" />
-            <div class="flex-1">
+          <div class="flex-1">
               <div class="collapse">
-                @if (numChoices(item) > 0) {
-                <input type="checkbox" [checked]="open"/>
-                }
-                
-                <div [class]="'grid p-1 ' + (numChoices(item) > 0 ? 'collapse-title' : '')">
-                  <div class="flex gap-2 items-center">
-                    <h1 class="text-lg">
-                      {{ item.name }}
-                      @if (item.price.buyOneGetOne) {
-                      <b>({{ item.amount }})</b>
+                <input type="checkbox" />
+
+                <div class="collapse-title flex gap-2 items-center p-0">
+                  <img class="rounded-box w-12 h-12" [src]="getImage(item)"/>
+
+                  <div class="flex justify-between w-full">
+                    <div class="flex flex-col">
+                      <h1>
+                        {{ item.name }}
+                        @if (item.price.buyOneGetOne) {
+                        <b>({{ item.amount * 2 }})</b>
+                        }
+                      </h1>
+
+                      @if (numChoices(item) > 0) {
+                      <p class="label text-xs">{{ numChoices(item) }} choice(s)</p>
                       }
-                    </h1>
-                    @if (item.amount > 1) {
-                    <span class="bg-base-100 px-2 border border-base-300">{{ item.amount }}</span>
+                    </div>                  
+
+                    @if (!hidePrice) {
+                    <div class="flex flex-col items-end">
+                      <div class="flex gap-2 items-center">
+                        @if (!item.price.buyOneGetOne && item.price.previousPrice) {
+                        <p class="label line-through text-xs">{{ "$" }}{{ getPrice(item, item.price.previousPrice) | number: '1.2-2' }}</p>
+                        }
+                        <p>{{ "$" }}{{ getPrice(item, item.price.value) | number: '1.2-2' }}</p>
+                      </div>
+                    </div>
                     }
                   </div>
+                </div>
 
-                  @if (item.price.buyOneGetOne) {
-                  <span class="label text-xs font-mono">[Buy 1, Get 1]</span>
-                  } @else if (item.price.label) {
-                  <span class="label text-xs font-mono">[{{ item.price.label }}]</span>
-                  }
-
+                <div class="collapse-content p-1">
                   @if (numChoices(item) > 0) {
-                  <p class="label text-xs">{{ numChoices(item) }} choice(s)</p>
+                  <item-choice-summary [value]="item.choices"></item-choice-summary>
+                  <br />
+                  }
+
+                  @if (!hidePrice) {
+                  <a class="link" [routerLink]="['/item', {category: item.parent, item: item.name}]">
+                    <fa-icon icon="arrow-up-right-from-square"></fa-icon> View Item
+                  </a>
                   }
                 </div>
-
-                @if (numChoices(item) > 0) {
-                <div class="collapse-content p-0 px-1">
-                  <item-choice-summary [value]="item.choices"></item-choice-summary>
-                </div>
-                }
               </div>
-            </div>
           </div>
-          
-          @if (!hidePrice) {
-          <div class="flex flex-col items-end">
-            <div class="flex gap-2 items-center">
-              @if (!item.price.buyOneGetOne && item.price.previousPrice) {
-              <p class="label line-through text-xs">{{ "$" }}{{ getPrice(item, item.price.previousPrice) | number: '1.2-2' }}</p>
-              }
-              <p>{{ "$" }}{{ getPrice(item, item.price.value) | number: '1.2-2' }}</p>
-            </div>
-          </div>
-          }
         </div>
       </td>
     </tr>
@@ -90,9 +87,6 @@ export class OrderItems {
   public order?: IOrderHistory;
 
   @Input()
-  public open: boolean = false;
-
-  @Input()
   public hidePrice: boolean = false;
 
   protected numChoices = Item.numChoices;
@@ -101,7 +95,7 @@ export class OrderItems {
 };
 
 
-@Component({  
+@Component({
   selector: 'view-receipt',
   imports: [FormsModule, FontAwesomeModule, RouterModule, OrderItems, Receipt, DatePipe],
   templateUrl: "view-receipt.html"
@@ -110,6 +104,8 @@ export class ViewReceipt {
 
   protected deliveryType = DeliveryType;
 
+  protected printAddress = AddressBook.printAddress;
+
   protected order?: IOrderHistory;
 
   protected get totalItems() {
@@ -117,7 +113,7 @@ export class ViewReceipt {
   }
 
   protected get currentDate(): Date {
-      return new Date();
+    return new Date();
   }
 
   constructor(

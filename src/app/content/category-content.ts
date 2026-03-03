@@ -37,6 +37,7 @@ export class CategoryContent {
                 }
             }
 
+            // If invalid category, show 404
             if (this.category == Category.DefaultCategory) {
                 this.router.navigate(['/']);
             }

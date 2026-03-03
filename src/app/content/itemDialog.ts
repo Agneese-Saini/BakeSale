@@ -60,44 +60,42 @@ export class TextReadMore {
   imports: [FontAwesomeModule, DecimalPipe],
   template: `
 
-<div class="flex flex-col p-1">  
-  <div class="flex items-center gap-2">
+<div class="flex flex-col">  
+  <div class="flex flex-wrap items-center">
+    @if (!value.price.buyOneGetOne && value.price.previousPrice) {
+    <label [class]="'font-mono font-medium line-through opacity-65 px-1' + textSize">
+      {{ currency }}{{ value.price.previousPrice | number: '1.0-2' }}
+    </label>
+    }
+
     @if (value.price.value > 0) {
     <label [class]="'font-mono font-semibold text-neutral' + textSize">{{ currency }}{{ value.price.value | number: '1.0-2' }}</label>
     } @else {
     <label [class]="'font-mono font-semibold text-error' + textSize">FREE</label>
     }
-
-    @if (!value.price.buyOneGetOne && value.price.previousPrice) {
-    <label [class]="'font-mono font-semibold text-gray-500 line-through' + textSize">
-      {{ currency }}{{ value.price.previousPrice | number: '1.0-2' }}
-    </label>
+  
+    @if (showSale == true) {
+    @if (value.price.buyOneGetOne || (!value.price.buyOneGetOne && value.price.label)) {
+    <span [class]="'badge text-nowrap font-mono px-1 mx-1' + badgeSize + badgeStyle">
+      @if (value.price.buyOneGetOne) {
+      Buy 1, Get 1
+      } @else {
+      {{ value.price.label }}
+      }
+    </span>
+    }
+    @else if (value.price.previousPrice) {
+    <span [class]="'badge badge-success badge-soft text-nowrap font-semibold font-mono px-1 mx-1' + badgeSize">
+      SAVE {{ '$' }}{{ (value.price.previousPrice - value.price.value) | number: '1.1-2' }}
+    </span>
+    }
     }
   </div>
   
   @if (showLikes == true) {
-  <a class="link text-gray-600 px-2" style="text-decoration: none;">
-    <fa-icon class="pr-1" icon="thumbs-up"></fa-icon>{{ getLikePercentage(value) | number: '1.0-0' }}% <i
-      class="font-thin">({{
-      getLikeCount(value) }}+)</i>
+  <a class="link text-gray-600" style="text-decoration: none;">
+    <fa-icon class="pr-1" icon="thumbs-up"></fa-icon>{{ getLikePercentage(value) | number: '1.0-0' }}% <i class="font-thin">({{ getLikeCount(value) }}+)</i>
   </a>
-  }
-  
-  @if (showSale == true) {
-  @if (value.price.buyOneGetOne || (!value.price.buyOneGetOne && value.price.label)) {
-  <span [class]="'badge px-1 text-nowrap font-mono ' + badgeSize + badgeStyle">
-    @if (value.price.buyOneGetOne) {
-    Buy 1, Get 1
-    } @else {
-    {{ value.price.label }}
-    }
-  </span>
-  }
-  @else if (value.price.previousPrice) {
-  <span [class]="'badge badge-success badge-soft px-1 text-nowrap font-semibold font-mono' + badgeSize">
-    SAVE {{ '$' }}{{ (value.price.previousPrice - value.price.value) | number: '1.1-2' }}
-  </span>
-  }
   }
 </div>
 

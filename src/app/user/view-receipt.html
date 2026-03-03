@@ -26,22 +26,21 @@
       <h1 class="font-bold text-xl p-2">Pickup Details:</h1>
       }
 
-      <table class="table table-zebra">
+      <table class="table">
         <tbody>
           <tr>
             <td>
               <b>Address:</b>
             </td>
             <td>
-              <div class="flex justify-between gap-4 items-center">
-                <label class="flex flex-col">
-                  <b>{{ order.address.addressLine }}</b>
-                  <p class="text-sm">{{ order.address.city }}, {{ order.address.province }} {{
-                    order.address.postal }}</p>
+              <div class="flex flex-col gap-2">
+                <label>
+                  {{ printAddress(order.address) }}
                 </label>
 
                 @if (order.deliveryType != undefined && !order.inProgress) {
-                <a class="shrink-0 link"><img class="w-12 h-12 lg:w-24 lg:h-24 rounded-box border" src="https://onfleet.com/blog/content/images/2020/05/deliverypackage.jpg" /></a>
+                <a class="shrink-0 link"><img class="w-12 h-12 lg:w-24 lg:h-24 rounded-box border"
+                    src="https://onfleet.com/blog/content/images/2020/05/deliverypackage.jpg" /></a>
                 }
               </div>
             </td>
@@ -51,7 +50,8 @@
               <b>{{ order.deliveryType != undefined ? 'Delivery Time' : 'Pickup Time' }}:</b>
             </td>
             <td>
-              <p>{{ order.inProgress ? 'In Progress' : ((order.statusTime ? order.statusTime : currentDate) | date:'hh:ss a') }}</p>
+              <p>{{ order.inProgress ? 'In Progress' : ((order.statusTime ? order.statusTime : currentDate) |
+                date:'hh:ss a') }}</p>
             </td>
           </tr>
         </tbody>
@@ -63,7 +63,7 @@
         <h1 class="font-bold text-xl">Cart Items:</h1>
         <p class="text-xl">{{ totalItems }} items</p>
       </div>
-      <order-items [order]="order" [open]="true"></order-items>
+      <order-items [order]="order"></order-items>
     </div>
 
     <div class="rounded-box bg-base-200 w-full p-6 border border-base-300">

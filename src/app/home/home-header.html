@@ -15,10 +15,10 @@
 
   <div class="px-2 flex-1">
     <div class="flex justify-between items-center gap-2">
-      <app-logo firstName="Bake" lastName="Sale" (click)="onClickHome()" />
+      <app-logo firstName="Bake" lastName="Sale" (onClick)="onClickHome()" />
 
       <div class="hidden lg:block">
-        <ul class="menu menu-horizontal lg:text-lg">
+        <ul class="menu menu-horizontal">
           @for (entry of categories | keyvalue; track $index) {
           <li>
             <a [class]="getHomeCategory() == entry.key ? 'menu-active' : ''" (click)="setHomeCategory(entry.key);">
@@ -57,7 +57,9 @@
       @for (entry of categories | keyvalue; track $index) {
       <li>
         <a [class]="getHomeCategory() == entry.key ? 'menu-active' : ''" (click)="setHomeCategory(entry.key);">
-          {{ entry.value }}@if (entry.key == homeCategories.Shop){ <fa-icon icon="arrow-up-right-from-square"></fa-icon>
+          {{ entry.value }}&nbsp;
+          @if (entry.key == homeCategories.Shop) {
+          <fa-icon icon="arrow-up-right-from-square"></fa-icon>
           }
         </a>
       </li>

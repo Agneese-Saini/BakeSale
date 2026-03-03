@@ -6,9 +6,8 @@ import { BehaviorSubject } from 'rxjs';
 import { DatePipe } from '@angular/common';
 
 export enum HomeCategories {
-  AboutUs,
+  Home,
   Shop,
-  Marketplace,
   DailyBread,
   Partners
 };
@@ -27,7 +26,7 @@ export interface IPartner {
 })
 export class HomeService {
 
-  private _category = new BehaviorSubject<HomeCategories>(HomeCategories.AboutUs);
+  private _category = new BehaviorSubject<HomeCategories>(HomeCategories.Home);
 
   public setCategory(category: HomeCategories) {
     this._category.next(category);

@@ -6,6 +6,7 @@ import { Router, RouterModule } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { IUser, UserService } from '../user/user';
+import { PageHeader } from "../header/page-header";
 
 export enum ButtonType {
   Finish,
@@ -47,7 +48,7 @@ export interface IRecipe {
 
 @Component({
   selector: 'app-recipe',
-  imports: [FormsModule, FontAwesomeModule, KeyValuePipe, ItemChoiceList, RouterModule, ItemChoiceCatalog],
+  imports: [FormsModule, FontAwesomeModule, KeyValuePipe, ItemChoiceList, RouterModule, ItemChoiceCatalog, PageHeader],
   templateUrl: './recipe.html',
   styleUrl: './recipe.css'
 })

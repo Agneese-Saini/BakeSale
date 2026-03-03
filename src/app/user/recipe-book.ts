@@ -10,10 +10,11 @@ import { ItemChoiceList } from '../content/itemChoice';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { IOrderHistory } from './order-history';
 import { DatePipe } from '@angular/common';
+import { PageHeader } from "../header/page-header";
 
 @Component({
   selector: 'recipe-book',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, DatePipe],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, DatePipe, PageHeader],
   templateUrl: "recipe-book.html"
 })
 export class RecipeBook {

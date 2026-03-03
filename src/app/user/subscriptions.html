@@ -1,54 +1,35 @@
-<div class="navbar">
-  <div class="navbar-start">
-    <div class="dropdown dropdown-bottom dropdown-start">
-      <div tabindex="0" role="button" class="btn btn-sm m-1"><fa-icon icon="arrow-left"></fa-icon></div>
-      <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box w-32 z-50 p-2 shadow-xl">
-        <li><a routerLink="/">Home</a></li>
-        <li><a routerLink="/shop">Shop</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="navbar-center hidden lg:block">
-    <a class="link text-4xl font-serif p-2" style="text-decoration: none" routerLink="/">
-      <b>Bake</b>Sale
-    </a>
-  </div>
-
-  <div class="navbar-end">
-    <div class="flex justify-between items-center gap-2">    
-      <div class="flex flex-col items-end">
-        <label class="text-gray-500 font-serif text-xs lg:hidden"><b>Bake</b>Sale</label>
-        <p class="font-mono text-xl text-nowrap">
-          Subscriptions
-        </p>
-      </div>
-
-      <fa-icon class="text-2xl" icon="s"></fa-icon>
-    </div>
-  </div>
-</div>
+<page-header page="Subscriptions" icon="s"></page-header>
 
 <div class="bg-base-300 h-2 my-2"></div>
 
 <div class="flex flex-col gap-2 lg:justify-center lg:items-center">
-  <div class="w-full lg:w-[65vw] p-4">
-    <div class="flex flex-col gap-2">
-      <div class="flex flex-col gap-2">
-        <div class="hidden lg:block">
-          <div class="flex items-center gap-2">
-            <fa-icon class="text-2xl" icon="s"></fa-icon>
-            <h1 class="font-bold text-5xl">Subscriptions</h1>
-          </div>
+  <div class="w-full lg:w-[65vw]">
+    <div class="flex flex-col gap-2 p-4">
+      <div class="hidden lg:block">
+        <div class="flex items-center gap-2">
+          <fa-icon class="text-2xl" icon="book"></fa-icon>
+          <h1 class="font-bold text-5xl">Subscriptions</h1>
         </div>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at
-          non
-          dui.
-        </p>
       </div>
-      <br />
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Nullam ac eros sit amet lorem facilisis vulputate at non dui.
+      </p>
 
+      <label class="input w-full">
+        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </g>
+        </svg>
+        <input type="search" class="grow placeholder-gray-500 input-lg" placeholder="Search" />
+      </label>
+    </div>
+
+    <div class="bg-base-300 h-2 lg:hidden"></div>
+    
+    <div class="flex flex-col w-full p-4">
       @if (user.subscriptions && user.subscriptions.length > 0) {
       <h1 class="text-lg">Upcoming Deliveries:</h1>
       <table class="table bg-base-300">
@@ -59,7 +40,8 @@
             <td>
               <div class="flex flex-col">
                 <div class="flex justify-between">
-                  <p><b>Bread Subscription {{ $index > 0 ? $index : '' }}</b>: {{ sub.date | date }} - {{ day.value.name }}</p>
+                  <p><b>Bread Subscription {{ $index > 0 ? $index : '' }}</b>: {{ sub.date | date }} - {{ day.value.name
+                    }}</p>
                 </div>
                 <p></p>
                 <div class="flex gap-2 px-2">
@@ -97,7 +79,8 @@
               <h2 class="font-bold">Items:</h2>
               <span class="flex">
                 @for (item of getSelectedItems(sub.category); track $index) {
-                {{ item.name }}{{ item.amount > 1 ? (' (' + item.amount + ')') : '' }}{{ item != getLastItem(sub) ? ', ' : '' }}
+                {{ item.name }}{{ item.amount > 1 ? (' (' + item.amount + ')') : '' }}{{ item != getLastItem(sub) ? ', '
+                : '' }}
                 }
               </span>
               <br />
@@ -146,18 +129,23 @@
       </div>
       }
       @else {
-      <div class="py-20 px-4 text-center w-full">
-        <fa-icon class="text-6xl text-gray-500" icon="face-grin-tongue"></fa-icon>
-        <h1 class="text-4xl font-bold text-gray-500 mb-4">No Subscriptions Found</h1>
-        <p class="text-gray-600 mb-6">
-          Looks like you have no current active Subscriptions.
-        </p>
-        <!-- CTA Button -->
-        <div class="flex flex-wrap gap-2 justify-center">
-          <a class="link text-primary">Bread Shop</a>
-          <a class="link text-primary">Get Fresh Bread Daily</a>
-          <a class="link text-primary">BakeSale Points Program</a>
-          <a class="link text-primary">Contact Us</a>
+      <div class="flex items-center py-12 px-8">
+        <div class="container flex flex-col md:flex-row items-center justify-center text-gray-700">
+          <div class="flex flex-col">
+            <h1 class="text-3xl font-dark font-bold">Nothing Here!</h1>
+            <p class="text-xl lg:text-2xl font-light leading-normal">There are no active subscriptions on this account.</p>
+            <br />
+
+            <p class="label">Links:</p>
+            <div class="flex gap-1 flex-wrap">
+              <button class="btn btn-primary rounded-box" routerLink="/shop">Shop</button>
+              <button class="btn btn-primary rounded-box" [routerLink]="['/subscribe' , { type: 'Bread' }]">Get Bread Daily</button>
+              <button class="btn btn-primary rounded-box" [routerLink]="['/shop', { category: 'Bread' }]">Bread Shop</button>
+              <button class="btn btn-secondary rounded-box" routerLink="/">Homepage</button>
+            </div>
+          </div>
+
+          <img class="max-w-sm" src="./assets/images/empty3.jpg" />
         </div>
       </div>
       }

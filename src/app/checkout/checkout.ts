@@ -15,7 +15,7 @@ import { ItemChoiceList } from '../content/itemChoice';
 import { Tip } from "./order";
 import { CartItemList } from './cartItemList';
 import { Receipt } from './receipt';
-import { BuildingType } from '../header/addressDialog';
+import { AddressDialog, BuildingType, IAddress } from '../header/addressDialog';
 
 export enum DriverTip {
   Tip_10 = 10,
@@ -204,6 +204,7 @@ export class CheckoutCoupon {
 export class CheckoutDetails {
 
   protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
+  protected addressBook: IAddress[] = [];
 
   protected printAddress = AddressBook.printAddress;
   protected printTimeslot = AddressBook.printTimeslot;
@@ -237,6 +238,11 @@ export class CheckoutDetails {
       this.deliverySettings = data;
       this.cdr.detectChanges();
     });
+
+    this.deliveryService.addressBook$.subscribe(data => {
+      this.addressBook = data;
+      this.cdr.detectChanges();
+    }); 
   }
 
   protected getLastFourDigits(cardNumber: string): string {
@@ -261,7 +267,9 @@ export class CheckoutDetails {
     dialogConfig.data = undefined;
     dialogConfig.width = '90%';
 
-    const dialogRef = this.dialog.open(AddressBookDialog, dialogConfig);
+    const dialogRef = this.addressBook.length > 0
+      ? this.dialog.open(AddressBookDialog, dialogConfig)
+      : this.dialog.open(AddressDialog, dialogConfig);
 
     dialogRef.afterClosed().subscribe(() => {
       this.cdr.detectChanges();
@@ -459,7 +467,7 @@ export class Checkout {
 
     this.userService.addOrder(this.orderHistory);
     this.shoppingCart.clear();
-    this.router.navigate(['/']);
+    this.router.navigate(['/shop']);
 
     this.snackBar.open("Order placed!", "Close", {
       duration: 2500
