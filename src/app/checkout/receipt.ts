@@ -17,6 +17,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { RouterModule, Router } from "@angular/router";
 import { UserService } from "../user/user";
+import { AddressDialog, IAddress } from "../header/addressDialog";
 
 @Component({
   selector: 'receipt',
@@ -250,6 +251,7 @@ export class Receipt {
 export class CheckoutDialog {
 
   protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
+  protected addressBook: IAddress[] = [];
 
   protected selectedDate: Date = new Date();
 
@@ -273,27 +275,38 @@ export class CheckoutDialog {
     private userService: UserService,
     private snackBar: MatSnackBar,
     private router: Router,
-    private cdr: ChangeDetectorRef) {
-  }
-
-  protected getLastFourDigits(cardNumber: string): string {
-    return cardNumber.slice(-4);
-  }
+    private cdr: ChangeDetectorRef) { }
 
   protected ngOnInit() {
     this.deliveryService.deliverySettings$.subscribe(data => {
       this.deliverySettings = data;
       this.cdr.detectChanges();
     });
+
+    this.deliveryService.addressBook$.subscribe(data => {
+      this.addressBook = data;
+      this.cdr.detectChanges();
+    });
+  }
+
+  protected getLastFourDigits(cardNumber: string): string {
+    return cardNumber.slice(-4);
   }
 
   protected openAddressBookDialog() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
-    dialogConfig.data = { timeslot: false };
     dialogConfig.width = '90%';
 
-    const dialogRef = this.dialog.open(AddressBookDialog, dialogConfig);
+    let dialogRef: any;
+    if (this.addressBook.length > 0) {
+      dialogConfig.data = { timeslot: false };
+      dialogRef = this.dialog.open(AddressBookDialog, dialogConfig);
+    } 
+    else {      
+      dialogConfig.data = undefined;
+      dialogRef = this.dialog.open(AddressDialog, dialogConfig);
+    }
 
     dialogRef.afterClosed().subscribe(() => {
       this.cdr.detectChanges();

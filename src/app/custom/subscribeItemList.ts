@@ -70,7 +70,7 @@ import { Subscribe } from "./subscribe";
             <div
               [class]="'flex flex-col w-full ' + ((item.stockAmount != undefined && item.stockAmount == 0) ? 'text-gray-500' : '')">
               <!-- Name -->
-              <a class="link flex gap-2 items-center text-lg w-fit" style="text-decoration: none;"
+              <a class="link flex gap-2 items-center text-lg font-semibold w-fit" style="text-decoration: none;"
                 (click)="openItemDialog(item)">
                 {{ item.name }}
               </a>
@@ -85,7 +85,7 @@ import { Subscribe } from "./subscribe";
 
               <!-- Label -->
               @if (item.tags) {
-              <div class="flex flex-wrap gap-1">
+              <div class="flex flex-wrap gap-1 pt-1">
                 @for (tag of item.tags; track $index) {
                 <span class="badge badge-soft badge-xs font-semibold px-2">{{ tag }}</span>
                 }
