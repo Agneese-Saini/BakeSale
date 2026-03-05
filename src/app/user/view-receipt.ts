@@ -28,9 +28,11 @@ import { Receipt } from "../checkout/receipt";
                 <input type="checkbox" />
 
                 <div class="collapse-title flex gap-2 items-center p-0">
+                  @if (showImage == true) {
                   <img class="rounded-box w-12 h-12" [src]="getImage(item)"/>
+                  }
 
-                  <div class="flex justify-between w-full">
+                  <div class="flex-1 flex justify-between w-full">
                     <div class="flex flex-col">
                       <h1>
                         {{ item.name }}
@@ -40,7 +42,13 @@ import { Receipt } from "../checkout/receipt";
                       </h1>
 
                       @if (numChoices(item) > 0) {
-                      <p class="label text-xs">{{ numChoices(item) }} choice(s)</p>
+                      @let num = numChoices(item);
+                      <p class="font-medium label text-xs">
+                        {{ num }} {{ num == 1 ? 'choice' : 'choices' }}&nbsp;
+                        @if (!hidePrice) {
+                        &bull; <b>{{ '$' }}{{ getChoicesPrice(item) }}</b>
+                        }
+                      </p>
                       }
                     </div>                  
 
@@ -87,9 +95,13 @@ export class OrderItems {
   public order?: IOrderHistory;
 
   @Input()
+  public showImage: boolean = true;
+
+  @Input()
   public hidePrice: boolean = false;
 
   protected numChoices = Item.numChoices;
+  protected getChoicesPrice = Item.getChoicesPrice;
   protected getImage = Item.getImage;
   protected getPrice = Item.getPrice;
 };

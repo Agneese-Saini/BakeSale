@@ -3,12 +3,13 @@
 <div class="bg-base-300 h-2 my-2"></div>
 
 <div class="flex flex-col gap-2 lg:justify-center lg:items-center">
-  <div class="w-full lg:w-[65vw]">
+  <div class="w-full lg:w-[65vw] lg:shadow-2xl">
+    @if (user.subscriptions && user.subscriptions.length > 0) {
     <div class="flex flex-col gap-2 p-4">
       <div class="hidden lg:block">
-        <div class="flex items-center gap-2">
-          <fa-icon class="text-2xl" icon="book"></fa-icon>
-          <h1 class="font-bold text-5xl">Subscriptions</h1>
+        <div class="flex items-center gap-2 text-2xl">
+          <fa-icon icon="book"></fa-icon>
+          <h1 class="font-bold">Subscriptions</h1>
         </div>
       </div>
       <p>
@@ -25,26 +26,33 @@
         </svg>
         <input type="search" class="grow placeholder-gray-500 input-lg" placeholder="Search" />
       </label>
+
+      <p class="text-right">
+        <b>{{ user.subscriptions.length }}</b> {{ user.subscriptions.length == 1 ? 'Subscription' : 'Subscriptions' }}
+        found
+      </p>
     </div>
 
-    <div class="bg-base-300 h-2 lg:hidden"></div>
-    
-    <div class="flex flex-col w-full p-4">
-      @if (user.subscriptions && user.subscriptions.length > 0) {
-      <h1 class="text-lg">Upcoming Deliveries:</h1>
-      <table class="table bg-base-300">
+    <div class="bg-base-300 h-2"></div>
+
+    <div class="flex flex-col justify-center gap-4 p-4">
+      <h1 class="font-bold text-lg">Upcoming Deliveries:</h1>
+      <table class="table rounded-none bg-base-200 p-2">
         <tbody>
           @for (sub of user.subscriptions; track $index) {
+          @let index = $index;
           @for (day of sub.days | keyvalue; track $index) {
           <tr>
             <td>
               <div class="flex flex-col">
                 <div class="flex justify-between">
-                  <p><b>Bread Subscription {{ $index > 0 ? $index : '' }}</b>: {{ sub.date | date }} - {{ day.value.name
-                    }}</p>
+                  <div class="flex gap-2">
+                    <div [class]="'w-2 ' + getColorPallet(index)"></div>
+                    <p>Bread Subscription {{ index > 0 ? (index + 1) : '' }}</p>
+                  </div>
+                  <b>{{ sub.date | date }} - {{ day.value.name }}</b>
                 </div>
-                <p></p>
-                <div class="flex gap-2 px-2">
+                <div class="flex justify-end gap-2">
                   <a class="link">View Receipt</a>
                   <a class="link text-error">Cancel this Order</a>
                 </div>
@@ -55,100 +63,104 @@
           }
         </tbody>
       </table>
-      <br />
+    </div>
 
-      <h1 class="text-lg">Your Subscriptions:</h1>
-      <div class="flex flex-col gap-2 rounded-box bg-base-200 border border-base-300 p-2">
-        @for (sub of user.subscriptions; track $index) {
-        <div class="collapse bg-base-100 border-base-300 border">
-          <input type="checkbox" />
+    <div class="bg-base-300 h-2"></div>
 
-          <div class="collapse-title flex justify-between items-center text-xl">
-            <div class="flex gap-2 items-center">
-              <fa-icon class="text-success" icon="bread-slice"></fa-icon>
-              <div class="flex flex-col">
-                <h2 class="font-bold">Bread Subscription {{ $index > 0 ? $index : '' }}</h2>
-                <p class="text-sm text-gray-500">{{ getTotalItems(getSelectedItems(sub.category)) }} items</p>
-              </div>
+    <div class="flex flex-col justify-center">
+      @for (sub of user.subscriptions; track $index) {
+      <div class="flex flex-col gap-6 p-4">
+        <div class="flex justify-between items-center">
+          <div class="flex gap-2">
+            <div [class]="'w-2 ' + getColorPallet($index)"></div>
+            <div class="flex flex-col">
+              <h1 class="font-bold text-lg">Bread Subscription {{ $index > 0 ? ($index + 1) : '' }}</h1>
+              <p class="text-sm text-gray-500">
+                {{ getTotalItems(getSelectedItems(sub.category)) }} items &bull; <b>${{
+                  getTotal(getSelectedItems(sub.category)) | number: '1.2-2' }}</b>
+              </p>
             </div>
-            <p class="font-bold">${{ getTotal(getSelectedItems(sub.category)) | number: '1.2-2' }}</p>
           </div>
+          <h2 class="font-bold text-gray-400 text-xl text-right">#{{ $index + 1 }}</h2>
+        </div>
 
-          <div class="collapse-content bg-base-300 text-sm">
-            <div class="pt-2">
-              <h2 class="font-bold">Items:</h2>
+        <div class="text-sm">
+          <h2 class="font-bold">Items:</h2>
+          <span class="flex">
+            @for (item of getSelectedItems(sub.category); track $index) {
+            {{ item.name }}{{ item.amount > 1 ? (' (' + item.amount + ')') : '' }}{{ item != getLastItem(sub) ? ', ' :
+            '' }}
+            }
+          </span>
+          <br />
+
+          <div class="flex gap-4">
+            <div class="flex-1 flex flex-col">
+              <h2 class="font-bold">Delivery Days:</h2>
               <span class="flex">
-                @for (item of getSelectedItems(sub.category); track $index) {
-                {{ item.name }}{{ item.amount > 1 ? (' (' + item.amount + ')') : '' }}{{ item != getLastItem(sub) ? ', '
-                : '' }}
+                @for (day of sub.days | keyvalue; track $index) {
+                {{ day.value.name }}{{ day.key != getLastDay(sub) ? ', ' : '' }}
                 }
               </span>
-              <br />
+            </div>
+            <div class="flex-1 flex flex-col">
+              <h2 class="font-bold">Get it Every:</h2>
+              <p>{{ sub.freq > 1 ? (sub.freq + ' Weeks') : 'Week' }}</p>
+            </div>
+          </div>
+          <br />
 
-              <div class="flex gap-4">
-                <div class="flex-1 flex flex-col">
-                  <h2 class="font-bold">Delivery Days:</h2>
-                  <span class="flex">
-                    @for (day of sub.days | keyvalue; track $index) {
-                    {{ day.value.name }}{{ day.key != getLastDay(sub) ? ', ' : '' }}
-                    }
-                  </span>
-                </div>
-                <div class="flex-1 flex flex-col">
-                  <h2 class="font-bold">Get it Every:</h2>
-                  <p>{{ sub.freq > 1 ? (sub.freq + ' Weeks') : 'Week' }}</p>
-                </div>
-              </div>
-              <br />
+          <h2 class="font-bold">Delivery Address:</h2>
+          <div class="bg-base-200 rounded-box flex flex-col p-2">
+            <p>{{ printAddress(sub.address!) }}</p>
+          </div>
+          <br />
 
-              <h2 class="font-bold">Delivery Address:</h2>
-              <div class="bg-base-200 rounded-box flex flex-col p-2">
-                <p>{{ sub.address!.addressLine }}, {{ sub.address!.province }} {{ sub.address!.postal }}</p>
-              </div>
-              <br />
-
-              <h2 class="font-bold">Upcoming delivery dates:</h2>
-              <div class="bg-base-200 rounded-box flex flex-col p-2">
-                <div class="flex flex-col gap-2 font-mono">
-                  @for (day of sub.days | keyvalue; track $index) {
-                  <p>{{ sub.date | date }} - {{ day.value.name }}</p>
-                  }
-                  <p>...</p>
-                </div>
-              </div>
-              <br />
-
-              <div class="flex justify-end items-end gap-2">
-                <button class="btn btn-neutral" (click)="openChangeSubscriptionDialogDialog(sub)">Change</button>
-                <button class="btn" (click)="openOrderSummaryDialog(sub)">View Receipt</button>
-              </div>
+          <h2 class="font-bold">Upcoming delivery dates:</h2>
+          <div class="bg-base-200 rounded-box flex flex-col p-2">
+            <div class="flex flex-col gap-2 font-mono">
+              @for (day of sub.days | keyvalue; track $index) {
+              <p>{{ sub.date | date }} - {{ day.value.name }}</p>
+              }
+              <p>...</p>
             </div>
           </div>
         </div>
-        }
-      </div>
-      }
-      @else {
-      <div class="flex items-center py-12 px-8">
-        <div class="container flex flex-col md:flex-row items-center justify-center text-gray-700">
-          <div class="flex flex-col">
-            <h1 class="text-3xl font-dark font-bold">Nothing Here!</h1>
-            <p class="text-xl lg:text-2xl font-light leading-normal">There are no active subscriptions on this account.</p>
-            <br />
 
-            <p class="label">Links:</p>
-            <div class="flex gap-1 flex-wrap">
-              <button class="btn btn-primary rounded-box" routerLink="/shop">Shop</button>
-              <button class="btn btn-primary rounded-box" [routerLink]="['/subscribe' , { type: 'Bread' }]">Get Bread Daily</button>
-              <button class="btn btn-primary rounded-box" [routerLink]="['/shop', { category: 'Bread' }]">Bread Shop</button>
-              <button class="btn btn-secondary rounded-box" routerLink="/">Homepage</button>
-            </div>
-          </div>
-
-          <img class="max-w-sm" src="./assets/images/empty3.jpg" />
+        <div class="flex justify-end items-end gap-2 pt-4">
+          <button class="btn btn-neutral btn-soft rounded-full btn-sm px-6"
+            (click)="openChangeSubscriptionDialogDialog(sub)">Change</button>
+          <button class="btn btn-neutral btn-soft rounded-full btn-sm px-6" (click)="openOrderSummaryDialog(sub)">Order
+            Summary</button>
         </div>
       </div>
+
+      <div class="bg-base-300 h-2"></div>
       }
     </div>
+    }
+    @else {
+    <div class="flex items-center py-12 px-8">
+      <div class="container flex flex-col md:flex-row items-center justify-center text-gray-700">
+        <div class="flex flex-col">
+          <h1 class="text-3xl font-dark font-bold">Nothing Here!</h1>
+          <p class="text-xl lg:text-2xl font-light leading-normal">There are no active subscriptions on this account.
+          </p>
+          <br />
+
+          <p class="label">Links:</p>
+          <div class="flex gap-1 flex-wrap">
+            <button class="btn btn-primary rounded-box" [routerLink]="['/subscribe' , { type: 'Bread' }]">Get Bread
+              Subscription</button>
+            <button class="btn btn-primary rounded-box" [routerLink]="['/shop', { category: 'Bread' }]">Bread
+              Shop</button>
+            <button class="btn btn-secondary rounded-box" routerLink="/">Homepage</button>
+          </div>
+        </div>
+
+        <img class="max-w-sm" src="./assets/images/empty3.jpg" />
+      </div>
+    </div>
+    }
   </div>
 </div>

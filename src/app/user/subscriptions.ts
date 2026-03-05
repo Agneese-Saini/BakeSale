@@ -13,6 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SubscribeItemList } from '../custom/subscribeItemList';
 import { Receipt } from "../checkout/receipt";
 import { PageHeader } from "../header/page-header";
+import { AddressBook } from '../header/addressBook';
 
 @Component({
   selector: 'subscriptions',
@@ -28,6 +29,7 @@ export class Subscriptions {
   protected getTotalItems = Subscribe.getTotalItems;
   protected getTotal = Subscribe.getTotal;
   protected getSelectedItems = SubscribeItemList.getSelectedItems;
+  protected printAddress = AddressBook.printAddress;
 
   constructor(
     private userService: UserService,
@@ -70,6 +72,20 @@ export class Subscriptions {
 
   protected getLastDay(sub: ISubscription) {
     return [...sub.days.keys()].at(-1);
+  }
+
+  protected getColorPallet(index: number) {
+    let lastDigit: number = index % 10;
+    
+    switch (lastDigit) {
+      case 0: case 5: return 'bg-primary';
+      case 1: case 6: return 'bg-secondary';
+      case 2: case 7: return 'bg-accent';
+      case 3: case 8: return 'bg-info';
+      case 4: case 9: return 'bg-warning';
+    }
+    
+    return 'bg-error';
   }
 };
 

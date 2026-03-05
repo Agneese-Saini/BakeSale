@@ -220,4 +220,19 @@ export class Item {
 
     return num;
   }
+
+  static getChoicesPrice(item: IItem): number {
+    let num: number = 0;
+    if (item.choices) {
+      for (let [key, value] of item.choices) {
+        for (const choice of value) {
+          if (choice.amount && choice.amount > 0) {
+            num += Number(choice.amount) * (choice.price ? choice.price : 0);
+          }
+        }
+      }
+    }
+
+    return num;
+  }
 };

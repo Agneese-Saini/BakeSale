@@ -3,34 +3,9 @@
 <div class="bg-base-300 h-2 my-2"></div>
 
 <div class="flex flex-col gap-2 lg:justify-center lg:items-center">
-  <div class="w-full lg:w-[65vw]">
-    <div class="flex flex-col gap-2 p-4">
-      <div class="hidden lg:block">
-        <div class="flex items-center gap-2">
-          <fa-icon class="text-2xl" icon="receipt"></fa-icon>
-          <h1 class="font-bold text-5xl">Order History</h1>
-        </div>
-      </div>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Nullam ac eros sit amet lorem facilisis vulputate at non dui.
-      </p>
-
-      <label class="input w-full">
-        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.3-4.3"></path>
-          </g>
-        </svg>
-        <input type="search" class="grow placeholder-gray-500 input-lg" placeholder="Search" />
-      </label>
-    </div>
-
-    <div class="bg-base-300 h-2 lg:hidden"></div>
-
+  <div class="w-full lg:w-[65vw] lg:shadow-2xl">
     <div class="flex flex-col w-full p-4">
-      <h1 class="text-xl font-bold">Orders:</h1>
+      <h1 class="text-xl font-bold">Your Orders:</h1>
 
       @if (filters.length > 0) {
       <div class="flex overflow-x-auto">
@@ -52,91 +27,101 @@
         </ul>
       </div>
       }
-      <br />
+    </div>
 
-      @if (user.orders && user.orders.length > 0) {
-      <div class="flex flex-col gap-6 justify-center">
-        @for (order of user.orders; track $index) {
-        <div class="flex flex-col w-full">
-          <p class="text-lg font-medium">
-            {{ order.date | date:'fullDate' }} at {{ order.date | date:'shortTime' }}
+    @if (user.orders && user.orders.length > 0) {
+    <div class="bg-base-300 h-2"></div>
+
+    <div class="flex flex-col justify-center">
+      @for (order of user.orders; track $index) {
+      <div class="flex flex-col gap-4 w-full p-4">
+        <div class="flex flex-col">
+          <div class="flex justify-between items-center">
+            <p class="font-medium">
+              {{ order.date | date:'fullDate' }}
+            </p>
+
+            <span [class]="'font-bold ' + (order.inProgress ? 'text-success' : '')">
+              @if (order.inProgress) {
+              <span class="text-neutral">
+                <span class="loading loading-dots"></span> IN PROGRESS
+              </span>
+              } @else if (order.deliveryType != undefined) {
+              <span class="badge badge-soft badge-success p-1">
+                <fa-icon icon="check-circle"></fa-icon> DELIVERED
+              </span>
+              } @else {
+              <span class="badge badge-soft badge-warning p-1">
+                <fa-icon icon="bag-shopping"></fa-icon> PICKUP
+              </span>
+              }
+            </span>
+          </div>
+
+          <p class="text-gray-500 text-sm">
+            {{ order.date | date:'shortTime' }}
           </p>
+        </div>
 
-          <div class="card bg-base-100 border-base-300 border shadow-xl w-full">
-            <div class="card-body p-0">
-              <div class="flex justify-between items-center w-full bg-base-300 p-4">
-                <div class="flex gap-6">
-                  <div class="flex flex-col">
-                    <p class="label">Items:</p>
-                    <p class="text-lg font-bold">{{ numItems(order.cart) }}</p>
-                  </div>
-                  <div class="flex flex-col">
-                    <p class="label">Order Total:</p>
-                    <p class="text-lg font-bold">${{ checkoutPrice(order) | number: '1.2-2' }}</p>
-                  </div>
+        <div class="bg-base-100 w-full">
+          <div class="flex flex-col gap-4">
+            <div class="flex justify-between items-center w-full bg-base-200 p-4">
+              <div class="flex gap-6">
+                <div class="flex flex-col">
+                  <p class="label">Items:</p>
+                  <p class="text-lg font-bold">{{ numItems(order.cart) }}</p>
                 </div>
-
-                <div class="flex flex-col items-end w-full">
-                  <span [class]="'' + (order.inProgress ? 'text-success' : '')">
-                    @if (order.inProgress) {
-                    <span class="text-success font-bold">
-                      <span class="loading loading-dots"></span> IN PROGRESS
-                    </span>
-                    } @else if (order.deliveryType != undefined) {
-                    <span class="badge badge-soft badge-success p-1">
-                      <fa-icon icon="check-circle"></fa-icon> DELIVERED
-                    </span>
-                    } @else {
-                    <span class="badge badge-soft badge-warning p-1">
-                      <fa-icon icon="bag-shopping"></fa-icon> PICKUP
-                    </span>
-                    }
-                  </span>
-                  <span class="text-xs label">#5542</span>
+                <div class="flex flex-col">
+                  <p class="label">Order Total:</p>
+                  <p class="text-lg font-bold">${{ checkoutPrice(order) | number: '1.2-2' }}</p>
                 </div>
               </div>
 
-              <div class="overflow-y-auto max-h-56 lg:h-full px-2">
-                <order-items [order]="order" [hidePrice]="true"></order-items>
-              </div>
+              <span class="text-xs label">#{{ ($index + 1) | number: '4.0-0' | noComma }}</span>
+            </div>
 
-              <div class="card-actions justify-end p-2">
-                @if (order.inProgress) {
-                <button class="btn btn-success btn-soft rounded-full text-white">Track Order</button>
-                } @else {
-                <button class="btn btn-neutral btn-soft rounded-full">Reorder</button>
-                }
-
-                <button class="btn btn-neutral btn-soft rounded-full"
-                  [routerLink]="['/view-receipt', { date: order.date }]">View Receipt
-                </button>
-              </div>
+            <div class="overflow-y-auto max-h-56 lg:h-full">
+              <order-items [order]="order" [hidePrice]="true"></order-items>
             </div>
           </div>
         </div>
-        }
-      </div>
-      }
-      @else {
-      <div class="flex items-center py-12 px-8">
-        <div class="container flex flex-col md:flex-row items-center justify-center  text-gray-700">
-          <div class="flex flex-col">
-            <h1 class="text-3xl font-dark font-bold">Nothing Here!</h1>
-            <p class="text-xl lg:text-2xl font-light leading-normal">We couldn't find any orders on this account.</p>
-            <br />
+        <div class="flex gap-2 justify-end p-2">
+          @if (order.inProgress) {
+          <button class="btn btn-sm btn-success btn-soft rounded-full text-white">Track Order</button>
+          } @else {
+          <button class="btn btn-sm btn-neutral btn-soft rounded-full">Reorder</button>
+          }
 
-            <p class="label">Links:</p>
-            <div class="flex gap-1 flex-wrap">
-              <button class="btn btn-primary rounded-box" routerLink="/shop">Shop</button>
-              <button class="btn btn-primary rounded-box" [routerLink]="['/shop', { category: 'Marketplace' }]">Marketplace</button>
-              <button class="btn btn-secondary rounded-box" routerLink="/">Homepage</button>
-            </div>
-          </div>
-
-          <img class="max-w-sm" src="./assets/images/empty1.png" />
+          <button class="btn btn-sm btn-neutral btn-soft rounded-full"
+            [routerLink]="['/view-receipt', { date: order.date }]">Order Details
+          </button>
         </div>
       </div>
+
+      <div class="bg-base-300 h-2"></div>
       }
     </div>
+    }
+    @else {
+    <div class="flex items-center py-12 px-8">
+      <div class="container flex flex-col md:flex-row items-center justify-center  text-gray-700">
+        <div class="flex flex-col">
+          <h1 class="text-3xl font-dark font-bold">Nothing Here!</h1>
+          <p class="text-xl lg:text-2xl font-light leading-normal">We couldn't find any orders on this account.</p>
+          <br />
+
+          <p class="label">Links:</p>
+          <div class="flex gap-1 flex-wrap">
+            <button class="btn btn-primary rounded-box" routerLink="/shop">Shop</button>
+            <button class="btn btn-primary rounded-box"
+              [routerLink]="['/shop', { category: 'Marketplace' }]">Marketplace</button>
+            <button class="btn btn-secondary rounded-box" routerLink="/">Homepage</button>
+          </div>
+        </div>
+
+        <img class="max-w-sm" src="./assets/images/empty1.png" />
+      </div>
+    </div>
+    }
   </div>
 </div>

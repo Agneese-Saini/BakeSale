@@ -29,6 +29,11 @@
 
     <!-- Main Content Area (stretches) -->
     <main class="flex flex-col gap-4 overflow-y-auto">
+        <div class="flex gap-4 ">
+            <fa-icon class="text-lg" icon="shop"></fa-icon>
+            <a class="link font-bold" style="text-decoration: none;" routerLink="/shop">Shop</a>
+        </div>
+
         @if (user.userRole != userRole.Guest) {
         <div class="flex gap-4 items-center">
             <fa-icon class="text-lg" icon="receipt"></fa-icon>
@@ -65,11 +70,6 @@
             <a class="link font-bold" style="text-decoration: none;">Saved</a>
         </div>
         }
-
-        <div class="flex gap-4 ">
-            <fa-icon class="text-lg" icon="shop"></fa-icon>
-            <a class="link font-bold" style="text-decoration: none;" routerLink="/shop">Visit Shop</a>
-        </div>
 
         <div class="flex gap-4">
             <fa-icon class="text-lg" icon="briefcase"></fa-icon>

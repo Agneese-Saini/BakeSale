@@ -6,7 +6,7 @@
 
 <div class="flex flex-col px-4">
     <section class="flex flex-col place-items-center justify-center min-h-[90vh] py-[10vh]"
-        [hidden]="getHomeCategory() != homeCategories.Home">
+        [hidden]="category != homeCategories.Home">
 
         <div class="flex max-lg:flex-col gap-6 p-2 h-full justify-between">
             <div class="flex flex-col w-full lg:max-w-[40vw] h-full place-content-center gap-4 p-2">
@@ -48,43 +48,49 @@
 
     <section
         class="flex max-md:flex-col min-h-[90vh] max-md:items-center justify-center max-md:justify-start py-[10vh] max-md:pt-0"
-        [hidden]="getHomeCategory() != homeCategories.DailyBread">
+        [hidden]="category != homeCategories.DailyBread">
         <div
             class="flex h-[350px] w-[350px] overflow-hidden rounded-md max-md:mt-[5%] max-md:h-[300px] max-md:w-[300px]">
             <img src="./assets/images/bread.png" alt="bread" class="w-full" />
         </div>
-        <div class="flex flex-col h-full gap-4 max-md:text-center">
+        <div class="flex flex-col h-full gap-4 max-md:p-4">
             <h2 class="text-5xl font-bold max-md:text-3xl">
                 <span class="text-warning">Fresh Bread everyday</span>
             </h2>
-            <div class="flex flex-wrap gap-4 text-sm justify-center lg:justify-start">
-                <div class="label flex gap-2">
-                    <fa-icon icon="bread-slice"></fa-icon>
-                    <span>Made fresh everyday</span>
-                </div>
-                <div class="label flex gap-2">
-                    <fa-icon icon="money-bill"></fa-icon>
-                    <span>Save money on daily bread</span>
-                </div>
+            <div class="flex flex-col gap-4 text-sm">
                 <div class="label flex gap-2">
                     <fa-icon icon="car-side"></fa-icon>
                     <span>Free Delivery</span>
                 </div>
+                <div class="label flex gap-2">
+                    <fa-icon icon="money-bill"></fa-icon>
+                    <span>Wholesale discounts</span>
+                </div>
+                <div class="label flex gap-2">
+                    <fa-icon icon="wheat-awn"></fa-icon>
+                    <span>Fresh bread, nothing is frozen</span>
+                </div>
             </div>
             <div class="text-lg max-w-[400px]">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam maxime quis placeat assumenda, eligendi
-                incidunt?
+                Lorem ipsum dolor sit amet. incidunt?
             </div>
-            <a class="btn btn-soft mt-5 gap-1 font-medium transition-transform duration-[0.3s] hover:translate-x-2 max-md:mx-auto"
-                [routerLink]="['/subscribe', { type: 'Bread' }]">
-                Open Bread shop <fa-icon icon="arrow-up-right-from-square"></fa-icon>
-            </a>
+            
+            <div class="flex flex-col mt-5 gap-2 items-start">
+                <a class="btn btn-soft gap-1 font-medium transition-transform duration-[0.3s] hover:translate-x-2 "
+                    routerLink="subscriptions">
+                    Your Bread Subscription <fa-icon icon="arrow-up-right-from-square"></fa-icon>
+                </a>
+                <a class="btn btn-soft gap-1 font-medium transition-transform duration-[0.3s] hover:translate-x-2"
+                    [routerLink]="['/subscribe', { type: 'Bread' }]">
+                    Get Daily Bread <fa-icon icon="arrow-up-right-from-square"></fa-icon>
+                </a>
+            </div>
         </div>
         <div></div>
     </section>
 
     <section class="flex flex-col place-items-center min-h-[90vh] py-[10vh]"
-        [hidden]="getHomeCategory() != homeCategories.Partners">
+        [hidden]="category != homeCategories.Partners">
         <h2 class="text-xl italic text-center">
             Discover our 2026 Bakery Partners list
         </h2>
@@ -102,7 +108,7 @@
                     <div class="flex flex-col gap-2 max-md:place-items-center max-w-[200px]">
                         <h3 class="text-2xl font-semibold">{{ partner.label }}</h3>
                         <p class="max-md:text-center">Partner since {{ partner.joinDate | date:'dd/MM/yyyy' }}</p>
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 hidden">
                             <div class="flex gap-0">
                                 @for (star of [1, 2, 3, 4, 5]; track $index) {
                                 @if (partner.rating < star) { <fa-icon [icon]="['far', 'star']"></fa-icon>

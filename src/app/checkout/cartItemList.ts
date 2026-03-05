@@ -13,61 +13,23 @@ import { CartService } from "./cart";
   imports: [FormsModule, FontAwesomeModule, ItemChoiceSummary, PriceTag],
   template: `
 <div class="flex flex-col gap-1">
-    @for (item of items; track $index) {
-    <div [class]="'flex justify-between items-center p-2' + ' ' + background">
+  @for (item of items; track $index) {
+  <div [class]="'flex flex-col p-1' + ' ' + background">
+    <div class="flex justify-between items-center p-2">
       <div class="flex gap-2 items-center w-full">
-        <div class="flex-1">
-          @if (numChoices(item) > 0) {
-          <div class="collapse">
-            <input type="checkbox" />
+        <div class="flex gap-2 items-center p-0">
+          <img class="flex-noshrink link rounded-box w-12 h-12" [src]="getImage(item)" (click)="openItemDialog(item)" />
 
-            <div class="collapse-title flex gap-2 items-center p-0">
-              <img class="rounded-box w-12 h-12" [src]="getImage(item)"/>
+          <span class="flex flex-col">
+            <a class="link font-semibold" style="text-decoration: none;" (click)="openItemDialog(item)">
+              {{ item.name }}
+              @if (item.price.buyOneGetOne) {
+              <b>({{ item.amount * 2 }})</b>
+              }
+            </a>
 
-              <div class="flex flex-col">
-                <div class="flex gap-2 items-center">
-                  <h1 class="font-semibold">
-                    {{ item.name }}
-                    @if (item.price.buyOneGetOne) {
-                    <b>({{ item.amount * 2 }})</b>
-                    }
-                  </h1>
-                </div>
-
-                <item-price-tag [value]="item" [showSale]="true" size="sm" saleSize="xs"></item-price-tag>
-
-                <p class="label text-xs">{{ numChoices(item) }} choice(s)</p>
-              </div>
-            </div>
-
-            <div class="collapse-content p-1">
-              <item-choice-summary [value]="item.choices"></item-choice-summary>
-              <br />
-
-              <button class="btn btn-neutral btn-xs" (click)="openItemDialog(item)">
-                <fa-icon icon="pencil"></fa-icon> Edit Order
-              </button>
-            </div>
-          </div>
-          }
-          @else {
-          <a class="link flex gap-2 items-center p-0" style="text-decoration: none;" (click)="openItemDialog(item)">
-            <img class="rounded-box w-12 h-12" [src]="getImage(item)"/>
-
-            <span class="flex flex-col">
-              <div class="flex gap-2 items-center">
-                <h1 class="font-semibold">
-                  {{ item.name }}
-                  @if (item.price.buyOneGetOne) {
-                  <b>({{ item.amount * 2 }})</b>
-                  }
-                </h1>
-              </div>
-
-              <item-price-tag [value]="item" [showSale]="true" size="sm" saleSize="xs"></item-price-tag>
-            </span>
-          </a>
-          }
+            <item-price-tag [value]="item" [showSale]="true" size="xs" saleSize="xs"></item-price-tag>
+          </span>
         </div>
       </div>
 
@@ -87,11 +49,40 @@ import { CartService } from "./cart";
         </button>
       </div>
     </div>
+
+
+    @if (numChoices(item) > 0) {
+    <div class="collapse bg-base-200 rounded-none px-2">
+      <input type="checkbox" />
+
+      <div class="collapse-title p-0 flex justify-center">
+        @let num = numChoices(item);
+        <p class="font-medium label text-xs">
+          {{ num }} {{ num == 1 ? 'choice' : 'choices' }} &bull; <b>{{ '$' }}{{ getChoicesPrice(item) }}</b>
+        </p>
+      </div>
+
+      <div class="collapse-content">
+        <item-choice-summary [value]="item.choices"></item-choice-summary>
+        <br />
+
+        <button class="btn btn-neutral btn-xs" (click)="openItemDialog(item)">
+          <fa-icon icon="pencil"></fa-icon> Edit Order
+        </button>
+      </div>
+    </div>
+    }
+  </div>
   }
 </div>
 `
 })
 export class CartItemList {
+
+  protected numChoices = Item.numChoices;
+  protected getChoicesPrice = Item.getChoicesPrice;
+  protected getPrice = Item.getPrice;
+  protected getImage = Item.getImage;
 
   @Input({ required: true })
   public items?: IItem[];
@@ -106,9 +97,6 @@ export class CartItemList {
     private cartService: CartService) { }
 
   protected ngOnInit() { }
-
-  protected getImage = Item.getImage;
-
   protected increase(item: IItem) {
     const currentAmount = Number(item.amount);
     const newAmount = currentAmount + 1;
@@ -172,6 +160,4 @@ export class CartItemList {
     });
   }
 
-  protected getPrice = Item.getPrice;
-  protected numChoices = Item.numChoices;
 };

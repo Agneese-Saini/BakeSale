@@ -58,7 +58,7 @@ export class Logo {
 
 <fieldset class="fieldset">
   <div class="join">
-    <label class="input w-full join-item">
+    <label [class]="'input w-full join-item rounded-l-full ' + (categoryMenu ? '' : 'rounded-full')">
       <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
           <circle cx="11" cy="11" r="8"></circle>
@@ -70,8 +70,9 @@ export class Logo {
 
     @if (categoryMenu) {
     <div class="dropdown dropdown-bottom dropdown-end join-item">
-      @let num = getSelectedCategories().length;
-      <button tabindex="0" role="button" class="btn text-nowrap">Filter {{ num != categories.length ? ('('+num+')') : '' }} <fa-icon icon="filter"></fa-icon></button>
+      <button tabindex="0" role="button" class="btn border-neutral-300 text-xs text-nowrap rounded-r-full">
+        {{ getFilterLabel() }} <fa-icon icon="filter"></fa-icon>
+      </button>
 
       <ul tabindex="0" class="dropdown-content menu bg-base-300 rounded-box z-50 w-65 p-2 shadow-2xl">
         <category-list />
@@ -109,6 +110,20 @@ export class SearchBar {
       }
     }
     return selected;
+  }
+
+  protected getFilterLabel() {
+    const categories = this.getSelectedCategories();
+
+    if (categories.length == 1) {
+      return categories[0].name;
+    }
+
+    if (categories.length == this.categories.length) {
+      return 'Filter';
+    }
+
+    return 'Filter' + ' ' + '(' + categories.length + ')';
   }
 
 };

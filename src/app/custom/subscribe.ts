@@ -122,6 +122,13 @@ export class Subscribe {
     if (type == 'bread') {
       this.categoryService.categories$.subscribe(data => {
         this.category = Category.findCategory("Daily Bread", data, "Bread");
+
+        if (this.category && this.category.items) {
+          for (let item of this.category.items) {
+            item.amount = 0;
+          }
+        }
+
         this.cdr.detectChanges();
       });
     }

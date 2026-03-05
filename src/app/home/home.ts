@@ -64,14 +64,13 @@ export class Home {
 
   protected homeCategories = HomeCategories;
 
-  constructor(
-    protected homeService: HomeService,
-    private cdr: ChangeDetectorRef) { }
-
-  protected ngOnInit() {
+  protected get category(): any { 
+    return this.homeService.getCategory();
   }
 
-  protected getHomeCategory(): HomeCategories {
-    return this.homeService.getCategory();
+  constructor(
+    private homeService: HomeService) { }
+
+  protected ngOnInit() {
   }
 }

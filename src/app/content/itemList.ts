@@ -64,18 +64,20 @@ import { IItem, Item } from './item';
 <div class="card w-full lg:max-w-98 bg-base-300 shadow">
   <div class="card-body">
     <h2 class="text-2xl font-bold">Get Bread daily</h2>
-    <div class="flex gap-2">
-      <fa-icon icon="bread-slice"></fa-icon>
-      <span>Made fresh everyday</span>
-    </div>
-    <div class="flex gap-2">
-      <fa-icon icon="money-bill"></fa-icon>
-      <span>Save money on daily bread</span>
-    </div>
+
     <div class="flex gap-2">
       <fa-icon icon="car-side"></fa-icon>
       <span>Free Delivery</span>
     </div>
+    <div class="flex gap-2">
+      <fa-icon icon="money-bill"></fa-icon>
+      <span>Wholesale discounts</span>
+    </div>
+    <div class="flex gap-2">
+      <fa-icon icon="wheat-awn"></fa-icon>
+      <span>Fresh bread, nothing is frozen</span>
+    </div>
+    
     <div class="mt-6">
       <button class="btn bg-orange-500 text-white btn-block" [routerLink]="['/subscribe', { type: 'Bread' }]">
         Get Started <fa-icon icon="arrow-right"></fa-icon>

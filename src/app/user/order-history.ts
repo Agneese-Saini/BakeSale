@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, Pipe, PipeTransform } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -28,10 +28,22 @@ export interface IOrderHistory {
   inProgress?: boolean,
   statusTime?: number
 };
-
+@Pipe({
+  name: 'noComma',
+  standalone: true // Add standalone: true if using standalone components
+})
+export class NoCommaPipe implements PipeTransform {
+  transform(value: number | string | null): string {
+    if (value !== undefined && value !== null) {
+      // Convert to string and remove all commas globally (the 'g' flag)
+      return value.toString().replace(/,/g, "");
+    }
+    return "";
+  }
+}
 @Component({
   selector: 'order-history',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe, DatePipe, OrderItems, PageHeader],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe, DatePipe, OrderItems, PageHeader, NoCommaPipe],
   templateUrl: "order-history.html"
 })
 export class OrderHistory {
