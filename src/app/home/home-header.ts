@@ -4,7 +4,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Router, RouterModule } from '@angular/router';
 import { SideDrawer } from '../sidedrawer/sidedrawer';
 import { CheckoutDrawer } from '../checkout/checkout-drawer';
-import { IUser, UserRole, UserService } from '../user/user';
+import { IUser, User, UserRole, UserService } from '../user/user';
 import { Logo } from '../header/header';
 import { KeyValuePipe } from '@angular/common';
 import { HomeCategories, HomeService } from './home';
@@ -30,6 +30,10 @@ export class HomeHeader {
   protected userRole = UserRole;
 
   protected user: IUser = UserService.DefaultUser;
+
+  protected get numActiveOrders(): number {
+    return User.numActiveOrders(this.user);
+  }
 
   constructor(
     private router: Router,

@@ -8,9 +8,10 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router, RouterModule } from '@angular/router';
 import { SideDrawer } from '../sidedrawer/sidedrawer';
 import { CheckoutDrawer } from '../checkout/checkout-drawer';
-import { IUser, UserRole, UserService } from '../user/user';
+import { IUser, User, UserRole, UserService } from '../user/user';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { AddressDialog, IAddress } from './addressDialog';
+import { OrderHistory } from '../user/order-history';
 
 
 @Component({
@@ -247,6 +248,10 @@ export class Header {
     return CartService.subTotal(this.shoppingCart);
   }
 
+  protected get numActiveOrders(): number {
+    return User.numActiveOrders(this.user);
+  }
+  
   constructor(
     private router: Router,
     private dialog: MatDialog,

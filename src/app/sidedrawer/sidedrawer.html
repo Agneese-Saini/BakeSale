@@ -38,9 +38,12 @@
         <div class="flex gap-4 items-center">
             <fa-icon class="text-lg" icon="receipt"></fa-icon>
             <div class="flex justify-between items-center w-full">
-                <a class="link font-bold" style="text-decoration: none;" routerLink="/order-history">Order
-                    History</a>
-                <label class="badge badge-xs badge-success text-white">2 Active</label>
+                <a class="link font-bold" style="text-decoration: none;" routerLink="/order-history">
+                    Order History
+                </a>
+                @if (numActiveOrders > 0) {
+                <label class="badge badge-xs badge-success text-white">{{ numActiveOrders }} Active</label>
+                }
             </div>
         </div>
         <div class="flex gap-4 items-center">

@@ -35,66 +35,147 @@
     <div class="flex flex-col justify-center">
       @for (order of user.orders; track $index) {
       <div class="flex flex-col gap-4 w-full p-4">
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-4">
           <div class="flex justify-between items-center">
-            <p class="font-medium">
-              {{ order.date | date:'fullDate' }}
-            </p>
+            <div class="flex flex-col">
+              <p class="font-medium">
+                {{ order.date | date:'fullDate' }}
+              </p>
+              <p class="text-gray-500 text-sm">
+                {{ order.date | date:'shortTime' }}
+              </p>
+              <p class="text-gray-500">
+                @if (order.deliveryType == undefined) {
+                <fa-icon icon="person-walking-luggage"></fa-icon>&nbsp;<b>Pickup</b>: {{ order.address.addressLine }}
+                } @else {
+                <fa-icon icon="car-side"></fa-icon>&nbsp;<b>Delivery</b>
+                }
+              </p>
+            </div>
 
-            <span [class]="'font-bold ' + (order.inProgress ? 'text-success' : '')">
-              @if (order.inProgress) {
-              <span class="text-neutral">
-                <span class="loading loading-dots"></span> IN PROGRESS
-              </span>
-              } @else if (order.deliveryType != undefined) {
-              <span class="badge badge-soft badge-success p-1">
-                <fa-icon icon="check-circle"></fa-icon> DELIVERED
-              </span>
-              } @else {
-              <span class="badge badge-soft badge-warning p-1">
-                <fa-icon icon="bag-shopping"></fa-icon> PICKUP
-              </span>
-              }
-            </span>
+            <span class="text-xs label font-bold">#{{ ($index + 1) | number: '4.0-0' | noComma }}</span>
           </div>
 
-          <p class="text-gray-500 text-sm">
-            {{ order.date | date:'shortTime' }}
-          </p>
-        </div>
-
-        <div class="bg-base-100 w-full">
-          <div class="flex flex-col gap-4">
-            <div class="flex justify-between items-center w-full bg-base-200 p-4">
-              <div class="flex gap-6">
-                <div class="flex flex-col">
-                  <p class="label">Items:</p>
-                  <p class="text-lg font-bold">{{ numItems(order.cart) }}</p>
+          <div class="bg-base-100 w-full">
+            <div class="flex flex-col gap-4">
+              <div class="flex justify-between items-center w-full bg-base-200 p-4">
+                <div class="flex gap-6">
+                  <div class="flex flex-col">
+                    <p class="label">Items:</p>
+                    <p class="text-lg font-bold">{{ numItems(order.cart) }}</p>
+                  </div>
+                  <div class="flex flex-col">
+                    <p class="label">Order Total:</p>
+                    <p class="text-lg font-bold">${{ checkoutPrice(order) | number: '1.2-2' }}</p>
+                  </div>
                 </div>
-                <div class="flex flex-col">
-                  <p class="label">Order Total:</p>
-                  <p class="text-lg font-bold">${{ checkoutPrice(order) | number: '1.2-2' }}</p>
+
+                <div class="flex flex-col items-end">
+                  <!-- In Progress -->
+                  @if (order.completionTime == undefined) {
+                  <!-- Delivery In Progress -->
+                  @if (order.deliveryType != undefined) {
+                  <span class="text-neutral font-bold">
+                    <span class="loading loading-dots"></span> IN PROGRESS
+                  </span>
+
+                  @if (order.estimatedTime != undefined) {
+                  @let days = order.estimatedTime < CurrentTime ? formatTime(CurrentTime - order.estimatedTime).days : 0;
+                  <p class="text-right">
+                    @if (days > 0) {    
+                    Estimated Delivery Date:<br/>
+                    {{ order.estimatedTime | date:'mediumDate' }} &bull; {{ order.estimatedTime | date:'h a' }}
+                    } @else { 
+                    Estimated Time:<br/>
+                    <b class="font-medium">
+                      <countdown [targetDate]="order.estimatedTime" (onDelay)="onDeliveryDelayed(order)"></countdown>
+                      {{ order.isDelayed ? '(delayed)' : '' }}
+                    </b>
+                    }
+                  </p>
+                  }
+                  }
+                  <!-- Pickup -->
+                  @else {
+                  <!-- Pickup Is Ready -->
+                  @if (order.estimatedTime != undefined && order.estimatedTime < CurrentTime) {
+                  <span class="badge badge-soft badge-warning p-1 font-bold">
+                    <fa-icon icon="thumbs-up"></fa-icon> PICKUP READY
+                  </span>
+
+                  @let days = order.estimatedTime < CurrentTime ? formatTime(CurrentTime - order.estimatedTime).days : 0;
+                  <p class="font-medium text-right">
+                    @if (days > 0) {
+                    {{ order.estimatedTime | date:'mediumDate' }} &bull; {{ order.estimatedTime | date:'h:mm a' }}
+                    } @else {
+                    {{ order.estimatedTime | date:'h:mm a' }}
+                    }
+                  </p>
+                  }
+                  <!-- Pickup In Progress -->
+                  @else {
+                  <span class="text-neutral font-bold">
+                    <span class="loading loading-dots"></span> IN PROGRESS
+                  </span>
+
+                  @if (order.estimatedTime != undefined) {
+                  @let days = order.estimatedTime < CurrentTime ? formatTime(CurrentTime - order.estimatedTime).days : 0;
+                  <p class="text-right">
+                    Pickup Ready by:&nbsp;
+                    @if (days > 0) {
+                    <br/>
+                    <b class="font-medium">{{ order.estimatedTime | date:'mediumDate' }} &bull; {{ order.estimatedTime | date:'h:mm a' }}</b>
+                    } @else {
+                    <b class="font-medium">{{ order.estimatedTime | date:'h:mm a' }}</b>
+                    }
+                  </p>
+                  }
+                  }
+                  }
+                  }
+                  <!-- Complete -->
+                  @else {
+                  <!-- Delivery Complete -->
+                  @if (order.deliveryType != undefined) {
+                  <span class="badge badge-soft badge-success p-1 font-bold">
+                    <fa-icon icon="check-circle"></fa-icon> DELIVERED
+                  </span>
+                  }
+                  <!-- Pickup Complete -->
+                  @else {
+                  <span class="badge badge-soft badge-warning p-1 font-bold">
+                    <fa-icon icon="check-circle"></fa-icon> PICKUP CONFIRMED
+                  </span>
+                  }
+
+                  @let days = order.completionTime < CurrentTime ? formatTime(CurrentTime - order.completionTime).days : 0;
+                  <p class="font-bold text-right">
+                    @if (days > 0) {
+                    {{ order.completionTime | date:'mediumDate' }} &bull; {{ order.completionTime | date:'h:mm a' }}
+                    } @else {
+                    {{ order.completionTime | date:'h:mm a' }}
+                    }
+                  </p>
+                  }
                 </div>
               </div>
 
-              <span class="text-xs label">#{{ ($index + 1) | number: '4.0-0' | noComma }}</span>
-            </div>
-
-            <div class="overflow-y-auto max-h-56 lg:h-full">
-              <order-items [order]="order" [hidePrice]="true"></order-items>
+              <div class="overflow-y-auto max-h-56 lg:h-full">
+                <order-items [order]="order" [hidePrice]="true"></order-items>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="flex gap-2 justify-end p-2">
-          @if (order.inProgress) {
-          <button class="btn btn-sm btn-success btn-soft rounded-full text-white">Track Order</button>
-          } @else {
-          <button class="btn btn-sm btn-neutral btn-soft rounded-full">Reorder</button>
-          }
+          <div class="flex gap-2 justify-end p-2">
+            @if (order.deliveryType != undefined && order.completionTime == undefined) {
+            <button class="btn btn-sm btn-success rounded-full text-white">Track Order</button>
+            } @else {
+            <button class="btn btn-sm btn-neutral btn-soft rounded-full">Reorder</button>
+            }
 
-          <button class="btn btn-sm btn-neutral btn-soft rounded-full"
-            [routerLink]="['/view-receipt', { date: order.date }]">Order Details
-          </button>
+            <button class="btn btn-sm btn-neutral btn-soft rounded-full"
+              [routerLink]="['/view-receipt', { date: order.date }]">Order Details
+            </button>
+          </div>
         </div>
       </div>
 
@@ -106,7 +187,7 @@
     <div class="flex items-center py-12 px-8">
       <div class="container flex flex-col md:flex-row items-center justify-center  text-gray-700">
         <div class="flex flex-col">
-          <h1 class="text-3xl font-dark font-bold">Nothing Here!</h1>
+          <h1 class="text-3xl font-dark font-bold">No Past Orders!</h1>
           <p class="text-xl lg:text-2xl font-light leading-normal">We couldn't find any orders on this account.</p>
           <br />
 
@@ -115,6 +196,7 @@
             <button class="btn btn-primary rounded-box" routerLink="/shop">Shop</button>
             <button class="btn btn-primary rounded-box"
               [routerLink]="['/shop', { category: 'Marketplace' }]">Marketplace</button>
+            <button class="btn btn-error text-white rounded-box" routerLink="/">Get Help</button>
             <button class="btn btn-secondary rounded-box" routerLink="/">Homepage</button>
           </div>
         </div>

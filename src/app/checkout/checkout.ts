@@ -363,22 +363,6 @@ export class Checkout {
     return CartService.totalItems(this.shoppingCart);
   }
 
-  protected get orderHistory(): IOrderHistory {
-    return {
-      tipAmount: this.deliverySettings.mode == DeliveryMode.Delivery ? Tip.getAmount(CartService.subTotal(this.shoppingCart), this.deliverySettings.tip, this.deliverySettings.tipAmount) : 0,
-      deliveryType: this.deliverySettings.mode == DeliveryMode.Delivery ? this.deliverySettings.deliveryType : undefined,
-      deliveryInstructions: this.deliverySettings.deliveryInstructions,
-      gstPercentage: Receipt.GST_Rate,
-      pstPercentage: Receipt.PST_Rate,
-      couponDiscount: this.couponDiscount,
-      cart: structuredClone(this.shoppingCart),
-      date: Date.now(),
-      time: this.deliverySettings.time!,
-      address: this.deliverySettings.address!,
-      payment: this.deliverySettings.payment!
-    };
-  }
-
   constructor(
     private deliveryService: DeliveryService,
     private cartService: CartService,
@@ -465,7 +449,24 @@ export class Checkout {
       return;
     }
 
-    this.userService.addOrder(this.orderHistory);
+    const CurrentTime = Date.now();
+
+    const order: IOrderHistory = {
+      tipAmount: this.deliverySettings.mode == DeliveryMode.Delivery ? Tip.getAmount(CartService.subTotal(this.shoppingCart), this.deliverySettings.tip, this.deliverySettings.tipAmount) : 0,
+      deliveryType: this.deliverySettings.mode == DeliveryMode.Delivery ? this.deliverySettings.deliveryType : undefined,
+      deliveryInstructions: this.deliverySettings.deliveryInstructions,
+      gstPercentage: Receipt.GST_Rate,
+      pstPercentage: Receipt.PST_Rate,
+      couponDiscount: this.couponDiscount,
+      cart: structuredClone(this.shoppingCart),
+      date: CurrentTime,
+      estimatedTime: CurrentTime + CartService.prepTime(this.shoppingCart),
+      time: this.deliverySettings.time!,
+      address: this.deliverySettings.address!,
+      payment: this.deliverySettings.payment!
+    };
+
+    this.userService.addOrder(order);
     this.shoppingCart.clear();
     this.router.navigate(['/shop']);
 

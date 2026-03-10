@@ -327,7 +327,7 @@ export class CategoryService {
 			<fa-icon icon="angle-down"></fa-icon>
 		</div>
 
-		<ul tabindex="0" class="dropdown-content menu bg-base-300 rounded-box z-1 w-52 p-2 shadow">
+		<ul tabindex="0" class="dropdown-content menu bg-base-200 rounded-box z-1 w-52 p-2 shadow-2xl">
 			@for (sub of value.subcats; track $index) {
 			<li>
 				<label class="w-full">

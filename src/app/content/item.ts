@@ -43,7 +43,8 @@ export interface IItem {
   isChef?: boolean,
   company?: string,
   id?: number,
-  parent?: string
+  parent?: string,
+  prepTime?: number
 };
 
 

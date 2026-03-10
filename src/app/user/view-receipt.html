@@ -33,27 +33,73 @@
               <b>Address:</b>
             </td>
             <td>
+              {{ printAddress(order.address) }}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <b>Order Placed:</b>
+            </td>
+            <td>
+              <p>{{ order.date | date:'fullDate' }} &bull; {{ order.date | date:'h:mm a' }}</p>
+            </td>
+          </tr>
+          @if (order.completionTime != undefined) {
+          <tr>
+            <td>
+              <b>Order Recieved:</b>
+            </td>
+            <td>
               <div class="flex flex-col gap-2">
-                <label>
-                  {{ printAddress(order.address) }}
-                </label>
+                <p>{{ order.completionTime | date:'fullDate' }} &bull; {{ order.completionTime | date:'h:mm a' }}</p>
 
-                @if (order.deliveryType != undefined && !order.inProgress) {
+                @if (order.deliveryType != undefined && order.completionTime != undefined) {
                 <a class="shrink-0 link"><img class="w-12 h-12 lg:w-24 lg:h-24 rounded-box border"
                     src="https://onfleet.com/blog/content/images/2020/05/deliverypackage.jpg" /></a>
                 }
               </div>
             </td>
           </tr>
+          }
+          @else {
           <tr>
             <td>
-              <b>{{ order.deliveryType != undefined ? 'Delivery Time' : 'Pickup Time' }}:</b>
+              <b>Order Status:</b>
             </td>
             <td>
-              <p>{{ order.inProgress ? 'In Progress' : ((order.statusTime ? order.statusTime : currentDate) |
-                date:'hh:ss a') }}</p>
+              <div class="flex flex-col">
+                @let days = order.estimatedTime != undefined ? formatTime(order.date - order.estimatedTime).days : 0;
+
+                <!-- In Progress -->
+                <!-- Delivery -->     
+                @if (order.deliveryType != undefined) {
+                <b>In Progress</b>                
+                @if (order.estimatedTime != undefined) {
+                <p>Estimated Delivery {{ days > 0 ? 'Date' : 'Time' }}:</p>
+                }
+                } 
+                <!-- Pickup -->
+                @else {
+                @if (order.estimatedTime != undefined && order.estimatedTime < CurrentTime) {
+                <b>Ready For Pickup</b>
+                } @else {
+                <b>In Progress</b>
+                <p>Pickup Ready by:</p>
+                }
+                }                
+
+                @if (order.estimatedTime != undefined)  {
+                @let days2 = order.estimatedTime < CurrentTime ? formatTime(CurrentTime - order.estimatedTime).days : 0;
+                @if (days2 > 0) {
+                <p class="font-medium">{{ order.estimatedTime | date:'fullDate' }} &bull; {{ order.estimatedTime | date:'h:mm a' }}</p>
+                } @else {
+                <p class="font-medium">{{ order.estimatedTime | date:'h:mm a' }}</p>
+                }
+                }
+              </div>
             </td>
           </tr>
+          }
         </tbody>
       </table>
     </div>

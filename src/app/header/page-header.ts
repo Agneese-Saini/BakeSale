@@ -2,8 +2,9 @@ import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Router } from '@angular/router';
-import { IUser, UserRole, UserService } from '../user/user';
+import { IUser, User, UserRole, UserService } from '../user/user';
 import { SideDrawer } from '../sidedrawer/sidedrawer';
+import { OrderHistory } from '../user/order-history';
 
 @Component({
   selector: 'page-header',
@@ -23,6 +24,10 @@ export class PageHeader {
 
   protected user: IUser = UserService.DefaultUser;
 
+  protected get numActiveOrders(): number {
+    return User.numActiveOrders(this.user);
+  }
+  
   constructor(
     private router: Router,
     private userService: UserService,

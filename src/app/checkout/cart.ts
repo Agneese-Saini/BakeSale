@@ -176,6 +176,18 @@ export class CartService {
 
     return total;
   }
+
+  static prepTime(cart: Cart, defaultPrepTime: number = 1): number {
+    let time: number = 0;
+    for (let [key, value] of cart) {
+      for (let item of value) {
+        const count = Item.getAmount(item);
+        time += count * ((item.prepTime != undefined ? item.prepTime : defaultPrepTime) * 60000/*Convert into milliseconds*/);
+      }
+    }
+
+    return time;
+  }
 };
 
 

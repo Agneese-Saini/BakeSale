@@ -5,7 +5,7 @@ import { ActivatedRoute, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ItemChoiceSummary } from "../content/itemChoice";
 import { UserService } from "./user";
-import { IOrderHistory } from "./order-history";
+import { CountdownTimer, IOrderHistory } from "./order-history";
 import { Item } from "../content/item";
 import { CartService } from "../checkout/cart";
 import { AddressBook, DeliveryType } from "../header/addressBook";
@@ -72,7 +72,7 @@ import { Receipt } from "../checkout/receipt";
                   }
 
                   @if (!hidePrice) {
-                  <a class="link" [routerLink]="['/item', {category: item.parent, item: item.name}]">
+                  <a class="link" [routerLink]="['/item', {category: item.parent, item: item.name}]" target="_blank">
                     <fa-icon icon="arrow-up-right-from-square"></fa-icon> View Item
                   </a>
                   }
@@ -117,6 +117,7 @@ export class ViewReceipt {
   protected deliveryType = DeliveryType;
 
   protected printAddress = AddressBook.printAddress;
+  protected formatTime = CountdownTimer.formatTime;
 
   protected order?: IOrderHistory;
 
@@ -124,9 +125,7 @@ export class ViewReceipt {
     return this.order ? CartService.totalItems(this.order.cart) : 0;
   }
 
-  protected get currentDate(): Date {
-    return new Date();
-  }
+  protected readonly CurrentTime = Date.now();
 
   constructor(
     private route: ActivatedRoute,

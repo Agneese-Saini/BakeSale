@@ -27,9 +27,11 @@
       <br />
       }
 
-      <a class="link flex justify-end" [routerLink]="['/item', {category: item.parent, item: item.name}]" (click)="closeAll()">
-        <fa-icon icon="arrow-up-right-from-square"></fa-icon> View Full Item Description
-      </a>
+      <div class="flex justify-center">
+        <button class="btn btn-soft btn-sm font-medium" [routerLink]="['/item', {category: item.parent, item: item.name}]" (click)="closeAll()">
+          View Full Item Description
+        </button>
+      </div>
 
       <div class="flex flex-col gap-4 items-center pt-4">
         <div class="rounded-box flex bg-base-300 justify-center w-full">

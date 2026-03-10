@@ -116,6 +116,13 @@ export class DeliveryService {
     // Delivery
     if (mode == DeliveryMode.Delivery) {
       // load user address book
+      this.addAddress({
+        label: "BakeSale",
+        addressLine: "Area 51",
+        city: "Winnipeg",
+        province: Province.MB,
+        postal: "R1W 2G3"
+      });
     }
     // Pickup
     else if (mode == DeliveryMode.Pickup) {
@@ -263,37 +270,30 @@ export class DeliverySwitch {
     }
     }
 
-    <div class="flex flex-col w-full">        
-      <a class="cursor-pointer" (click)="select(addy)">
-        <p class="text-lg text-wrap font-bold">
-          {{ addy.label }}
-          @if (addy.isFavourite) {
-          <fa-icon class="opacity-65 text-xs" icon="star"></fa-icon>
-          }
-        </p>
-      </a>
-
-      <div class="flex justify-between gap-2 items-start">
-        <div class="flex flex-col">
-          <a class="cursor-pointer" (click)="select(addy)">
-            <p class="text-left text-xs text-wrap">
-              {{ printAddress(addy) }}         
-            </p>
-          </a>
-          
-          @if (viewable) {
-          <a class="link font-medium text-xs">
-            View on Map
-          </a>
-          }
-        </div>
-
-        @if (editable) {
-        <a class="btn btn-ghost p-1 font-medium" (click)="openAddressBookDialog(addy)">
-          Edit
+    <div class="flex justify-between gap-2 items-center w-full">
+      <div class="flex flex-col">        
+        <a class="cursor-pointer" (click)="select(addy)">
+          <p class="text-lg text-wrap font-bold">
+            {{ addy.label }}
+            @if (addy.isFavourite) {
+            <fa-icon class="opacity-65 text-xs" icon="star"></fa-icon>
+            }
+          </p>
+          <p class="text-left text-xs text-wrap">
+            {{ printAddress(addy) }}         
+          </p>
         </a>
+        
+        @if (viewable) {
+        <a class="link font-medium text-xs">View on Map</a>
         }
       </div>
+
+      @if (editable) {
+      <a class="btn btn-ghost p-1 font-medium" (click)="openAddressBookDialog(addy)">
+        Edit
+      </a>
+      }
     </div>
   </div>
 </div>

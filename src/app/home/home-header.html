@@ -2,9 +2,9 @@
   <div class="flex-none">
     <label [for]="appDrawer" aria-label="open sidebar" class="btn btn-square btn-ghost">
       <div class="indicator">
-        @if (user.userRole != userRole.Guest) {
+        @if (numActiveOrders > 0) {
         <p class="indicator-item badge badge-xs badge-success rounded-full">
-          <b>2</b>
+          <b>{{ numActiveOrders }}</b>
         </p>
         }
 
@@ -22,8 +22,7 @@
           @for (entry of categories | keyvalue; track $index) {
           <li>
             <a [class]="getHomeCategory() == entry.key ? 'menu-active' : ''" (click)="setHomeCategory(entry.key);">
-              {{ entry.value }}@if (entry.key == homeCategories.Shop){ <fa-icon
-                icon="arrow-up-right-from-square"></fa-icon> }
+              {{ entry.value }}
             </a>
           </li>
           }
@@ -57,10 +56,7 @@
       @for (entry of categories | keyvalue; track $index) {
       <li>
         <a [class]="getHomeCategory() == entry.key ? 'menu-active' : ''" (click)="setHomeCategory(entry.key);">
-          {{ entry.value }}&nbsp;
-          @if (entry.key == homeCategories.Shop) {
-          <fa-icon icon="arrow-up-right-from-square"></fa-icon>
-          }
+          {{ entry.value }}
         </a>
       </li>
       }

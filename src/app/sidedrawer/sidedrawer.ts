@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { RouterModule } from "@angular/router";
-import { IUser, UserRole, UserService } from '../user/user';
+import { IUser, User, UserRole, UserService } from '../user/user';
+import { OrderHistory } from '../user/order-history';
 
 @Component({
   selector: 'app-sidedrawer',
@@ -16,6 +17,10 @@ export class SideDrawer {
   readonly userRole = UserRole;
 
   protected user: IUser = UserService.DefaultUser;
+
+  protected get numActiveOrders(): number {
+    return User.numActiveOrders(this.user);
+  }
 
   constructor(
     private userService: UserService,
