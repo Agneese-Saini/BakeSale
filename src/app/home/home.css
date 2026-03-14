@@ -1,0 +1,147 @@
+html {
+    scroll-behavior: smooth;
+}
+
+* {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fc1919;
+    margin-bottom: 1rem;
+}
+
+.section-label::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: #fc1919;
+    border-radius: 2px;
+}
+
+.service-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f3f4f6;
+    transition: all 0.3s ease;
+}
+
+.service-card:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+}
+
+.service-card:hover .icon-box {
+    background: #fc1919;
+    color: white;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #111827;
+    line-height: 1;
+}
+
+.stat-number span {
+    color: #fc1919;
+}
+
+.icon-box {
+    width: 52px;
+    height: 52px;
+    background: #fff5f5;
+    color: #fc1919;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    margin-bottom: 1.25rem;
+}
+
+.btn-hero {
+    background: #fc1919;
+    color: white;
+    padding: 0.625rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-hero:hover {
+    background: #d90000;
+    box-shadow: 0 8px 20px rgba(252, 25, 25, 0.35);
+    transform: translateY(-1px);
+}
+
+.btn-hero-outline {
+    border: 1.5px solid #d1d5db;
+    color: #374151;
+    padding: 0.625rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+    background: transparent;
+}
+
+.btn-hero-outline:hover {
+    border-color: #fc1919;
+    color: #fc1919;
+    transform: translateY(-1px);
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-up {
+    animation: fadeUp 0.7s ease forwards;
+}
+
+.delay-1 {
+    animation-delay: 0.1s;
+    opacity: 0;
+}
+
+.delay-2 {
+    animation-delay: 0.2s;
+    opacity: 0;
+}
+
+.delay-3 {
+    animation-delay: 0.35s;
+    opacity: 0;
+}
+
+.delay-4 {
+    animation-delay: 0.75s;
+    opacity: 0;
+}

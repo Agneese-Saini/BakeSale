@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Injectable } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Router, RouterModule } from '@angular/router';
@@ -6,24 +6,13 @@ import { SideDrawer } from '../sidedrawer/sidedrawer';
 import { CheckoutDrawer } from '../checkout/checkout-drawer';
 import { IUser, User, UserRole, UserService } from '../user/user';
 import { Logo } from '../header/header';
-import { KeyValuePipe } from '@angular/common';
-import { HomeCategories, HomeService } from './home';
 
 @Component({
   selector: 'home-header',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, Logo],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, Logo],
   templateUrl: './home-header.html'
 })
 export class HomeHeader {
-
-  protected readonly homeCategories = HomeCategories;
-
-  protected readonly categories: Map<HomeCategories, string> = new Map([
-    [HomeCategories.Home, "Home"],
-    [HomeCategories.Shop, "Shop"],
-    [HomeCategories.DailyBread, "Daily Bread"],
-    [HomeCategories.Partners, "Partners List"]
-  ]);
 
   protected appDrawer = SideDrawer.name;
   protected checkoutDrawer = CheckoutDrawer.name;
@@ -37,29 +26,14 @@ export class HomeHeader {
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private userService: UserService,
     private cdr: ChangeDetectorRef) { }
 
-  protected ngOnInit() {    
-    this.setHomeCategory(HomeCategories.Home);
-
+  protected ngOnInit() { 
     this.userService.user$.subscribe(data => {
       this.user = data;
       this.cdr.detectChanges();
     });
-  }
-
-  protected getHomeCategory(): HomeCategories {
-    return this.homeService.getCategory();
-  }
-
-  protected setHomeCategory(category: HomeCategories) {
-    this.homeService.setCategory(category);
-
-    if (category == HomeCategories.Shop) {
-      this.router.navigate(['/shop']);
-    }
   }
 
   protected onClickHome() {

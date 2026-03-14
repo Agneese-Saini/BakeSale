@@ -17,18 +17,6 @@
     <div class="flex justify-between items-center gap-2">
       <app-logo firstName="Bake" lastName="Sale" (onClick)="onClickHome()" />
 
-      <div class="hidden lg:block">
-        <ul class="menu menu-horizontal">
-          @for (entry of categories | keyvalue; track $index) {
-          <li>
-            <a [class]="getHomeCategory() == entry.key ? 'menu-active' : ''" (click)="setHomeCategory(entry.key);">
-              {{ entry.value }}
-            </a>
-          </li>
-          }
-        </ul>
-      </div>
-
       <div class="flex gap-2 items-center">
         @if (user.userRole == userRole.Guest) {
         <div class="flex gap-2">
@@ -45,21 +33,5 @@
         }
       </div>
     </div>
-  </div>
-</div>
-
-<div class="lg:hidden">
-  <div class="bg-base-300 h-2 my-2"></div>
-
-  <div class="flex justify-center px-4">
-    <ul class="menu menu-horizontal justify-center">
-      @for (entry of categories | keyvalue; track $index) {
-      <li>
-        <a [class]="getHomeCategory() == entry.key ? 'menu-active' : ''" (click)="setHomeCategory(entry.key);">
-          {{ entry.value }}
-        </a>
-      </li>
-      }
-    </ul>
   </div>
 </div>

@@ -1,16 +1,9 @@
-import { ChangeDetectorRef, Component, Injectable } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { HomeHeader } from "./home-header";
-import { BehaviorSubject } from 'rxjs';
 import { DatePipe } from '@angular/common';
-
-export enum HomeCategories {
-  Home,
-  Shop,
-  DailyBread,
-  Partners
-};
+import { Footer } from "../footer/footer";
 
 export interface IPartner {
   img: string, 
@@ -21,25 +14,9 @@ export interface IPartner {
   comment?: string
 };
 
-@Injectable({
-  providedIn: 'root' // Makes the service a singleton and available throughout the app
-})
-export class HomeService {
-
-  private _category = new BehaviorSubject<HomeCategories>(HomeCategories.Home);
-
-  public setCategory(category: HomeCategories) {
-    this._category.next(category);
-  }
-
-  public getCategory(): HomeCategories {
-    return this._category.value;
-  }
-}
-
 @Component({
   selector: 'app-home',
-  imports: [FontAwesomeModule, RouterModule, HomeHeader, DatePipe],
+  imports: [FontAwesomeModule, RouterModule, HomeHeader, DatePipe, Footer],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -61,15 +38,6 @@ export class Home {
       ratingCount: 455
     }
   ];
-
-  protected homeCategories = HomeCategories;
-
-  protected get category(): any { 
-    return this.homeService.getCategory();
-  }
-
-  constructor(
-    private homeService: HomeService) { }
 
   protected ngOnInit() {
   }
