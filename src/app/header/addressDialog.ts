@@ -37,8 +37,7 @@ export enum ErrorTypes {
 };
 
 export interface IGoogleMap {
-  lat?: number,
-  log?: number
+  position: google.maps.LatLngLiteral
 };
 
 export interface IAddress {
@@ -49,8 +48,6 @@ export interface IAddress {
   postal?: string,
   buildingType?: BuildingType,
   apt?: string,
-  mustMeet?: boolean,
-  position?: { lat: number, lng: number },
   instruction?: string,
   //country?: string // For now only in Canada!
   map?: IGoogleMap,
@@ -162,15 +159,16 @@ export class AddressDialog {
 
     // Update address
     if (this.isAnExistingAddress) {
-      this.deliveryService.editAddress(this.originalName, this.address);
+      this.deliveryService.addAddress(this.address, this.originalName);
     }
     // Add address
     else {
       this.deliveryService.addAddress(this.address);
-      // Update delivery settings
-      this.deliverySettings.address = this.address;
-      this.deliveryService.setDeliverySetting(this.deliverySettings);
     }
+    
+    // Update delivery settings
+    this.deliverySettings.address = this.address;
+    this.deliveryService.setDeliverySetting(this.deliverySettings);
 
     this.dialogRef.close();
   }
@@ -259,15 +257,16 @@ export class AddressDialog {
     this.address.province = params.address.province;
     this.address.postal = params.address.postal;
 
-    if (params.address.position) {
-      this.address.position = params.address.position;
-      this.mapCenter = this.markerPosition = params.address.position;
+    if (params.address.map) {
+      this.address.map = params.address.map;
+      // Update map marker
+      this.mapCenter = this.markerPosition = params.address.map.position;
     }
 
     this.showAddressInfo = true;
   }
 
-  protected onAutoCompleteChange() {
+  protected onAutoCompleteChange(numResults: number) {
   }
 
   protected get numErrors() {

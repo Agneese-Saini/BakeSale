@@ -1,5 +1,5 @@
 import { KeyValuePipe } from "@angular/common";
-import { ChangeDetectorRef, Component } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -10,8 +10,9 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { IPayMethod } from "../user/user";
 import { IAddress } from "../header/addressDialog";
 import { SubscribeItemList } from "./subscribeItemList";
-import { CheckoutDialog, Receipt } from "../checkout/receipt";
 import { PageHeader } from "../header/page-header";
+import { Receipt } from "../checkout/receipt";
+import { SubscribeDialog } from "./subscribeDialog";
 
 export interface ISubscription {
   category: ICategory,
@@ -167,7 +168,7 @@ export class Subscribe {
     dialogConfig.data = data;
     dialogConfig.width = '90%';
 
-    const dialogRef = this.dialog.open(CheckoutDialog, dialogConfig);
+    const dialogRef = this.dialog.open(SubscribeDialog, dialogConfig);
     dialogRef.afterClosed().subscribe(() => {
       this.cdr.detectChanges();
     });

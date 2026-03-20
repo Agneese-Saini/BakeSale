@@ -1,16 +1,16 @@
-import { Component, Input, ChangeDetectorRef } from "@angular/core";
+import { Component, Input, ChangeDetectorRef, forwardRef } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { IItem, Item } from "../content/item";
+import { IItem, Item, PriceTag } from "../content/item";
 import { ItemChoiceSummary } from "../content/itemChoice";
-import { PriceTag, ItemDialog } from "../content/itemDialog";
 import { CartService } from "./cart";
+import { ItemDialog } from "../content/itemDialog";
 
 @Component({
   selector: 'cart-item-list',
-  imports: [FormsModule, FontAwesomeModule, ItemChoiceSummary, PriceTag],
+  imports: [FormsModule, FontAwesomeModule, ItemChoiceSummary, forwardRef(() => PriceTag)],
   template: `
 <div class="flex flex-col gap-1">
   @for (item of items; track $index) {

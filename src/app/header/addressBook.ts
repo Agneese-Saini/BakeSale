@@ -68,9 +68,9 @@ export class DeliveryService {
   constructor() {
     const defaultMode = this._deliverySettings.value.mode;
     // Update timeslots
-    this.setTimeslots(defaultMode);
+    this.loadTimeslots(defaultMode);
     // Update address book
-    this.setAddressBook(defaultMode);
+    this.loadAddressBook(defaultMode);
 
     // check if can get current time
     if (false) {
@@ -85,7 +85,7 @@ export class DeliveryService {
     this._deliverySettings.next(settings);
   }
 
-  public setTimeslots(mode: DeliveryMode) {
+  public loadTimeslots(mode: DeliveryMode) {
     let slots: ITimeSlot[] = [];
 
     // Delivery
@@ -109,7 +109,7 @@ export class DeliveryService {
     this._timeSlots.next(slots);
   }
 
-  public setAddressBook(mode: DeliveryMode) {
+  public loadAddressBook(mode: DeliveryMode) {
     // reset address book
     this._addressBook.next([]);
 
@@ -117,7 +117,7 @@ export class DeliveryService {
     if (mode == DeliveryMode.Delivery) {
       // load user address book
       this.addAddress({
-        label: "BakeSale",
+        label: "Home",
         addressLine: "Area 51",
         city: "Winnipeg",
         province: Province.MB,
@@ -129,7 +129,7 @@ export class DeliveryService {
       // load pickup locations
       this.addAddress({
         label: "BakeSale",
-        addressLine: "Area 51",
+        addressLine: "Lost Land",
         city: "Winnipeg",
         province: Province.MB,
         postal: "R1W 2G3"
@@ -137,25 +137,36 @@ export class DeliveryService {
     }
   }
 
-  public addAddress(address: IAddress) {
-    address.map = {};
-
+  public addAddress(address: IAddress, label?: string) {
     let book = this._addressBook.value;
-    address.label = address.label.trim();
-    book.push(address);
-    this._addressBook.next(book);
-  }
 
-  public editAddress(label: string, address: IAddress) {
-    let book = this._addressBook.value;
+    const nullLabel: boolean = (label == undefined);
+    if (nullLabel == true) {
+      label = address.label;
+    }
 
     const index = book.findIndex(addy => (addy.label == label));
     if (index != -1) {
-      address.map = {};
-
       book[index] = address;
-      this._addressBook.next(book);
     }
+    else if (nullLabel == true) {
+      address.label = address.label.trim();
+      address.map = { 
+        position: { lat: 0, lng: 0 } 
+      };
+
+      if (!address.province) {
+        address.province = Province.MB;
+      }
+
+      if (!address.buildingType) {
+        address.buildingType = BuildingType.House;
+      }
+
+      book.push(address);
+    }
+
+    this._addressBook.next(book);
   }
 
   public deleteAddress(label: string) {
@@ -179,70 +190,6 @@ export class DeliveryService {
     return 4.00;
   }
 }
-
-
-@Component({
-  selector: 'delivery-switch',
-  imports: [FormsModule, FontAwesomeModule],
-  template: `
-<div class="tabs tabs-sm tabs-box w-fit">
-  @for (entry of deliveryModes; track entry[0]) {
-  <input type="radio" class="tab" [name]="name" [checked]="selectedDeliveryMode == entry[0]"
-    [ariaLabel]="entry[1].label" [value]="entry[0]" [(ngModel)]="selectedDeliveryMode"
-    (change)="onDeliveryModeChange()" />
-  }
-</div>
-`
-})
-export class DeliverySwitch {
-
-  static deleiverySwitchCount: number = 0;
-
-  @Input()
-  protected switchName?: string;
-
-  protected get name(): string {
-    if (!this.switchName) {
-      this.switchName = "DeliverySwitch#" + DeliverySwitch.deleiverySwitchCount++;
-    }
-    return this.switchName;
-  }
-
-  protected selectedDeliveryMode: DeliveryMode = DeliveryMode.Delivery;
-  protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
-
-  protected get deliveryModes() {
-    return Array.from(AddressBook.DeliveryModes.entries());
-  }
-
-  constructor(
-    private deliveryService: DeliveryService,
-    private snackBar: MatSnackBar,
-    private cdr: ChangeDetectorRef) { }
-
-  protected ngOnInit() {
-    this.deliveryService.deliverySettings$.subscribe(data => {
-      this.deliverySettings = data;
-      this.selectedDeliveryMode = this.deliverySettings.mode;
-      this.cdr.detectChanges();
-    });
-  }
-
-  protected onDeliveryModeChange() {
-    if (this.deliverySettings.mode != this.selectedDeliveryMode) {
-      this.deliverySettings.mode = this.selectedDeliveryMode;
-      this.deliveryService.setDeliverySetting(this.deliverySettings);
-
-      this.deliveryService.setAddressBook(this.selectedDeliveryMode);
-      this.deliveryService.setTimeslots(this.selectedDeliveryMode);
-
-      const message = "Changed to " + AddressBook.DeliveryModes.get(this.selectedDeliveryMode)?.label + ".";
-      this.snackBar.open(message, "Close", {
-        duration: 2500
-      });
-    }
-  }
-};
 
 
 @Component({

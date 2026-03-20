@@ -4,8 +4,7 @@ import { MatDialogModule, MatDialog, MatDialogConfig, MAT_DIALOG_DATA, MatDialog
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { IItem, Item } from "../content/item";
-import { PriceTag, TextReadMore } from "../content/itemDialog";
+import { IItem, Item, PriceTag, TextReadMore } from "../content/item";
 import { ICategory } from "../header/category";
 import { Subscribe } from "./subscribe";
 

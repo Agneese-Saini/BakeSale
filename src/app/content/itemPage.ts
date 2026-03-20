@@ -5,15 +5,15 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { DecimalPipe, KeyValuePipe } from '@angular/common';
 import { Recipe } from '../custom/recipe';
 import { IUser, UserService } from '../user/user';
-import { IItem, Item } from './item';
+import { IItem, Item, ItemDetails, PriceTag, TextReadMore } from './item';
 import { Category, CategoryService, ICategory } from '../header/category';
-import { ItemDetails, ItemDialog, PriceTag, TextReadMore } from "./itemDialog";
 import { ChoiceList, ItemChoiceList } from './itemChoice';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CartService } from '../checkout/cart';
 import { Header } from "../header/header";
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { CartItemsDialog } from '../checkout/cartItemDialog';
+import { ItemDialog } from './itemDialog';
 
 @Component({
   selector: 'app-item',

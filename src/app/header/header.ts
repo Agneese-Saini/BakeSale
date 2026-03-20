@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { AddressBook, DeliveryService, IDeliverySettings, DeliverySwitch, AddressBookDialog } from './addressBook';
+import { AddressBook, DeliveryService, IDeliverySettings, AddressBookDialog, DeliveryMode } from './addressBook';
 import { CartService, Cart } from '../checkout/cart';
 import { Category, CategoryList, CategoryService, ICategory } from './category';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -11,7 +11,7 @@ import { CheckoutDrawer } from '../checkout/checkout-drawer';
 import { IUser, User, UserRole, UserService } from '../user/user';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { AddressDialog, IAddress } from './addressDialog';
-import { OrderHistory } from '../user/order-history';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -130,6 +130,70 @@ export class SearchBar {
 };
 
 
+@Component({
+  selector: 'delivery-switch',
+  imports: [FormsModule, FontAwesomeModule],
+  template: `
+<div class="tabs tabs-sm tabs-box w-fit">
+  @for (entry of deliveryModes; track entry[0]) {
+  <input type="radio" class="tab" [name]="name" [checked]="selectedDeliveryMode == entry[0]"
+    [ariaLabel]="entry[1].label" [value]="entry[0]" [(ngModel)]="selectedDeliveryMode"
+    (change)="onDeliveryModeChange()" />
+  }
+</div>
+`
+})
+export class DeliverySwitch {
+
+  static deleiverySwitchCount: number = 0;
+
+  @Input()
+  protected switchName?: string;
+
+  protected get name(): string {
+    if (!this.switchName) {
+      this.switchName = "DeliverySwitch#" + DeliverySwitch.deleiverySwitchCount++;
+    }
+    return this.switchName;
+  }
+
+  protected selectedDeliveryMode: DeliveryMode = DeliveryMode.Delivery;
+  protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
+
+  protected get deliveryModes() {
+    return Array.from(AddressBook.DeliveryModes.entries());
+  }
+
+  constructor(
+    private deliveryService: DeliveryService,
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef) { }
+
+  protected ngOnInit() {
+    this.deliveryService.deliverySettings$.subscribe(data => {
+      this.deliverySettings = data;
+      this.selectedDeliveryMode = this.deliverySettings.mode;
+      this.cdr.detectChanges();
+    });
+  }
+
+  protected onDeliveryModeChange() {
+    if (this.deliverySettings.mode != this.selectedDeliveryMode) {
+      this.deliverySettings.mode = this.selectedDeliveryMode;
+      this.deliveryService.setDeliverySetting(this.deliverySettings);
+
+      this.deliveryService.loadAddressBook(this.selectedDeliveryMode);
+      this.deliveryService.loadTimeslots(this.selectedDeliveryMode);
+
+      const message = "Changed to " + AddressBook.DeliveryModes.get(this.selectedDeliveryMode)?.label + ".";
+      this.snackBar.open(message, "Close", {
+        duration: 2500
+      });
+    }
+  }
+};
+
+
 export enum NotifictionType {
   Suggestion,
   ThumbsUp,
@@ -211,7 +275,7 @@ export class NotificationBottomSheet {
 
 @Component({
   selector: 'app-header',
-  imports: [FormsModule, FontAwesomeModule, DeliverySwitch, RouterModule, SearchBar, AddressBook, Logo],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, SearchBar, AddressBook, Logo, DeliverySwitch],
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
@@ -227,6 +291,10 @@ export class Header {
   protected addressBook: IAddress[] = [];
   protected shoppingCart: Cart = new Map();
   protected user: IUser = UserService.DefaultUser;
+
+  protected get isDelivery() {
+    return this.deliverySettings.mode == DeliveryMode.Delivery;
+  }
 
   protected get deliveryMode() {
     return AddressBook.DeliveryModes.get(this.deliverySettings.mode);

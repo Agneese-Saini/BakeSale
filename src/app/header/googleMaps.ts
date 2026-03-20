@@ -1,39 +1,34 @@
 import { Component, EventEmitter, input, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { BuildingType, IAddress, Province } from './addressDialog';
-import { AddressBook } from './addressBook';
+import { BuildingType, IAddress, IGoogleMap, Province } from './addressDialog';
 
 @Component({
   selector: 'maps-autocomplete',
   imports: [FormsModule, FontAwesomeModule],
   template: `
-<div class="flex gap-2">
-  <input 
-    type="search" 
-    tabindex="-1"
-    class="input input-bordered placeholder-gray-350 w-full" 
-    placeholder="Search an address"
-    [(ngModel)]="searchQuery" 
-    (input)="onInputChange()" 
-    (click)="onInputChange()" />
+<div class="flex flex-col gap-1">
+  <label class="input input-bordered placeholder-gray-350 w-full">
+    <fa-icon icon="location-dot"></fa-icon>    
+    <input 
+      type="search" 
+      tabindex="-1"
+      placeholder="Search an address"
+      [(ngModel)]="searchQuery" 
+      (input)="onInputChange()" 
+      (click)="onInputChange()" />
+  </label>
 
-  @if (hidden == true) {
-  <button class="btn btn-neutral tooltip tooltip-left" data-tip="Use Current Location" (click)="useCurrentLocation()">
-    <fa-icon icon="location-crosshairs"></fa-icon>
-  </button>
-  }
-</div>
-
-@if (error) {
-<div class="flex gap-1 p-1">
-  <fa-icon class="text-error text-sm" icon="exclamation-circle"></fa-icon>
-  <p class="font-mono text-sm text-error pb-2">{{ error }}</p>
-</div>
+  @if (error) {
+  <div class="flex gap-1 p-1">
+    <fa-icon class="text-error text-sm" icon="exclamation-circle"></fa-icon>
+    <p class="font-mono text-sm text-error pb-2">{{ error }}</p>
+  </div>
 }
+</div>
 
-@if (hidden == false) {
-<div class="bg-base-100 border border-neutral-300 rounded-box w-full mt-2" >
+@if (minimized == false || searchResults.length > 0) {
+<div [class]="'bg-base-100 border border-neutral-300 rounded-box w-full mt-2' + ' ' + (overflow ? ('overflow-y-auto max-h-' + overflow) : '')">
   <div class="flex flex-col gap-1">
     <ul class="menu w-full gap-1">
       <div class="bg-base-200">
@@ -94,25 +89,32 @@ export class AutoComplete {
   public searchQuery?: string;
 
   @Input()
-  public hidden: boolean = false;
+  public dropdown: boolean = false;
+
+  @Input()
+  public minimized: boolean = false;
+
+  @Input()
+  public overflow?: number;
 
   @Output()
   public select = new EventEmitter<{ address: IAddress, prediction: string }>();
 
   @Output()
-  public resultChange = new EventEmitter<void>();
+  public resultChange = new EventEmitter<number>();
 
   protected searchResults: { label: string, address: IAddress }[] = [];
   protected addressBookResults: IAddress[] = [];
   protected error?: string;
 
   protected onInputChange() {
-    if (this.searchQuery && this.searchQuery.length > 1) {
+    if (this.searchQuery != undefined && this.searchQuery.length > 1) {
       this.searchPlaces(this.searchQuery.trim());
-    } 
+    }
     else {
       this.searchResults = [];
       this.addressBookResults = [];
+      this.resultChange.emit(0);
     }
   }
 
@@ -145,7 +147,6 @@ export class AutoComplete {
           fields: ['addressComponents', 'displayName'],
         });
 
-
         const getComponent = (types: string[]): string | undefined => {
           if (place.addressComponents) {
             for (const type of types) {
@@ -159,7 +160,14 @@ export class AutoComplete {
           return undefined;
         };
 
-        const addressLine = (getComponent(['street_number']) + " " + getComponent(['route'])).trim();
+        const addressLine: string = (getComponent(['street_number']) + " " + getComponent(['route'])).trim();
+
+        const map: IGoogleMap | undefined = place.location
+          ? { 
+              position: { lat: place.location.lat(), lng: place.location.lng() } 
+            }
+          : undefined;
+
         let address: IAddress = {
           label: place.displayName ? place.displayName : addressLine,
           addressLine: addressLine,
@@ -167,7 +175,7 @@ export class AutoComplete {
           postal: getComponent(['postal_code']),
           province: Province.MB, //getComponent(['administrative_area_level_1'])
           buildingType: BuildingType.House,
-          position: place.location ? { lat: place.location.lat(), lng: place.location.lng() } : undefined
+          map: map
         };
 
         this.searchResults.push({
@@ -177,7 +185,7 @@ export class AutoComplete {
       }
     }
 
-    this.resultChange.emit();
+    this.resultChange.emit(this.searchResults.length + this.addressBookResults.length);
   }
 
   protected selectPlace(label: string, address: IAddress) {

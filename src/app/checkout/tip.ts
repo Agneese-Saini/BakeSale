@@ -1,12 +1,11 @@
 import { DecimalPipe } from "@angular/common";
 import { Component, ChangeDetectorRef } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
+import { MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material/dialog";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { IDeliverySettings, AddressBook, DeliveryService, DeliveryMode } from "../header/addressBook";
+import { IDeliverySettings, AddressBook, DeliveryService } from "../header/addressBook";
 import { Cart, CartService } from "./cart";
-import { DriverTip, TipAmountDialog } from "./checkout";
-
+import { DriverTip } from "./checkout";
 
 @Component({
   selector: 'add-tip',
@@ -37,7 +36,7 @@ import { DriverTip, TipAmountDialog } from "./checkout";
 </div>
 `
 })
-export class Tip {
+export class AddTip {
 
   protected readonly tips = Object.values(DriverTip).filter((value) => typeof value === 'number') as number[];
 
@@ -50,7 +49,7 @@ export class Tip {
   }
 
   protected get tipAmount(): number {
-    return Tip.getAmount(this.subTotal, this.selectedTip, this.deliverySettings.tipAmount);
+    return AddTip.getAmount(this.subTotal, this.selectedTip, this.deliverySettings.tipAmount);
   }
 
   constructor(
@@ -114,3 +113,67 @@ export class Tip {
     return 0.0;
   }
 }
+
+
+@Component({
+  imports: [FormsModule, FontAwesomeModule],
+  template: `
+<div class="bg-base-200 min-w-84 p-4">
+  <h2 mat-dialog-title class="text-4xl font-bold">Enter tip amount</h2>
+  <br />
+
+  <label class="input input-lg">
+    <fa-icon icon="dollar"></fa-icon>
+    <input type="number" class="grow placeholder-gray-500" placeholder="Tip amount" [(ngModel)]="amount" />
+  </label>
+  <br />
+
+  <div class="grid items-stretch pt-4">
+    <button class="btn btn-neutral m-1" (click)="onSave()">
+      Save
+    </button>
+    <button class="btn bg-base-100 m-1" (click)="onClose()">
+      Cancel
+    </button>
+  </div>
+</div>
+`
+})
+export class TipAmountDialog {
+
+  protected amount: number = 0.0;
+
+  protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
+
+  constructor(
+    private deliveryService: DeliveryService,
+    private dialogRef: MatDialogRef<TipAmountDialog>,
+    private cdr: ChangeDetectorRef) { }
+
+  protected ngOnInit() {
+    this.deliveryService.deliverySettings$.subscribe(data => {
+      this.deliverySettings = data;
+      this.cdr.detectChanges();
+
+      if (data.tipAmount) {
+        this.amount = data.tipAmount;
+      }
+    });
+  }
+
+  protected onSave() {
+    if (this.amount < 0) {
+      this.amount = 0.0;
+    }
+
+    this.deliverySettings.tip = DriverTip.Tip_Custom;
+    this.deliverySettings.tipAmount = this.amount;
+    this.deliveryService.setDeliverySetting(this.deliverySettings);
+
+    this.dialogRef.close();
+  }
+
+  protected onClose() {
+    this.dialogRef.close();
+  }
+};
