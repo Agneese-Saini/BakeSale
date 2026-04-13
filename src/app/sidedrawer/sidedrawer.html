@@ -3,7 +3,7 @@
     <header class="flex flex-col gap-2">
         @if (user.userRole == userRole.Guest) {
         <button class="btn btn-neutral btn-lg lg:btn-xl font-mono" (click)="login()">Login</button>
-        <button class="btn btn-soft btn-lg lg:btn-xl font-mono">Sign Up</button>
+        <button class="btn btn-soft btn-lg lg:btn-xl font-mono" (click)="signUp()">Sign Up</button>
         }
         @else {
         <div class="flex gap-4 items-center">

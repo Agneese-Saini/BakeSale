@@ -121,7 +121,7 @@ export class CountdownTimer {
 
 @Component({
   selector: 'order-history',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe, DatePipe, OrderItems, PageHeader, NoCommaPipe, CountdownTimer],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe, DatePipe, OrderItems, NoCommaPipe, CountdownTimer, PageHeader],
   templateUrl: "order-history.html"
 })
 export class OrderHistory {

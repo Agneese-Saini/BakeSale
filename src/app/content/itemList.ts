@@ -9,7 +9,7 @@ import { IItem, Item } from './item';
   selector: 'category-items',
   imports: [FormsModule, FontAwesomeModule, RouterModule, forwardRef(() => ItemsList)],
   template: `
-@if (category.hidden) { 
+@if (category.hidden == true) { 
 
 <!-- hidden - no items display! -->
 

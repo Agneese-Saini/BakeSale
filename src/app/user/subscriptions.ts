@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, forwardRef, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -12,8 +12,8 @@ import { ICategory } from '../header/category';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SubscribeItemList } from '../custom/subscribeItemList';
 import { Receipt } from "../checkout/receipt";
-import { PageHeader } from "../header/page-header";
 import { AddressBook } from '../header/addressBook';
+import { PageHeader } from "../header/page-header";
 
 @Component({
   selector: 'subscriptions',
@@ -154,7 +154,7 @@ export class OrderSummaryDialog {
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, MatDialogModule, SubscribeItemList],
+  imports: [FormsModule, FontAwesomeModule, MatDialogModule, forwardRef(() => SubscribeItemList)],
   template: `
 <div class="bg-base-100">
   <subscribe-item-list mat-dialog-content [category]="category" [error]="error" (change)="error=undefined;"></subscribe-item-list>

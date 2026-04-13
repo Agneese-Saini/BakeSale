@@ -89,7 +89,7 @@
           <span class="status status-lg status-warning animate-bounce"></span>
           }
         </span>
-        @if (cat.items != undefined) {
+        @if (cat.customizer == undefined && cat.items != undefined) {
         @let num = numItems(cat);
         <p class="text-sm text-gray-500 pr-6">{{ num > 100 ? '100+' : num }}</p>
         }

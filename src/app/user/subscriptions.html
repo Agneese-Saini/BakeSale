@@ -1,17 +1,16 @@
-<page-header page="Subscriptions" icon="s"></page-header>
+<page-header></page-header>
 
 <div class="bg-base-300 h-2 my-2"></div>
+
+<div class="flex justify-center text-4xl p-4">
+  <fa-icon icon="s"></fa-icon>
+  <h1>Subscriptions</h1>
+</div>
 
 <div class="flex flex-col gap-2 lg:justify-center lg:items-center">
   <div class="w-full lg:w-[65vw] lg:shadow-2xl">
     @if (user.subscriptions && user.subscriptions.length > 0) {
     <div class="flex flex-col gap-2 p-4">
-      <div class="hidden lg:block">
-        <div class="flex items-center gap-2 text-2xl">
-          <fa-icon icon="book"></fa-icon>
-          <h1 class="font-bold">Subscriptions</h1>
-        </div>
-      </div>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         Nullam ac eros sit amet lorem facilisis vulputate at non dui.
@@ -50,7 +49,7 @@
                     <div [class]="'w-2 ' + getColorPallet(index)"></div>
                     <p>Bread Subscription {{ index > 0 ? (index + 1) : '' }}</p>
                   </div>
-                  <b>{{ sub.date | date }} - {{ day.value.name }}</b>
+                  <b class="text-end">{{ sub.date | date }} - {{ day.value.name }}</b>
                 </div>
                 <div class="flex justify-end gap-2">
                   <a class="link">View Receipt</a>
@@ -74,7 +73,7 @@
           <div class="flex gap-2">
             <div [class]="'w-2 ' + getColorPallet($index)"></div>
             <div class="flex flex-col">
-              <h1 class="font-bold text-lg">Bread Subscription {{ $index > 0 ? ($index + 1) : '' }}</h1>
+              <h1 class="font-medium text-lg">Bread Subscription {{ $index > 0 ? ($index + 1) : '' }}</h1>
               <p class="text-sm text-gray-500">
                 {{ getTotalItems(getSelectedItems(sub.category)) }} items &bull; <b>${{
                   getTotal(getSelectedItems(sub.category)) | number: '1.2-2' }}</b>
@@ -117,7 +116,7 @@
           <br />
 
           <h2 class="font-bold">Upcoming delivery dates:</h2>
-          <div class="bg-base-200 rounded-box flex flex-col p-2">
+          <div class="bg-base-300 rounded-box flex flex-col p-2">
             <div class="flex flex-col gap-2 font-mono">
               @for (day of sub.days | keyvalue; track $index) {
               <p>{{ sub.date | date }} - {{ day.value.name }}</p>

@@ -1,5 +1,5 @@
 import { DecimalPipe } from "@angular/common";
-import { ChangeDetectorRef, Component, Input } from "@angular/core";
+import { ChangeDetectorRef, Component, forwardRef, Input } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { Cart, CartService } from "./cart";
@@ -12,7 +12,7 @@ import { AddTip } from "./tip";
 
 @Component({
   selector: 'receipt',
-  imports: [FormsModule, FontAwesomeModule, DecimalPipe, AddTip],
+  imports: [FormsModule, FontAwesomeModule, DecimalPipe, forwardRef(() => AddTip)],
   templateUrl: 'receipt.html'
 })
 export class Receipt {

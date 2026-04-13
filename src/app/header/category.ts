@@ -64,7 +64,7 @@ export class CategoryService {
 		},
 		{
 			name: "Bread", icon: "bread-slice", hidden: true, subcats:
-				[{ name: "Daily Bread", fontSize: 0, customizer: Customizer.Subscription },
+				[{ name: "Daily Bread Delivery", fontSize: 0, customizer: Customizer.Subscription },
 				{ name: "Sandwich Loaves", fontSize: 2 },
 				{ name: "Buns", fontSize: 2 },
 				{ name: "Brioche", fontSize: 2 },
@@ -72,6 +72,21 @@ export class CategoryService {
 				{ name: "Mediterranean", fontSize: 2 },
 				{ name: "Asian", fontSize: 2 },
 				{ name: "Doughs", fontSize: 2 }
+				]
+		},
+		{
+			name: "Desserts", icon: "ice-cream", hidden: true, subcats:
+				[{ name: "Puddings", fontSize: 2 }, 
+				{ name: "Pies", fontSize: 2 }, 
+				{ name: "Ice Cream", fontSize: 2 },
+				{ name: "BakeSale Special", fontSize: 2 }
+				]
+		},
+		{
+			name: "Milkshakes", icon: "blender", hidden: true, subcats:
+				[{ name: "Ice Cream Shakes", fontSize: 2 },
+				{ name: "Canna Milkshakes", fontSize: 2 },
+				{ name: "Canna Drinks", fontSize: 2 }
 				]
 		},
 		{
@@ -84,28 +99,16 @@ export class CategoryService {
 				]
 		},
 		{
-			name: "Canna Bar", icon: "blender", hidden: true, subcats:
-				[{ name: "Canna Milkshakes", fontSize: 2 },
-				{ name: "Canna Kombucha", fontSize: 2 },
-				{ name: "Wake'n'Bake", fontSize: 2 },
-				{ name: "Canna Pop", fontSize: 2 }
+			name: "Canna Butter", icon: "cow", subcats:
+				[{ name: "Unsalted", fontSize: 2 },
+				{ name: "Flavored", fontSize: 2 },
+				{ name: "CBD", fontSize: 2 }
 				]
 		},
 		{
-			name: "Canna Butter", icon: "cow", hidden: true, subcats:
-				[{ name: "Unsalted & Unflavored", fontSize: 2 },
-				{ name: "Flavored Butter", fontSize: 2 }
-				]
-		},
-		{
-			name: "Marketplace", icon: "shop", hidden: true, subcats:
-				[{ name: "Get Started", fontSize: 0, customizer: Customizer.Marketplace },
-				{ name: "Newly Added", fontSize: 2 },
-				{ name: "Cakes", fontSize: 2 },
-				{ name: "Pastry", fontSize: 2 },
-				{ name: "Cookies", fontSize: 2 },
-				{ name: "Sweets", fontSize: 2 },
-				{ name: "Other Bakery", fontSize: 2 }
+			name: "Wake'n'Bake", icon: "mug-hot", hidden: true, subcats:
+				[{ name: "Make Your Own", fontSize: 2 },
+				{ name: "Canna Kombucha", fontSize: 2 }
 				]
 		}
 	];
@@ -218,30 +221,8 @@ export class CategoryService {
 				])
 			});
 		}
-		
-		category = Category.findCategory("Marketplace", this.categoryList, "Cake");
-		if (category) {
-			Category.addItem(category, {
-				name: 'Red Velvet',
-				about: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui. \
-						Aenean tempus ligula nec suscipit venenatis. Fusce luctus ipsum diam, aliquet dictum ligula imperdiet et. \
-						In lectus velit, semper ut iaculis vel, congue nec ipsum. Cras ultrices eros elit, gravida euismod mi lobortis \
-						vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
-						 posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i",
-				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt, and flavor (vanilla extract)",
-				image: [ "https://cdn.prod.website-files.com/614a379840dbad1848e598c2/679906d29abceb2bbceb0696_679905de4268ad4dc4eae460_IMG_1630.jpeg" ],
-				amount: 0,
-				author: "MyNameIsShady",
-				details: [
-					{ header: 'Gluten Free', detail: 'Yes' },
-					{ header: 'Dairy Free', detail: 'No' },
-					{ header: 'Flavors', detail: 'Vanila, Candy, Butterscotch' }
-				],
-				price: { value: 19.99 }
-			});
-		}
 
-		category = Category.findCategory("Canna Milkshakes", this.categoryList, "Canna Bar");
+		category = Category.findCategory("Canna Milkshakes", this.categoryList);
 		if (category) {
 			Category.addItem(category, {
 				name: 'Strawberry Blast',
@@ -256,7 +237,7 @@ export class CategoryService {
 			});
 		}
 
-		category = Category.findCategory("Canna Kombucha", this.categoryList, "Canna Bar");
+		category = Category.findCategory("Canna Kombucha", this.categoryList);
 		if (category) {
 			Category.addItem(category, {
 				name: 'Kombucha Tea',
@@ -270,8 +251,23 @@ export class CategoryService {
 				]
 			});
 		}
+		
+		category = Category.findCategory("Unsalted", this.categoryList, "Canna Butter");
+		if (category) {
+			Category.addItem(category, {
+				name: 'Unsalted',
+				tags: ["THC: 12%", "CBD: < 1%"],
+				price: { value: 5 },
+				image: ["https://www.oliviascuisine.com/wp-content/uploads/2021/06/strawberry-milkshake-recipe-720x1080.jpg"],
+				amount: 0,
+				details: [
+					{ header: 'THC', detail: '12%' },
+					{ header: 'CBD', detail: '< 1%' }
+				]
+			});
+		}
 
-		category = Category.findCategory("Daily Bread", this.categoryList, "Bread");
+		category = Category.findCategory("Daily Bread Delivery", this.categoryList);
 		if (category) {
 			Category.addItem(category, {
 				name: 'Bread 1',

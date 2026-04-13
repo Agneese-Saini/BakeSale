@@ -1,16 +1,15 @@
 import { KeyValuePipe } from "@angular/common";
-import { ChangeDetectorRef, Component, Inject } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { Category, CategoryService, Customizer, ICategory } from "../header/category";
+import { Category, CategoryService, ICategory } from "../header/category";
 import { IItem, Item } from "../content/item";
 import { MatDialog, MatDialogConfig, MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { IPayMethod } from "../user/user";
 import { IAddress } from "../header/addressDialog";
 import { SubscribeItemList } from "./subscribeItemList";
-import { PageHeader } from "../header/page-header";
 import { Receipt } from "../checkout/receipt";
 import { SubscribeDialog } from "./subscribeDialog";
 
@@ -37,9 +36,8 @@ export enum DaysOfWeek {
 export type DaysOfWeekSetting = Map<DaysOfWeek, { name: string, checked: boolean, label: string }>;
 
 @Component({
-  selector: 'subscribe',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, MatDialogModule, SubscribeItemList, PageHeader],
-  templateUrl: "subscribe.html"
+  imports: [FormsModule, FontAwesomeModule, RouterModule, KeyValuePipe, MatDialogModule, SubscribeItemList],
+  templateUrl: 'subscribe.html'
 })
 export class Subscribe {
 
@@ -122,7 +120,7 @@ export class Subscribe {
 
     if (type == 'bread') {
       this.categoryService.categories$.subscribe(data => {
-        this.category = Category.findCategory("Daily Bread", data, "Bread");
+        this.category = Category.findCategory("Daily Bread Delivery", data, "Bread");
 
         if (this.category && this.category.items) {
           for (let item of this.category.items) {

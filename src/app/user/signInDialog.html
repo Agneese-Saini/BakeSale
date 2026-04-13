@@ -1,0 +1,67 @@
+
+<div class="p-6">
+    <div class="flex justify-end">
+        <button mat-dialog-close class="link rounded-full text-xl"><fa-icon icon="xmark-circle"></fa-icon></button>
+    </div>
+
+    <div class="mt-12 flex flex-col items-center">
+        <h1 class="text-2xl xl:text-3xl font-extrabold">
+            Login
+        </h1>
+        <div class="w-full flex-1 mt-8 flex flex-col gap-6">
+            <div class="flex flex-col gap-4 items-center">
+                <button class="btn btn-soft bg-indigo-100 rounded-lg w-full max-w-xs py-6">
+                    <fa-icon class="text-primary text-lg" [icon]="['fab', 'google']"></fa-icon>
+                    <span class="ml-4">
+                        Continue with Google
+                    </span>
+                </button>
+
+                <button class="btn btn-soft bg-indigo-100 rounded-lg w-full max-w-xs py-6">
+                    <fa-icon class="text-blue-500 text-lg" [icon]="['fab', 'facebook']"></fa-icon>
+                    <span class="ml-4">
+                        Continue with Facebook
+                    </span>
+                </button>
+            </div>
+
+            <div class="divider">
+                Or Sign-In with e-mail
+            </div>
+
+            <div class="flex flex-col gap-4 mx-auto max-w-xs">
+                <input type="search" placeholder="Email"
+                    [class]="'input input-bordered placeholder-gray-350 w-full py-6 ' + (email ? 'outline' : '') + ' ' + (error == true ? 'outline outline-error' : '')"
+                    [(ngModel)]="email" />
+
+                <input type="password" placeholder="Password"
+                    [class]="'input input-bordered placeholder-gray-350 w-full py-6 ' + (password ? 'outline' : '') + ' ' + (error == true ? 'outline outline-error' : '')"
+                    [(ngModel)]="password" />
+
+                <button class="btn btn-neutral rounded-lg w-full max-w-xs text-lg py-6" (click)="login()">
+                    Login
+                </button>
+
+                <div class="flex flex-col gap-1">
+                    <button class="link link-hover">
+                        Forgot Password?
+                    </button>
+                    <button class="link link-hover">
+                        Don't have an Account with us?
+                    </button>
+                </div>
+
+                <p class="mt-6 text-xs text-gray-600 text-center">
+                    I agree to abide by BakeSale's
+                    <a class="link border-b border-gray-500 border-dotted" style="text-decoration: none;">
+                        Terms of Service
+                    </a>
+                    and its
+                    <a class="link border-b border-gray-500 border-dotted" style="text-decoration: none;">
+                        Privacy Policy
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

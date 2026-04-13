@@ -5,7 +5,9 @@ import { Router, RouterModule } from '@angular/router';
 import { SideDrawer } from '../sidedrawer/sidedrawer';
 import { CheckoutDrawer } from '../checkout/checkout-drawer';
 import { IUser, User, UserRole, UserService } from '../user/user';
-import { Logo } from '../header/header';
+import { Logo } from './header';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { SignUpDialog, SignInDialog } from '../user/signUpDialog';
 
 @Component({
   selector: 'home-header',
@@ -26,6 +28,7 @@ export class HomeHeader {
 
   constructor(
     private router: Router,
+    private dialog: MatDialog,
     private userService: UserService,
     private cdr: ChangeDetectorRef) { }
 
@@ -38,5 +41,29 @@ export class HomeHeader {
 
   protected onClickHome() {
     this.router.navigate(['/']);
+  }
+  
+  protected signUp() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = "";
+    dialogConfig.data = undefined;
+
+    const dialogRef = this.dialog.open(SignUpDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cdr.detectChanges();
+    });
+  }
+
+  protected login() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = "";
+    dialogConfig.data = undefined;
+
+    const dialogRef = this.dialog.open(SignInDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cdr.detectChanges();
+    });
   }
 };

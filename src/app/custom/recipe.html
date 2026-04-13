@@ -1,6 +1,11 @@
-<page-header page="Custom Cake" icon="cake-candles"></page-header>
+<page-header></page-header>
 
 <div class="bg-base-300 h-2 my-2"></div>
+
+<div class="flex justify-center text-4xl p-4">
+  <fa-icon icon="cake-candles"></fa-icon>
+  <h1>Custom cake</h1>
+</div>
 
 @if (selectedCategory != category.Setup) {
 <div class="flex justify-center py-4">
@@ -37,12 +42,6 @@
 <div class="flex flex-col lg:flex-row flex-col-reverse gap-4 justify-center py-4">
   <div class="w-full lg:max-w-164 lg:shadow-2xl">
     <div class="flex flex-col gap-2 p-4">
-      @if (selectedCategory == category.Setup) {
-      <div class="flex justify-center">
-        <h1 class="italic text-2xl">Cake Design v1.0</h1>
-      </div>
-      }
-
       @if (currentCategory.instructions) {
       <p class="whitespace-pre-line">{{ currentCategory.instructions }}</p>
       <br />

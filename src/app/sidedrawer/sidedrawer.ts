@@ -2,7 +2,8 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { RouterModule } from "@angular/router";
 import { IUser, User, UserRole, UserService } from '../user/user';
-import { OrderHistory } from '../user/order-history';
+import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
+import { SignInDialog, SignUpDialog } from '../user/signUpDialog';
 
 @Component({
   selector: 'app-sidedrawer',
@@ -24,6 +25,7 @@ export class SideDrawer {
 
   constructor(
     private userService: UserService,
+    private dialog: MatDialog,
     private cdr: ChangeDetectorRef) { }
 
   protected ngOnInit() {
@@ -33,8 +35,28 @@ export class SideDrawer {
     });
   }
 
+  protected signUp() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = "";
+    dialogConfig.data = undefined;
+
+    const dialogRef = this.dialog.open(SignUpDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cdr.detectChanges();
+    });
+  }
+
   protected login() {
-    this.userService.login('', '');
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = "";
+    dialogConfig.data = undefined;
+
+    const dialogRef = this.dialog.open(SignInDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cdr.detectChanges();
+    });
   }
 
   protected logout() {

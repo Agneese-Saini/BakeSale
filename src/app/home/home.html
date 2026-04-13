@@ -3,7 +3,7 @@
 <div class="bg-base-300 h-2 my-2"></div>
 
 <!-- HERO -->
-<section class="max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-28">
+<section class="max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-48 min-h-screen">
     <div class="grid lg:grid-cols-2 grid-reverse gap-16 items-center">
         <!-- Left -->
         <div>
@@ -15,7 +15,7 @@
                 adipiscing elit.
             </p>
             <div class="flex flex-col gap-4 fade-up delay-3 items-center lg:items-start">
-                <maps-autocomplete class="w-full" [minimized]="true" [overflow]="64"
+                <maps-autocomplete class="w-full" size="lg" [minimized]="true" [overflow]="64"
                     (select)="onAutoCompleteSelect($event)" (resultChange)="onAutoCompleteChange($event)"></maps-autocomplete>
 
                 <div class="flex gap-2 items-center">
@@ -26,24 +26,6 @@
                     <button class="btn btn-hero-outline rounded-full" (click)="onOrderPickup()">
                         Order Pickup
                     </button>
-                </div>
-            </div>
-            <!-- Stats -->
-            <div class="mt-14 flex flex-wrap justify-center gap-10 fade-up delay-4">
-                <div class="stat-card">
-                    <div class="stat-number">100k<span>+</span></div>
-                    <div class="text-xs text-gray-400 font-medium mt-1 uppercase tracking-wider">Customers</div>
-                </div>
-                <div class="w-px bg-gray-100"></div>
-                <div class="stat-card">
-                    <div class="stat-number">85<span>+</span></div>
-                    <div class="text-xs text-gray-400 font-medium mt-1 uppercase tracking-wider">Bakeries</div>
-                </div>
-                <div class="w-px bg-gray-100"></div>
-                <div class="stat-card">
-                    <div class="stat-number">55k<span>+</span></div>
-                    <div class="text-xs text-gray-400 font-medium mt-1 uppercase tracking-wider">Couriers Delivered
-                    </div>
                 </div>
             </div>
         </div>
@@ -93,7 +75,7 @@
                         <fa-icon class="text-2xl" icon="shop"></fa-icon>
                     </div>
                     <a class="font-bold text-gray-900 text-lg mb-2"
-                        [routerLink]="['/shop', { category: 'Cake' }]">Bakery Shop</a>
+                        [routerLink]="['/shop', { category: 'Cake' }]">Explore our Bakery</a>
                 </div>
                 <p class="text-gray-500 text-sm leading-relaxed">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -105,7 +87,7 @@
                     <div class="icon-box">
                         <fa-icon class="text-2xl" icon="cake-candles"></fa-icon>
                     </div>
-                    <a class="font-bold text-gray-900 text-lg mb-2" routerLink="/create">Custom Cake</a>
+                    <a class="font-bold text-gray-900 text-lg mb-2" routerLink="/create">Create your Own</a>
                 </div>
                 <p class="text-gray-500 text-sm leading-relaxed">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -118,7 +100,7 @@
                         <fa-icon class="text-2xl" icon="bread-slice"></fa-icon>
                     </div>
                     <a class="font-bold text-gray-900 text-lg mb-2"
-                        [routerLink]="['/subscribe', { type: 'bread' }]">Fresh Daily Bread</a>
+                        [routerLink]="['/subscribe', { type: 'bread' }]">Fresh Bread delivery</a>
                 </div>
                 <p class="text-gray-500 text-sm leading-relaxed">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -131,7 +113,7 @@
                         <fa-icon class="text-2xl" icon="cannabis"></fa-icon>
                     </div>
                     <a class="font-bold text-gray-900 text-lg mb-2"
-                        [routerLink]="['/shop', { category: 'Canna Bakery' }]">Cannabis Bakery</a>
+                        [routerLink]="['/shop', { category: 'Canna Bakery' }]">Explore Cannabis Bakery</a>
                 </div>
                 <p class="text-gray-500 text-sm leading-relaxed">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.

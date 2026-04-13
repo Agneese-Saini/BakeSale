@@ -47,7 +47,6 @@ export interface IRecipe {
 }
 
 @Component({
-  selector: 'app-recipe',
   imports: [FormsModule, FontAwesomeModule, KeyValuePipe, ItemChoiceList, RouterModule, ItemChoiceCatalog, PageHeader],
   templateUrl: './recipe.html',
   styleUrl: './recipe.css'

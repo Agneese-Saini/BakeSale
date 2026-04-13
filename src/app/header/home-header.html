@@ -20,8 +20,8 @@
       <div class="flex gap-2 items-center">
         @if (user.userRole == userRole.Guest) {
         <div class="flex gap-2">
-          <button class="btn btn-neutral btn-xs lg:btn-md">Login</button>
-          <button class="btn btn-soft btn-xs lg:btn-md">Sign Up</button>
+          <button class="btn btn-neutral btn-xs lg:btn-md" (click)="login()">Login</button>
+          <button class="btn btn-soft btn-xs lg:btn-md" (click)="signUp()">Sign Up</button>
         </div>
         }
         @else {

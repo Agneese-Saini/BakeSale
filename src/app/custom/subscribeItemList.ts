@@ -10,7 +10,7 @@ import { Subscribe } from "./subscribe";
 
 @Component({
   selector: 'subscribe-item-list',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, PriceTag, MatDialogModule],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, MatDialogModule, PriceTag],
   template: `
 <div class="flex flex-col">
   <label class="input w-full">

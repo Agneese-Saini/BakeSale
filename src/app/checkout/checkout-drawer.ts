@@ -1,14 +1,14 @@
 import { KeyValuePipe, DecimalPipe } from "@angular/common";
 import { Component, ChangeDetectorRef } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { Cart, CartService, EmptyCartLinks } from "./cart";
 import { CheckoutCoupon } from "./checkout";
 import { CartItemList } from "./cartItemList";
 
 @Component({
   selector: 'app-checkout-drawer',
-  imports: [KeyValuePipe, DecimalPipe, CartItemList, FaIconComponent, CheckoutCoupon, RouterLink, EmptyCartLinks],
+  imports: [KeyValuePipe, DecimalPipe, CartItemList, FontAwesomeModule, CheckoutCoupon, RouterLink, EmptyCartLinks],
   templateUrl: './checkout-drawer.html'
 })
 export class CheckoutDrawer {

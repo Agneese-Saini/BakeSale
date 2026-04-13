@@ -8,7 +8,7 @@ import { BuildingType, IAddress, IGoogleMap, Province } from './addressDialog';
   imports: [FormsModule, FontAwesomeModule],
   template: `
 <div class="flex flex-col gap-1">
-  <label class="input input-bordered placeholder-gray-350 w-full">
+  <label [class]="'input input-bordered placeholder-gray-350 w-full ' + (size != undefined ? ('input-' + size) : '')">
     <fa-icon icon="location-dot"></fa-icon>    
     <input 
       type="search" 
@@ -96,6 +96,9 @@ export class AutoComplete {
 
   @Input()
   public overflow?: number;
+
+  @Input()
+  public size?: string;
 
   @Output()
   public select = new EventEmitter<{ address: IAddress, prediction: string }>();

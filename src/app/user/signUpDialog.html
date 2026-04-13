@@ -1,0 +1,66 @@
+
+<div class="p-6">
+    <div class="flex justify-end">
+        <button mat-dialog-close class="link rounded-full text-xl"><fa-icon icon="xmark-circle"></fa-icon></button>
+    </div>
+
+    <div class="mt-12 flex flex-col items-center">
+        <h1 class="text-2xl xl:text-3xl font-extrabold">
+            Sign Up
+        </h1>
+        <div class="w-full flex-1 mt-8 flex flex-col gap-6">
+            <div class="flex flex-col gap-4 items-center">
+                <button class="btn btn-soft bg-indigo-100 rounded-lg w-full max-w-xs py-6">
+                    <fa-icon class="text-primary text-lg" [icon]="['fab', 'google']"></fa-icon>
+                    <span class="ml-4">
+                        Sign Up with Google
+                    </span>
+                </button>
+
+                <button class="btn btn-soft bg-indigo-100 rounded-lg w-full max-w-xs py-6">
+                    <fa-icon class="text-blue-500 text-lg" [icon]="['fab', 'facebook']"></fa-icon>
+                    <span class="ml-4">
+                        Sign Up with Facebook
+                    </span>
+                </button>
+            </div>
+
+            <div class="divider">
+                Or Sign-Up with e-mail
+            </div>
+
+            <div class="flex flex-col gap-4 mx-auto max-w-xs">
+                <fieldset class="fieldset w-full">
+                    <input type="search" placeholder="Email"
+                        [class]="'input input-bordered placeholder-gray-350 w-full py-6 ' + (email ? 'outline' : '') + ' ' + (emailError ? 'outline outline-error' : '')"
+                        [(ngModel)]="email" (input)="emailError=undefined;" />
+
+                    @if (emailError != undefined) {
+                    <p class="font-mono text-sm text-error pb-2">{{ emailError }}</p>
+                    }
+                </fieldset>
+                
+                <button class="btn btn-warning rounded-lg w-full max-w-xs text-lg py-6">
+                    Create Account
+                </button>
+
+                <div class="flex flex-col gap-1">
+                    <button class="link link-hover">
+                        Already have an account?
+                    </button>
+                </div>
+
+                <p class="mt-6 text-xs text-gray-600 text-center">
+                    I agree to abide by BakeSale's
+                    <a class="link border-b border-gray-500 border-dotted" style="text-decoration: none;">
+                        Terms of Service
+                    </a>
+                    and its
+                    <a class="link border-b border-gray-500 border-dotted" style="text-decoration: none;">
+                        Privacy Policy
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

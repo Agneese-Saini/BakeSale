@@ -1,13 +1,11 @@
 import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { PageHeader } from "./header/page-header";
+import { Footer } from "./footer/footer";
 
 @Component({
-  imports: [FontAwesomeModule, RouterModule, PageHeader],
+  imports: [FontAwesomeModule, RouterModule, Footer],
   template: `
-<page-header page="404" icon="question"></page-header>
-
 <div class="bg-indigo-900 relative overflow-hidden h-[100vh]">
   <img
     src="https://external-preview.redd.it/4MddL-315mp40uH18BgGL2-5b6NIPHcDMBSWuN11ynM.jpg?width=960&crop=smart&auto=webp&s=b98d54a43b3dac555df398588a2c791e0f3076d9"
@@ -19,13 +17,20 @@ import { PageHeader } from "./header/page-header";
       <h1 class="text-3xl text-center text-white leading-tight   opacity-5">
         You are all alone here
       </h1>
-      <p class="font-extrabold text-8xl my-44 text-white animate-bounce">
-        404<br />
-        Page Not Found
-      </p>
+      <div class="flex flex-col my-32">
+        <p class="font-extrabold text-8xl text-white animate-bounce">
+          404<br />
+          Page Not Found
+        </p>
+        <button class="btn w-fit px-6" routerLink="/">
+          <fa-icon icon="home"></fa-icon> BakeSale Homepage
+        </button>
+      </div>
     </div>
   </div>
 </div>
+
+<app-footer></app-footer>
 `
 })
 export class PageNotFound {
