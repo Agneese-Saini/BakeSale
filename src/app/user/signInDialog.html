@@ -1,7 +1,8 @@
-
 <div class="p-6">
     <div class="flex justify-end">
-        <button mat-dialog-close class="link rounded-full text-xl"><fa-icon icon="xmark-circle"></fa-icon></button>
+        <button mat-dialog-close class="link rounded-full text-2xl">
+            <fa-icon icon="xmark-circle"></fa-icon>
+        </button>
     </div>
 
     <div class="mt-12 flex flex-col items-center">
@@ -30,7 +31,7 @@
             </div>
 
             <div class="flex flex-col gap-4 mx-auto max-w-xs">
-                <input type="search" placeholder="Email"
+                <input type="email" placeholder="Email"
                     [class]="'input input-bordered placeholder-gray-350 w-full py-6 ' + (email ? 'outline' : '') + ' ' + (error == true ? 'outline outline-error' : '')"
                     [(ngModel)]="email" />
 
@@ -46,7 +47,7 @@
                     <button class="link link-hover">
                         Forgot Password?
                     </button>
-                    <button class="link link-hover">
+                    <button class="link link-hover" (click)="redirect()">
                         Don't have an Account with us?
                     </button>
                 </div>

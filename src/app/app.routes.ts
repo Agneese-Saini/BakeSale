@@ -11,6 +11,8 @@ import { Subscribe } from './custom/subscribe';
 import { Subscriptions } from './user/subscriptions';
 import { Home } from './home/home';
 import { PageNotFound } from './app.404';
+import { OrderPlaced } from './checkout/order-placed';
+import { authGuard } from './user/user';
 
 export const routes: Routes = [
     {
@@ -30,6 +32,11 @@ export const routes: Routes = [
         component: Checkout
     },
     {
+        path: 'order-placed',
+        component: OrderPlaced,
+        canActivate: [authGuard]
+    },
+    {
         path: 'create',
         component: Recipe
     },
@@ -39,19 +46,23 @@ export const routes: Routes = [
     },
     {
         path: 'order-history',
-        component: OrderHistory
+        component: OrderHistory,
+        canActivate: [authGuard]
     },
     {
         path: 'view-receipt',
-        component: ViewReceipt
+        component: ViewReceipt,
+        canActivate: [authGuard]
     },
     {
         path: 'subscriptions',
-        component: Subscriptions
+        component: Subscriptions,
+        canActivate: [authGuard]
     },
     {
         path: 'recipe-book',
-        component: RecipeBook
+        component: RecipeBook,
+        canActivate: [authGuard]
     },
     {
         path: 'item',

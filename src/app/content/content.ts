@@ -12,12 +12,11 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef, MatDialogMod
 import { MatBottomSheet, MatBottomSheetModule, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { CartItemsDialog } from '../checkout/cartItemDialog';
 import { ActivatedRoute } from '@angular/router';
-import { Footer } from "../footer/footer";
 
 
 @Component({
   selector: 'app-content',
-  imports: [FormsModule, FontAwesomeModule, CategoryItemsList, Logo, Header, MatBottomSheetModule, Footer],
+  imports: [FormsModule, FontAwesomeModule, CategoryItemsList, Logo, Header, MatBottomSheetModule],
   templateUrl: './content.html',
   styleUrl: './content.css'
 })

@@ -2,7 +2,7 @@
 
 <div class="bg-base-300 h-2 my-2"></div>
 
-<div class="flex flex-col gap-2 lg:justify-center lg:items-center">
+<div class="flex flex-col gap-2 lg:justify-center lg:items-center py-4">
   <div class="w-full lg:w-[65vw] lg:shadow-2xl">
     <div class="flex flex-col w-full p-4">
       <h1 class="text-xl font-bold">Order History:</h1>
@@ -53,7 +53,7 @@
               </p>
             </div>
 
-            <span class="text-xs label font-bold">#{{ ($index + 1) | number: '4.0-0' | noComma }}</span>
+            <span class="text-xs label font-bold">#{{ order.id }}</span>
           </div>
 
           <div class="bg-base-100 w-full">

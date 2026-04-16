@@ -108,7 +108,7 @@ export class Subscriptions {
           <fa-icon icon="credit-card"></fa-icon>
           <div class="flex flex-col">
             <p class="font-bold">{{ data.payment!.name }}</p>
-            <p class="text-sm">Visa **** **** **** {{ getLastFourDigits(data.payment!.cardNumber) }}</p>
+            <p class="text-sm">{{ data.payment!.type }} **** **** **** {{ data.payment!.cardNumber ? getLastFourDigits(data.payment!.cardNumber) : data.payment!.name }}</p>
           </div>
         </div>
       </div>

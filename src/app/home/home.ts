@@ -3,7 +3,6 @@ import { Router, RouterModule } from '@angular/router';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { HomeHeader } from "../header/home-header";
 import { DatePipe } from '@angular/common';
-import { Footer } from "../footer/footer";
 import { AutoComplete } from "../header/googleMaps";
 import { IAddress } from '../header/addressDialog';
 import { UserService } from '../user/user';
@@ -20,7 +19,7 @@ export interface IPartner {
 
 @Component({
   selector: 'app-home',
-  imports: [FontAwesomeModule, RouterModule, HomeHeader, DatePipe, Footer, AutoComplete],
+  imports: [FontAwesomeModule, RouterModule, HomeHeader, DatePipe, AutoComplete],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

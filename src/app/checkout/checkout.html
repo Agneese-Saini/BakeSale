@@ -20,14 +20,24 @@
 <div class="bg-base-300 h-2 my-2"></div>
 
 @if (numItems == 0) {
-<div class="flex justify-center p-4">
-  <div class="flex flex-col justify-center items-center gap-2 pt-24 max-w-128">
-    <fa-icon class="text-5xl" icon="shopping-cart"></fa-icon>
-    <h1 class="text-xl">Your cart is empty!</h1>
-    <div class="divider px-24"></div>
-
-    <empty-cart-links></empty-cart-links>
+<div class="flex flex-col items-center justify-center text-center py-32">
+  <!-- Cart Icon -->
+  <div class="rounded-full bg-gray-100 p-6 mb-5">
+    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+      </path>
+    </svg>
   </div>
+
+  <!-- Message -->
+  <h2 class="text-2xl font-semibold text-gray-900">Your cart is empty</h2>
+  <p class="text-gray-500 mt-2 mb-6 max-w-sm">Looks like you haven't added any items to your cart yet.</p>
+
+  <!-- Action Button -->
+  <a routerLink="/shop" class="btn btn-info text-white">
+    Start Shopping
+  </a>
 </div>
 }
 @else {
@@ -60,7 +70,7 @@
     @if (!isPlacingOrder) {
     <checkout-details />
     <button tabindex="0" class="btn btn-neutral btn-lg w-full" (click)="next()">Next</button>
-    } 
+    }
     @else {
     <div class="bg-base-200 rounded-box shadow-lg p-6">
       <input-coupon />
@@ -77,14 +87,16 @@
     </div>
 
     <div class="grid gap-2">
-      <button tabindex="0" class="btn btn-warning btn-lg font-bold w-full" (click)="placeOrder()">Place Order</button>
+      <button tabindex="0" class="btn btn-warning btn-lg font-bold w-full" (click)="placeOrder()">
+        {{ isLoggedIn ? 'Place Order' : 'Login to Place Order' }}
+      </button>
       <button class="btn btn-soft btn-lg w-full" (click)="isPlacingOrder=false;">Back</button>
     </div>
     }
   </div>
 </div>
 
-<div class="flex w-full justify-items-center hidden lg:block p-4">
+<div class="flex w-full justify-items-center hidden lg:block p-16">
   <div class="flex gap-4 w-fit">
     <div class="flex flex-col gap-4 flex-2">
       <checkout-details />
@@ -106,7 +118,9 @@
       </div>
 
       <footer>
-        <button class="btn btn-warning btn-lg font-bold w-full" (click)="placeOrder()">Place Order</button>
+        <button class="btn btn-warning btn-lg font-bold w-full" (click)="placeOrder()">
+          {{ isLoggedIn ? 'Place Order' : 'Login to Place Order' }}
+        </button>
       </footer>
     </div>
   </div>

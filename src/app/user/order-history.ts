@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output, Pipe, PipeTransform } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Injectable, Input, Output, Pipe, PipeTransform } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { IPayMethod, IUser, UserService } from './user';
 import { Cart, CartService } from '../checkout/cart';
-import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { DeliveryService, DeliveryType } from '../header/addressBook';
 import { OrderItems } from "./view-receipt";
 import { IAddress } from '../header/addressDialog';
@@ -14,6 +14,7 @@ import { CategoryItemsList } from "../content/itemList";
 import { PageHeader } from "../header/page-header";
 
 export interface IOrderHistory {
+  id?: string,
   tipAmount: number,
   gstPercentage: number,
   pstPercentage: number,
@@ -28,23 +29,10 @@ export interface IOrderHistory {
   payment: IPayMethod,
   deliveryType?: DeliveryType,
   deliveryInstructions?: string,
-  statusTime?: number
+  statusTime?: number,
+  user?: string,
+  driver?: string,
 };
-
-
-@Pipe({
-  name: 'noComma',
-  standalone: true // Add standalone: true if using standalone components
-})
-export class NoCommaPipe implements PipeTransform {
-  transform(value: number | string | null): string {
-    if (value !== undefined && value !== null) {
-      // Convert to string and remove all commas globally (the 'g' flag)
-      return value.toString().replace(/,/g, "");
-    }
-    return "";
-  }
-}
 
 
 @Component({
@@ -121,7 +109,7 @@ export class CountdownTimer {
 
 @Component({
   selector: 'order-history',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe, DatePipe, OrderItems, NoCommaPipe, CountdownTimer, PageHeader],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, DecimalPipe, DatePipe, OrderItems, CountdownTimer, PageHeader],
   templateUrl: "order-history.html"
 })
 export class OrderHistory {

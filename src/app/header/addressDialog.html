@@ -8,6 +8,7 @@
       <h1 class="text-4xl font-bold">Add an Address</h1>
       }
       
+      @if (showAddressInfo || isAnExistingAddress) {
       <div class="flex flex-col items-center">
         <button class="btn text-lg tooltip tooltip-left" data-tip="Mark Favourite" (click)="address.isFavourite=!address.isFavourite">
           @if (address.isFavourite) {
@@ -21,6 +22,7 @@
         <p class="label text-xs">Favourite</p>
         }
       </div>
+      }
     </div>
   </div>
 
@@ -132,16 +134,21 @@
       }
     </fieldset>
     }
+    @else {
+        <button class="btn btn-soft w-full" (click)="showAddressInfo = true;">
+          Enter Address Info <fa-icon icon="pencil"></fa-icon>
+        </button>
+    }
   </div>
 
   <div mat-dialog-actions>
     <div class="flex justify-between w-full">
-      <div class="flex gap-2">
+      <div class="flex gap-2">        
         @if (isAnExistingAddress) {
         <button class="btn btn-neutral" (click)="saveAddress()">
           Save
         </button>
-        <button class="btn bg-base-100 text-error" (click)="deleteAddress(address.label)">
+        <button class="btn btn-error btn-soft" (click)="deleteAddress(address.label)">
           Delete
         </button>
         }
@@ -151,15 +158,10 @@
           Add Address
         </button>
         }
-        @else {
-        <button class="btn btn-neutral" (click)="showAddressInfo = true;">
-          Enter Address <fa-icon icon="pencil"></fa-icon>
-        </button>
-        }
         }
       </div>
 
-      <button class="btn btn-soft" (click)="cancel()">
+      <button class="btn btn-ghost" (click)="cancel()">
         Cancel
       </button>
     </div>

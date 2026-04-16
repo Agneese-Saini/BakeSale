@@ -155,7 +155,7 @@ export class Recipe {
 
   protected get currentChoice() {
     const choiceList = this.layers.get(this.selectedLayer);
-    return choiceList && this.selectedChoice
+    return (choiceList != undefined && this.selectedChoice != undefined)
       ? choiceList.get(this.selectedChoice)
       : undefined;
   }
@@ -452,7 +452,7 @@ export class Recipe {
           if (this.selectedLayer != 1) {
             this.onSelectLayer(--this.selectedLayer);
             const lastChoice = [...choiceList.keys()].at(-1);
-            if (lastChoice) {
+            if (lastChoice != undefined) {
               this.onSelectChoice(lastChoice);
             }
             return;
@@ -460,7 +460,7 @@ export class Recipe {
         } else {
           const currentChoiceIndex = [...choiceList.keys()].findIndex(value => (value == this.selectedChoice));
           const previousChoice = [...choiceList.keys()].at(currentChoiceIndex - 1);
-          if (previousChoice) {
+          if (previousChoice != undefined) {
             this.onSelectChoice(previousChoice);
             return;
           }

@@ -1,8 +1,11 @@
-import { Component, Injectable, Input } from '@angular/core';
+import { Component, inject, Injectable } from '@angular/core';
 import { IRecipe } from '../custom/recipe';
 import { BehaviorSubject } from 'rxjs';
 import { IOrderHistory } from './order-history';
 import { ISubscription } from '../custom/subscribe';
+import { MatDialog } from '@angular/material/dialog';
+import { CanActivateFn, provideRouter, Router } from '@angular/router';
+import { routes } from '../app.routes';
 
 export enum UserRole {
   Guest = 0,
@@ -14,9 +17,9 @@ export enum UserRole {
 
 export interface IPayMethod {
   name: string,
-  cardNumber: string,
-  icon?: string,
-  type?: string
+  type: string,
+  cardNumber?: string,
+  icon?: string
 };
 
 export interface IUser {
@@ -29,6 +32,7 @@ export interface IUser {
   subscriptions?: ISubscription[],
   savedPayMethods?: IPayMethod[]
 };
+
 
 @Injectable({
   providedIn: 'root' // Makes the service a singleton and available throughout the app
@@ -43,6 +47,19 @@ export class UserService {
   private _user = new BehaviorSubject<IUser>(UserService.DefaultUser);
   public user$ = this._user.asObservable(); // Expose as Observable
 
+  constructor(
+    private dialog: MatDialog) { }
+
+  public get id() {
+    let value = this._user.value;
+    return value.name;
+  }
+
+  public isLoggedIn() {
+    let value = this._user.value;
+    return value.userRole != UserRole.Guest;
+  }
+
   public login(name: string, password: string) {
     let value: IUser = {
       name: 'Agneese',
@@ -55,12 +72,6 @@ export class UserService {
     this._user.next(UserService.DefaultUser);
   }
 
-  public guest() {
-    let value = this._user.value;
-    value.userRole = UserRole.Customer;
-    this._user.next(value);
-  }
-
   public addOrder(order: IOrderHistory) {
     let value = this._user.value;
     if (!value.orders) {
@@ -68,7 +79,6 @@ export class UserService {
     }
 
     value.orders.push(order);
-
     this._user.next(value);
   }
 
@@ -90,6 +100,18 @@ export class UserService {
     this._user.next(value);
   }
 }
+
+export const authGuard: CanActivateFn = (route, state) => {
+  const authService = inject(UserService);
+  const router = inject(Router);
+
+  if (authService.isLoggedIn()) {
+    return true; // Access granted
+  } else {
+    // Redirect to home page
+    return router.parseUrl('/'); 
+  }
+};
 
 
 @Component({

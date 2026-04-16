@@ -8,10 +8,11 @@ import { SideDrawer } from "./sidedrawer/sidedrawer";
 import { CheckoutDrawer } from './checkout/checkout-drawer';
 import { filter } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { Footer } from "./footer/footer";
 
 @Component({
   selector: 'app-root',
-  imports: [FormsModule, RouterOutlet, SideDrawer, CheckoutDrawer],
+  imports: [FormsModule, RouterOutlet, SideDrawer, CheckoutDrawer, Footer],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

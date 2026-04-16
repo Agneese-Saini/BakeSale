@@ -125,7 +125,7 @@
         <div class="flex gap-4 text-lg items-center">
           <fa-icon icon="credit-card"></fa-icon>
           <div class="flex flex-col">
-            <b>Visa **** {{ getLastFourDigits(order.payment.cardNumber) }}</b>
+            <b>{{ order.payment.type }} **** {{ order.payment.cardNumber ? getLastFourDigits(order.payment.cardNumber) : order.payment.name }}</b>
             <p class="label text-sm"><i>15 Jan, 2053</i> at <i>12:45pm</i></p>
           </div>
         </div>
@@ -143,18 +143,19 @@
 </div>
 }
 @else {
-<div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-  <div class="mx-auto max-w-screen-sm text-center">
-    <h1 class="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600">
-      404
-    </h1>
-    <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">
-      Sorry, we can't find the recipt you're looking for.
-    </p>
-    <br />
-    <a href="#" class="btn btn-soft">
-      Back to Homepage
-    </a>
+<div class="flex flex-col items-center justify-center text-center py-32">
+  <!-- Cart Icon -->
+  <div class="rounded-full bg-gray-100 p-6 mb-5 text-4xl">
+    <fa-icon icon="receipt"></fa-icon>
   </div>
+
+  <!-- Message -->
+  <h2 class="text-2xl font-semibold text-gray-900">Receipt Not Found</h2>
+  <p class="text-gray-500 mt-2 mb-6 max-w-sm">Sorry, we can't find the recipt you're looking for. Please contact us for help regarding an order.</p>
+
+  <!-- Action Button -->
+  <a routerLink="/shop" class="btn btn-info text-white">
+    Goto Homepage
+  </a>
 </div>
 }

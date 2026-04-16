@@ -19,7 +19,7 @@
 
 @if (item) {
 <div class="flex flex-col items-center">
-  <div class="flex flex-col lg:w-[65vw]">
+  <div class="flex flex-col w-full lg:w-[65vw] min-h-screen">
     @if (item.notify) {
     <div class="w-full p-2 lg:p-0 lg:pb-2">
       <div class="card bg-base-300 w-full">
@@ -180,7 +180,7 @@
       </div>
     </div>
 
-    <div class="w-full bg-base-300 lg:bg-base-200 lg:mb-6">
+    <div class="w-full bg-base-300 lg:bg-base-200 lg:mb-6 pb-32">
       <div class="flex flex-col">
         @if (this.item.details) {
         <div class="flex flex-col p-4">

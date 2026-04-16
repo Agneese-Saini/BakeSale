@@ -182,28 +182,10 @@ export class CartService {
     for (let [key, value] of cart) {
       for (let item of value) {
         const count = Item.getAmount(item);
-        time += count * ((item.prepTime != undefined ? item.prepTime : defaultPrepTime) * 60000/*Convert into milliseconds*/);
+        time += count * ((item.prepTime != undefined ? item.prepTime : defaultPrepTime) * 60000/*Convert mins into milliseconds*/);
       }
     }
 
     return time;
   }
 };
-
-
-@Component({
-  selector: 'empty-cart-links',
-  imports: [FormsModule, FontAwesomeModule],
-  template: `
-<div class="flex flex-wrap gap-2 m-2 justify-center">
-  <a class="link">Find Deals</a>
-  <a class="link">Weekly Flyers</a>
-  <a class="link">Cannabis Deals</a>
-  <a class="link">Buy One Get One</a>
-  <a class="link">Order Snacks</a>
-  <a class="link">Your Order History</a>
-</div>
-`
-})
-export class EmptyCartLinks {
-}

@@ -1,10 +1,9 @@
 import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { Footer } from "./footer/footer";
 
 @Component({
-  imports: [FontAwesomeModule, RouterModule, Footer],
+  imports: [FontAwesomeModule, RouterModule],
   template: `
 <div class="bg-indigo-900 relative overflow-hidden h-[100vh]">
   <img
@@ -29,8 +28,6 @@ import { Footer } from "./footer/footer";
     </div>
   </div>
 </div>
-
-<app-footer></app-footer>
 `
 })
 export class PageNotFound {

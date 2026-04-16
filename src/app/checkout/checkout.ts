@@ -1,21 +1,23 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, Injectable } from '@angular/core';
 import { AddressBook, AddressBookDialog, DeliveryService, DeliveryType, IDeliverySettings } from '../header/addressBook';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { DeliveryMode } from '../header/addressBook';
-import { CartService, Cart, EmptyCartLinks } from './cart';
+import { CartService, Cart } from './cart';
 import { KeyValuePipe } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogConfig, MatDialogRef, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { TimeslotsDialog } from '../header/timeslots';
 import { Router, RouterModule } from '@angular/router';
 import { IOrderHistory } from '../user/order-history';
-import { UserService } from '../user/user';
+import { IPayMethod, UserService } from '../user/user';
 import { ItemChoiceList } from '../content/itemChoice';
 import { CartItemList } from './cartItemList';
 import { Receipt } from './receipt';
 import { AddressDialog, BuildingType, IAddress } from '../header/addressDialog';
-import { AddTip, TipAmountDialog } from './tip';
+import { AddTip } from './tip';
+import { SignInDialog } from '../user/signUpDialog';
+import { BehaviorSubject } from 'rxjs';
 
 export enum DriverTip {
   Tip_10 = 10,
@@ -24,6 +26,53 @@ export enum DriverTip {
   Tip_30 = 30,
   Tip_Custom = 0
 };
+
+
+@Injectable({
+  providedIn: 'root' // Makes the service a singleton and available throughout the app
+})
+export class OrderService {
+
+  private _orders = new BehaviorSubject<IOrderHistory[]>([]);
+  public orders$ = this._orders.asObservable(); // Expose as Observable
+
+  public addOrder(order: IOrderHistory, user: UserService): string {
+    let orders = this._orders.value;
+
+    // Generate unique order ID
+    const uniqueId = order.date + '' + user.id;
+    const orderId = this.generateHash(uniqueId, 7);
+    order.id = orderId;
+
+    // Add order to user's order history
+    user.addOrder(order);
+
+    // Add order to global order history (so admins can track without logging in user accounts)
+    let globalOrder = structuredClone(order);
+    globalOrder.user = user.id;
+    orders.push(globalOrder);
+    this._orders.next(orders);
+
+    return orderId;
+  }
+
+  private generateHash(str: string, length: number): string {
+    let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+    for (let i = 0, ch; i < str.length; i++) {
+      ch = str.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761);
+      h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
+    h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
+    h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+
+    const fullHash = (h2 >>> 0).toString(16).padStart(8, '0') + (h1 >>> 0).toString(16).padStart(8, '0');
+    return fullHash.substring(0, length);
+  }
+}
+
 
 @Component({
   selector: 'input-coupon',
@@ -187,11 +236,15 @@ export class CheckoutCoupon {
     <h1 class="text-2xl font-semibold">Payment</h1>
     <div class="flex justify-between items-center p-2">
       <div class="flex gap-4 text-lg p-2 items-center">
-        <fa-icon [class]="deliverySettings.payment ? '' : 'text-error'" icon="credit-card"></fa-icon>
-        <a [class]="'link flex flex-col ' + (deliverySettings.payment ? '' : 'text-error')" style="text-decoration: none;">
+        @if (deliverySettings.payment && deliverySettings.payment.icon) {
+        <fa-icon [icon]="['fab', deliverySettings.payment.icon]"></fa-icon>         
+        } @else {
+        <fa-icon [class]="!deliverySettings.payment ? 'text-error' : ''" icon="credit-card"></fa-icon> 
+        }
+        <a [class]="'link flex flex-col ' + (deliverySettings.payment ? '' : 'text-error')" style="text-decoration: none;" (click)="openPaymentMethodDialog()">
           <p [class]="deliverySettings.payment ? 'font-bold' : ''">{{ deliverySettings.payment ? deliverySettings.payment.name : 'Select Payment method' }}</p>
-          @if (deliverySettings.payment) {
-          <p class="text-sm">Visa **** **** **** {{ getLastFourDigits(deliverySettings.payment.cardNumber) }}</p>
+          @if (deliverySettings.payment && deliverySettings.payment.cardNumber) {
+          <p class="text-sm">{{ deliverySettings.payment.type }} **** **** **** {{ getLastFourDigits(deliverySettings.payment.cardNumber) }}</p>
           }
         </a>
       </div>
@@ -242,7 +295,7 @@ export class CheckoutDetails {
     this.deliveryService.addressBook$.subscribe(data => {
       this.addressBook = data;
       this.cdr.detectChanges();
-    }); 
+    });
   }
 
   protected getLastFourDigits(cardNumber: string): string {
@@ -289,8 +342,15 @@ export class CheckoutDetails {
   }
 
   protected openPaymentMethodDialog() {
-    this.deliverySettings.payment = { name: "TIGHT", cardNumber: "0000000000001234" };
-    this.deliveryService.setDeliverySetting(this.deliverySettings);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = "";
+    dialogConfig.width = '90%';
+
+    const dialogRef = this.dialog.open(PaymentMethodDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cdr.detectChanges();
+    });
   }
 }
 
@@ -343,7 +403,7 @@ export class CheckoutCart {
 
 @Component({
   selector: 'app-checkout',
-  imports: [FormsModule, FontAwesomeModule, RouterModule, CheckoutCoupon, CheckoutDetails, EmptyCartLinks, CheckoutCart, Receipt],
+  imports: [FormsModule, FontAwesomeModule, RouterModule, CheckoutCoupon, CheckoutDetails, CheckoutCart, Receipt],
   templateUrl: './checkout.html',
   styleUrl: './checkout.css'
 })
@@ -363,11 +423,17 @@ export class Checkout {
     return CartService.totalItems(this.shoppingCart);
   }
 
+  protected get isLoggedIn() {
+    return this.userService.isLoggedIn();
+  }
+
   constructor(
     private deliveryService: DeliveryService,
     private cartService: CartService,
+    private orderService: OrderService,
     private userService: UserService,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog,
     private router: Router,
     private cdr: ChangeDetectorRef) { }
 
@@ -441,6 +507,20 @@ export class Checkout {
   }
 
   protected placeOrder() {
+    if (!this.isLoggedIn) {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.panelClass = "";
+      dialogConfig.data = undefined;
+      dialogConfig.height = "90%";
+      const dialogRef = this.dialog.open(SignInDialog, dialogConfig);
+
+      dialogRef.afterClosed().subscribe(() => {
+        this.cdr.detectChanges();
+      });
+
+      return;
+    }
+
     const hasError = this.showChoiceErrors();
     if (hasError || this.showDetailErrors()) {
       this.snackBar.open("Please fix the errors before proceeding.", "Close", {
@@ -450,6 +530,9 @@ export class Checkout {
     }
 
     const CurrentTime = Date.now();
+    const estimatedTime = CurrentTime
+      + CartService.prepTime(this.shoppingCart)
+      + ((this.deliverySettings.mode == DeliveryMode.Delivery ? 20 : 0) * 60000/*Convert mins into milliseconds*/);
 
     const order: IOrderHistory = {
       tipAmount: this.deliverySettings.mode == DeliveryMode.Delivery ? AddTip.getAmount(CartService.subTotal(this.shoppingCart), this.deliverySettings.tip, this.deliverySettings.tipAmount) : 0,
@@ -460,15 +543,16 @@ export class Checkout {
       couponDiscount: this.couponDiscount,
       cart: structuredClone(this.shoppingCart),
       date: CurrentTime,
-      estimatedTime: CurrentTime + CartService.prepTime(this.shoppingCart),
+      estimatedTime: estimatedTime,
       time: this.deliverySettings.time!,
       address: this.deliverySettings.address!,
       payment: this.deliverySettings.payment!
     };
 
-    this.userService.addOrder(order);
+    const orderId = this.orderService.addOrder(order, this.userService);
+    console.log("orderId: " + orderId)
     this.shoppingCart.clear();
-    this.router.navigate(['/shop']);
+    this.router.navigate(['/order-placed', { id: orderId }]);
 
     this.snackBar.open("Order placed!", "Close", {
       duration: 2500
@@ -476,9 +560,8 @@ export class Checkout {
   }
 }
 
-
 @Component({
-  imports: [FormsModule, FontAwesomeModule, KeyValuePipe, MatDialogContent, MatDialogActions],
+  imports: [FormsModule, FontAwesomeModule, KeyValuePipe, MatDialogModule],
   template: `
 <div class="bg-base-200">
   <div mat-dialog-content class="flex flex-col"> 
@@ -518,7 +601,7 @@ export class Checkout {
       }
     </p>
     
-    <div class="bg-base-300 rounded-box mt-2 overflow-x-auto">
+    <div class="bg-base-300 rounded-box mt-2 max-h-72 overflow-y-auto">
       <div class="flex">
         <table class="table table-zebra">
           <tbody>
@@ -529,7 +612,7 @@ export class Checkout {
                   <span class="label-text text-xl">
                     {{ type.value }}
                   </span>
-                  <input type="radio" name="times" class="radio" [checked]="this.selectedOption == type.value" [value]="type.value" [(ngModel)]="selectedOption" />
+                  <input type="radio" name="delivery" class="radio" [checked]="this.selectedOption == type.value" [value]="type.value" [(ngModel)]="selectedOption" />
                 </label>
               </td>
             </tr>
@@ -572,7 +655,7 @@ export class DeliveryInstructionsDialog {
 
   constructor(
     private deliveryService: DeliveryService,
-    private dialogRef: MatDialogRef<TipAmountDialog>,
+    private dialogRef: MatDialogRef<DeliveryInstructionsDialog>,
     private cdr: ChangeDetectorRef) { }
 
   protected ngOnInit() {
@@ -609,3 +692,164 @@ export class DeliveryInstructionsDialog {
   }
 }
 
+
+@Component({
+  imports: [FormsModule, FontAwesomeModule, MatDialogModule],
+  template: `
+<div class="bg-base-200">
+  <div mat-dialog-content class="flex flex-col"> 
+    <h2 class="text-4xl font-bold">Select Payment Method</h2>
+    <br />
+
+    <div class="bg-base-300 rounded-box max-h-72 overflow-y-auto">
+      <div class="flex">
+        <table class="table table-zebra">
+          <tbody>
+            @for (pay of paymentMethods; track $index) {
+            <tr class="h-12">
+              <td>
+                <label class="label cursor-pointer flex justify-between">
+                  <span class="label-text text-xl">
+                    {{ pay.name }}
+                  </span>
+                  <input type="radio" name="payments" class="radio" [checked]="this.selectedOption == pay" [value]="pay" [(ngModel)]="selectedOption" />
+                </label>
+              </td>
+            </tr>
+            }
+            <tr class="h-12">
+              <td>
+                <label class="label cursor-pointer flex justify-between">
+                  <span class="label-text text-xl">
+                    <fa-icon [icon]="['fab', googlePay.icon!]"></fa-icon> {{ googlePay.name }}
+                  </span>
+                  <input type="radio" name="payments" class="radio" [checked]="this.selectedOption == googlePay" [value]="googlePay" [(ngModel)]="selectedOption" />
+                </label>
+              </td>
+            </tr>
+            <tr class="h-12">
+              <td>
+                <label class="label cursor-pointer flex justify-between">
+                  <span class="label-text text-xl">
+                    <fa-icon [icon]="['fab', applePay.icon!]"></fa-icon> {{ applePay.name }}
+                  </span>
+                  <input type="radio" name="payments" class="radio" [checked]="this.selectedOption == applePay" [value]="applePay" [(ngModel)]="selectedOption" />
+                </label>
+              </td>
+            </tr>
+            <tr class="h-12">
+              <td>
+                <label class="label cursor-pointer flex justify-between">
+                  <span class="label-text text-xl">
+                    <fa-icon [icon]="['fab', payPal.icon!]"></fa-icon> {{ payPal.name }}
+                  </span>
+                  <input type="radio" name="payments" class="radio" [checked]="this.selectedOption == payPal" [value]="payPal" [(ngModel)]="selectedOption" />
+                </label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="flex justify-between mt-1">
+      <button class="btn btn-soft btn-warning btn-sm">
+        <fa-icon icon="circle-plus"></fa-icon> Add New Payment method
+      </button>
+      <button class="btn btn-soft btn-sm">Manage</button>
+    </div>
+    <br />
+
+    @if (!isLoggedIn) {
+    <p>It appears that you are not signed in?</p>
+    <button class="btn btn-ghost" (click)="promptLogin()">Login</button>
+    }
+  </div>
+
+  <div mat-dialog-actions class="flex flex-col gap-2">
+    <button class="btn btn-neutral w-full" (click)="onSave()">
+      Save
+    </button>
+    <button class="btn bg-base-100 w-full" (click)="onClose()">
+      Cancel
+    </button>
+  </div>
+</div>
+`
+})
+export class PaymentMethodDialog {
+
+  static readonly GooglePay: IPayMethod = {
+    name: 'Google Pay',
+    icon: 'google-pay',
+    type: 'GooglePay'
+  };
+
+
+  static readonly ApplePay: IPayMethod = {
+    name: 'Apple Pay',
+    icon: 'apple-pay',
+    type: 'ApplePay'
+  };
+
+  static readonly PayPal: IPayMethod = {
+    name: 'Pay Pal',
+    icon: 'paypal',
+    type: 'PayPal'
+  };
+
+  readonly googlePay = PaymentMethodDialog.GooglePay;
+  readonly applePay = PaymentMethodDialog.ApplePay;
+  readonly payPal = PaymentMethodDialog.PayPal;
+
+  protected paymentMethods: IPayMethod[] = [];
+  protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
+  protected selectedOption?: IPayMethod;
+
+  protected get isLoggedIn() {
+    return this.userService.isLoggedIn();
+  }
+
+  constructor(
+    private dialogRef: MatDialogRef<PaymentMethodDialog>,
+    private dialog: MatDialog,
+    private userService: UserService,
+    private deliveryService: DeliveryService,
+    private cdr: ChangeDetectorRef) { }
+
+  protected ngOnInit() {
+    this.deliveryService.deliverySettings$.subscribe(data => {
+      this.deliverySettings = data;
+      this.selectedOption = data.payment;
+      this.cdr.detectChanges();
+    });
+
+    this.userService.user$.subscribe(data => {
+      this.paymentMethods = data.savedPayMethods ? data.savedPayMethods : [];
+      this.cdr.detectChanges();
+    });
+  }
+
+  protected promptLogin() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = "";
+    dialogConfig.data = undefined;
+    dialogConfig.height = "90%";
+    const dialogRef = this.dialog.open(SignInDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cdr.detectChanges();
+    });
+  }
+
+  protected onSave() {
+    this.deliverySettings.payment = this.selectedOption;
+    this.deliveryService.setDeliverySetting(this.deliverySettings);
+
+    this.dialogRef.close();
+  }
+
+  protected onClose() {
+    this.dialogRef.close();
+  }
+}

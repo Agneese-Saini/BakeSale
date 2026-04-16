@@ -142,7 +142,7 @@ export class Receipt {
   }
 
   protected getCustomText(): string {
-    if (this.order) {
+    if (this.order && this.order.payment.cardNumber) {
       const type = this.order.payment.type;
       const lastFour = this.order.payment.cardNumber.slice(-4);
       return type + " **** " + lastFour;

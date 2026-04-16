@@ -16,6 +16,7 @@ import { IAddress, AddressDialog } from "../header/addressDialog";
 import { UserService } from "../user/user";
 import { ISubscription } from "./subscribe";
 import { SubscribeItemList } from "./subscribeItemList";
+import { PaymentMethodDialog } from "../checkout/checkout";
 
 
 @Component({
@@ -74,7 +75,7 @@ import { SubscribeItemList } from "./subscribeItemList";
           <a [class]="'link flex flex-col ' + (deliverySettings.payment ? '' : 'text-error')" style="text-decoration: none;">
             <p [class]="deliverySettings.payment ? 'font-bold' : ''">{{ deliverySettings.payment ? deliverySettings.payment.name : 'Select Payment method' }}</p>
             @if (deliverySettings.payment) {
-            <p class="text-sm">Visa **** **** **** {{ getLastFourDigits(deliverySettings.payment.cardNumber) }}</p>
+            <p class="text-sm">{{ deliverySettings.payment.type }} **** **** **** {{ deliverySettings.payment.cardNumber ? getLastFourDigits(deliverySettings.payment.cardNumber) : deliverySettings.payment.name }}</p>
             }
           </a>
         </div>
@@ -181,8 +182,15 @@ export class SubscribeDialog {
   }
 
   protected openPaymentMethodDialog() {
-    this.deliverySettings.payment = { name: "TIGHT", cardNumber: "0000000000001234" };
-    this.deliveryService.setDeliverySetting(this.deliverySettings);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = "";
+    dialogConfig.width = '90%';
+
+    const dialogRef = this.dialog.open(PaymentMethodDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cdr.detectChanges();
+    });
   }
 
   protected checkout() {
