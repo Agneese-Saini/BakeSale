@@ -76,8 +76,8 @@ export class CategoryService {
 		},
 		{
 			name: "Desserts", icon: "ice-cream", hidden: true, subcats:
-				[{ name: "Puddings", fontSize: 2 }, 
-				{ name: "Pies", fontSize: 2 }, 
+				[{ name: "Puddings", fontSize: 2 },
+				{ name: "Pies", fontSize: 2 },
 				{ name: "Ice Cream", fontSize: 2 },
 				{ name: "BakeSale Special", fontSize: 2 }
 				]
@@ -116,6 +116,9 @@ export class CategoryService {
 	private _categories = new BehaviorSubject<ICategory[]>(this.categoryList);
 	public categories$ = this._categories.asObservable(); // Expose as Observable
 
+	private _tags = new BehaviorSubject<Map<string, boolean>>(new Map());
+	public tags$ = this._tags.asObservable(); // Expose as Observable
+
 	constructor() {
 		// Setting every category to 'checked' by default
 		for (let cat of this.categoryList) {
@@ -123,6 +126,8 @@ export class CategoryService {
 		}
 
 		this.loadCategories();
+
+		this.loadTags();		
 	}
 
 	public loadCategories() {
@@ -183,7 +188,7 @@ export class CategoryService {
 						vitae. Aenean volutpat vehicula orci, ut consequat enim auctor sed. Vestibulum mi erat, accumsan eget ligula vel,\
 						 posuere pellentesque justo. Aenean dui orci, imperdiet vel sapien i",
 				ingredients: "Flour, sugar, eggs, fat (butter/oil), liquid (milk), leavening (baking powder/soda), salt, and flavor (vanilla extract)",
-				image: [ "https://cdn.prod.website-files.com/614a379840dbad1848e598c2/679906d29abceb2bbceb0696_679905de4268ad4dc4eae460_IMG_1630.jpeg" ],
+				image: ["https://cdn.prod.website-files.com/614a379840dbad1848e598c2/679906d29abceb2bbceb0696_679905de4268ad4dc4eae460_IMG_1630.jpeg"],
 				amount: 0,
 				author: "MyNameIsShady",
 				details: [
@@ -251,7 +256,7 @@ export class CategoryService {
 				]
 			});
 		}
-		
+
 		category = Category.findCategory("Unsalted", this.categoryList, "Canna Butter");
 		if (category) {
 			Category.addItem(category, {
@@ -296,6 +301,36 @@ export class CategoryService {
 		}
 
 		this._categories.next(this.categoryList);
+	}
+
+	public loadTags(category?: ICategory) {
+		if (category) {
+			
+		}
+		else {
+			// Default tags
+			this._tags.next(
+				new Map([
+					['Chocolate', false],
+					['Vanilla', false],
+					['Butterscotch', false],
+					['Ice cream', false],
+					['Sprinkle', false],
+					['Velvet', false]
+				])
+			);
+		}
+	}
+
+	public toggleTag(tag: string) {
+		const tags = this._tags.value;
+		const value = tags.get(tag);
+
+		if (value != undefined) {
+			tags.set(tag, !value);
+		}
+
+		this._tags.next(tags);
 	}
 };
 
@@ -531,7 +566,7 @@ export class Category {
 				num += this.numItems(subcat);
 			}
 		}
-		
+
 		return num;
 	}
 };

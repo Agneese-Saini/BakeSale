@@ -4,12 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ITime, ITimeSlot, TimeslotsDialog } from './timeslots';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA, MatDialogClose, MatDialogContent, MatDialogActions, MatDialogTitle, MatDialogModule } from '@angular/material/dialog';
 import { AddressBookAction, AddressDialog, BuildingType, IAddress, Province } from './addressDialog';
 import { Category, ICategory } from './category';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DriverTip } from '../checkout/checkout';
-import { IPayMethod } from '../user/user';
+import { IPayMethod, UserService } from '../user/user';
 import { AutoComplete } from "./googleMaps";
 
 export const enum DeliveryMode {
@@ -65,19 +65,26 @@ export class DeliveryService {
   private _timeSlots = new BehaviorSubject<ITimeSlot[]>([]);
   public timeSlots$ = this._timeSlots.asObservable();
 
-  constructor() {
+  private userAddressBook: IAddress[] = [];
+
+  constructor(
+    private userService: UserService) {
+
     const defaultMode = this._deliverySettings.value.mode;
     // Update timeslots
     this.loadTimeslots(defaultMode);
-    // Update address book
-    this.loadAddressBook(defaultMode);
-
     // check if can get current time
     if (false) {
       let value = this._deliverySettings.value;
       value.timeslot = AddressBook.TimeNow;
       this.setDeliverySetting(value);
     }
+
+    this.userService.addressBook$.subscribe(data => {
+      this.userAddressBook = data;
+      // Update address book
+      this.loadAddressBook(defaultMode);
+    });
   }
 
   public setDeliverySetting(settings: IDeliverySettings) {
@@ -116,13 +123,7 @@ export class DeliveryService {
     // Delivery
     if (mode == DeliveryMode.Delivery) {
       // load user address book
-      this.addAddress({
-        label: "Home",
-        addressLine: "Area 51",
-        city: "Winnipeg",
-        province: Province.MB,
-        postal: "R1W 2G3"
-      });
+      this._addressBook.next(this.userAddressBook);
     }
     // Pickup
     else if (mode == DeliveryMode.Pickup) {
@@ -151,8 +152,8 @@ export class DeliveryService {
     }
     else if (nullLabel == true) {
       address.label = address.label.trim();
-      address.map = { 
-        position: { lat: 0, lng: 0 } 
+      address.map = {
+        position: { lat: 0, lng: 0 }
       };
 
       if (!address.province) {
@@ -446,8 +447,7 @@ export class AddressBook {
   }
 
   static printAddress(address: IAddress): string {
-    return address.addressLine
-      + (address.apt ? (' #' + address.apt) : '') + ', '
+    return address.addressLine + (address.apt ? (' #' + address.apt) : '') + ', '
       + address.city + ' • '
       + address.province + ' '
       + address.postal;
@@ -460,11 +460,39 @@ export class AddressBook {
 
 
 @Component({
-  imports: [FormsModule, FontAwesomeModule, AddressBook, MatDialogContent],
+  imports: [FormsModule, FontAwesomeModule, AddressBook, MatDialogModule],
   template: `
 <div class="bg-base-200">
   <div mat-dialog-content>
+    <div class="flex flex-col gap-2">    
+      <h1 class="text- font-bold">
+        @if (isDelivery) {
+        Address Book:
+        } @else {
+        Pickup Locations:
+        }
+      </h1>
+
+      @if (isDelivery) {
+      <div class="flex items-start gap-2">
+        <button class="btn btn-neutral rounded-full btn-sm" (click)="openAddressBookDialog()">
+          <fa-icon icon="plus"></fa-icon> Add an Address
+        </button>
+        <button class="btn btn-soft rounded-full btn-sm tooltip" data-tip="Use Current location" (click)="openAddressBookDialog()">
+          <fa-icon icon="location-crosshairs"></fa-icon>
+        </button>
+      </div>
+      }
+
+    </div>
+
     <address-book [timeslot]="showTimeslots" />
+  </div>
+
+  <div mat-dialog-actions>
+    <button mat-dialog-close class="btn btn-neutral w-full">
+      Close
+    </button>
   </div>
 </div>
 `
@@ -472,11 +500,39 @@ export class AddressBook {
 export class AddressBookDialog {
   protected showTimeslots: boolean = true;
 
+  protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
+
+  protected get isDelivery() {
+    return this.deliverySettings.mode == DeliveryMode.Delivery;
+  }
+
   constructor(
+    private deliveryService: DeliveryService,
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef,
     private dialogRef: MatDialogRef<AddressBookDialog>,
     @Inject(MAT_DIALOG_DATA) private data: { timeslot: boolean }) {
+
     if (data) {
       this.showTimeslots = data.timeslot;
     }
+
+    this.deliveryService.deliverySettings$.subscribe(data => {
+      this.deliverySettings = data;
+      this.cdr.detectChanges();
+    });
+  }
+
+  protected openAddressBookDialog(address?: IAddress, lookup?: string) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = "";
+    dialogConfig.data = { address: address, lookup: lookup };
+    dialogConfig.width = '90%';
+
+    const dialogRef = this.dialog.open(AddressDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cdr.detectChanges();
+    });
   }
 };

@@ -701,7 +701,7 @@ export class DeliveryInstructionsDialog {
     <h2 class="text-4xl font-bold">Select Payment Method</h2>
     <br />
 
-    <div class="bg-base-300 rounded-box max-h-72 overflow-y-auto">
+    <div class="bg-base-300 rounded-t-box max-h-72 overflow-y-auto">
       <div class="flex">
         <table class="table table-zebra">
           <tbody>
@@ -710,7 +710,10 @@ export class DeliveryInstructionsDialog {
               <td>
                 <label class="label cursor-pointer flex justify-between">
                   <span class="label-text text-xl">
-                    {{ pay.name }}
+                    {{ pay.name }}&nbsp;
+                    @if (pay.cardNumber) {
+                    **** {{ getLastFourDigits(pay.cardNumber) }}
+                    }
                   </span>
                   <input type="radio" name="payments" class="radio" [checked]="this.selectedOption == pay" [value]="pay" [(ngModel)]="selectedOption" />
                 </label>
@@ -752,11 +755,14 @@ export class DeliveryInstructionsDialog {
       </div>
     </div>
     
-    <div class="flex justify-between mt-1">
-      <button class="btn btn-soft btn-warning btn-sm">
-        <fa-icon icon="circle-plus"></fa-icon> Add New Payment method
+    <div class="flex flex-col">
+      <button class="btn w-full p-6 rounded-none text-neutral-700 text-lg font-medium">
+        <fa-icon icon="circle-plus"></fa-icon> New Payment method
       </button>
-      <button class="btn btn-soft btn-sm">Manage</button>
+
+      <button class="btn btn-soft w-full p-6 rounded-none rounded-b-box text-neutral-700 text-lg font-medium">
+        Edit Selected Payment
+      </button>
     </div>
     <br />
 
@@ -851,5 +857,9 @@ export class PaymentMethodDialog {
 
   protected onClose() {
     this.dialogRef.close();
+  }
+  
+  protected getLastFourDigits(cardNumber: string): string {
+    return cardNumber.slice(-4);
   }
 }

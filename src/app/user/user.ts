@@ -4,8 +4,8 @@ import { BehaviorSubject } from 'rxjs';
 import { IOrderHistory } from './order-history';
 import { ISubscription } from '../custom/subscribe';
 import { MatDialog } from '@angular/material/dialog';
-import { CanActivateFn, provideRouter, Router } from '@angular/router';
-import { routes } from '../app.routes';
+import { CanActivateFn, Router } from '@angular/router';
+import { IAddress, Province } from '../header/addressDialog';
 
 export enum UserRole {
   Guest = 0,
@@ -47,6 +47,15 @@ export class UserService {
   private _user = new BehaviorSubject<IUser>(UserService.DefaultUser);
   public user$ = this._user.asObservable(); // Expose as Observable
 
+  private _addressBook = new BehaviorSubject<IAddress[]>([{
+    label: "Home",
+    addressLine: "Area 51",
+    city: "Winnipeg",
+    province: Province.MB,
+    postal: "R1W 2G3"
+  }]);
+  public addressBook$ = this._addressBook.asObservable(); // Expose as Observable
+
   constructor(
     private dialog: MatDialog) { }
 
@@ -61,15 +70,46 @@ export class UserService {
   }
 
   public login(name: string, password: string) {
-    let value: IUser = {
+    const prevUser = this._user.value;
+    const prevAddressBook = this._addressBook.value;
+
+    // load user address book from cloud
+    let newAddressBook: IAddress[] = [];
+    //
+
+    for (let x of prevAddressBook) {
+      newAddressBook.push(x);
+    }
+    
+    this._addressBook.next(newAddressBook);
+
+    // load user data from cloud
+    let newUser: IUser = {
       name: 'Agneese',
-      userRole: UserRole.Admin
+      userRole: UserRole.Admin,
+      recipeBook: [],
+      savedPayMethods: []
     };
-    this._user.next(value);
+    //
+
+    if (prevUser.recipeBook) {
+      for (const x of prevUser.recipeBook) {
+        newUser.recipeBook!.push(x);
+      }
+    }
+
+    if (prevUser.savedPayMethods) {
+      for (const x of prevUser.savedPayMethods) {
+        newUser.savedPayMethods!.push(x);
+      }
+    }
+
+    this._user.next(newUser);
   }
 
   public logout() {
     this._user.next(UserService.DefaultUser);
+    this._addressBook.next([]);
   }
 
   public addOrder(order: IOrderHistory) {
@@ -101,16 +141,18 @@ export class UserService {
   }
 }
 
-export const authGuard: CanActivateFn = (route, state) => {
+
+export const LoginGuard: CanActivateFn = (route, state) => {
   const authService = inject(UserService);
   const router = inject(Router);
 
   if (authService.isLoggedIn()) {
-    return true; // Access granted
-  } else {
-    // Redirect to home page
-    return router.parseUrl('/'); 
+    // Access granted
+    return true;
   }
+
+  // Redirect to home page
+  return router.parseUrl('/');
 };
 
 

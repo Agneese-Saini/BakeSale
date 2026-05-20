@@ -1,35 +1,32 @@
-import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { AddressBook, DeliveryService, IDeliverySettings } from '../header/addressBook';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule, FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { faYoutube, faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { Category, CategoryService, ICategory } from '../header/category';
 import { CategoryItemsList } from './itemList';
 import { Logo, Header } from "../header/header";
 import { ISocialPost, MediaType } from "./socialPost";
 import { IUser, UserRole, UserService } from '../user/user';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatBottomSheet, MatBottomSheetModule, MatBottomSheetRef } from '@angular/material/bottom-sheet';
-import { CartItemsDialog } from '../checkout/cartItemDialog';
 import { ActivatedRoute } from '@angular/router';
-
+import { KeyValuePipe } from '@angular/common';
 
 @Component({
   selector: 'app-content',
-  imports: [FormsModule, FontAwesomeModule, CategoryItemsList, Logo, Header, MatBottomSheetModule],
+  imports: [FormsModule, FontAwesomeModule, KeyValuePipe, CategoryItemsList, Logo, Header, MatBottomSheetModule],
   templateUrl: './content.html',
   styleUrl: './content.css'
 })
 export class Content {
 
-  readonly faYoutube = faYoutube;
-  readonly faInstagram = faInstagram;
   readonly userRole = UserRole;
 
   protected isActive = Category.isActive;
   protected numItems = Category.numItems;
 
   protected categories: ICategory[] = [];
+  protected tags: Map<string, boolean> = new Map();
   protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
   protected user: IUser = UserService.DefaultUser;
 
@@ -51,6 +48,26 @@ export class Content {
 
   protected get deliveryMode() {
     return AddressBook.DeliveryModes.get(this.deliverySettings.mode);
+  }
+
+  protected get selectedTags() {
+    let tags: string[] = [];    
+    for (let [key, value] of this.tags) {
+      if (value == true) {
+        tags.push(key);
+      }
+    }
+    return tags;
+  }
+
+  protected get numTags() {
+    let num = 0;
+    for (let [key, value] of this.tags) {
+      if (value == true) {
+        ++num;
+      }
+    }
+    return num;
   }
 
   constructor(
@@ -86,6 +103,11 @@ export class Content {
       this.cdr.detectChanges();
     });
 
+    this.categoryService.tags$.subscribe(data => {
+      this.tags = data;
+      this.cdr.detectChanges();
+    });
+
     this.userService.user$.subscribe(data => {
       this.user = data;
       this.cdr.detectChanges();
@@ -106,6 +128,45 @@ export class Content {
     }
 
     this.deliveryService.setDeliverySetting(this.deliverySettings);
+  }
+
+  protected onSelectTag(tag: string) {
+    this.categoryService.toggleTag(tag);
+  }
+
+  protected numResults(category: ICategory): number {
+    let num = 0;
+
+    if (category.customizer == undefined && category.items != undefined) {
+      for (let item of category.items) {
+        if (this.selectedTags) {
+          const itemName = item.name.toLowerCase().trim();
+          let found = false;
+
+          for (let tag of this.selectedTags) {
+            const tagName = tag.toLowerCase().trim();
+            if (itemName.includes(tagName) == true) {
+              found = true;
+              break;
+            }
+          }
+
+          if (!found) {
+            continue;
+          }
+        }
+
+        ++num;
+      }
+    }
+
+    if (category.subcats) {
+      for (let subcat of category.subcats) {
+        num += this.numResults(subcat);
+      }
+    }
+
+    return num;
   }
 
   protected login() {
@@ -133,82 +194,8 @@ export class Content {
     this.deliveryService.setDeliverySetting(this.deliverySettings);
   }
 
-  protected openDialog() {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.panelClass = "";
-    dialogConfig.data = this.deliverySettings.category;
-    dialogConfig.width = '90%';
-
-    const dialogRef = this.dialog.open(JumpToDialog, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.cdr.detectChanges();
-    });
-  }
-
   protected openBottomSheet() {
     this.bottomSheet.open(NotificationSheet);
-  }
-}
-
-
-@Component({
-  imports: [FormsModule, FontAwesomeModule, MatDialogModule],
-  template: `
-<div class="bg-base-300">
-  <h1 mat-dialog-title class="text-4xl font-bold">Categories</h1>
-
-  <div mat-dialog-content>
-    <table class="table table-zebra">
-      <tbody>
-        @for (category of data.subcats; track $index) {
-        <tr class="h-12">
-          <td>
-            <button 
-              [class]="'link label text-lg w-full ' + ((category.items || category.customizer) ? 'text-neutral' : '')" 
-              style="text-decoration: none;"
-              [disabled]="!category.customizer && !category.items"
-              (click)="focusCategory(category)">
-              {{ category.name }} {{ (!category.customizer && category.items) ? ('(' + category.items.length + ')') : (!category.customizer ? '(0)' : '') }}
-            </button>
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-
-  <div mat-dialog-actions>
-    <button class="btn btn-neutral w-full" (click)="closeDialog()">Close</button>
-  </div>
-</div>
-`
-})
-export class JumpToDialog {
-
-  protected deliverySettings: IDeliverySettings = AddressBook.DefaultSettings;
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) protected data: ICategory,
-    private dialogRef: MatDialogRef<CartItemsDialog>,
-    private deliveryService: DeliveryService,
-    private cdr: ChangeDetectorRef) { }
-
-  protected ngOnInit() {
-    this.deliveryService.deliverySettings$.subscribe(data => {
-      this.deliverySettings = data;
-      this.cdr.detectChanges();
-    });
-  }
-
-  protected closeDialog() {
-    this.dialogRef.close();
-  }
-
-  protected focusCategory(category: ICategory) {
-    this.deliverySettings.focusedCategory = category;
-    this.deliveryService.setDeliverySetting(this.deliverySettings);
-    this.closeDialog();
   }
 }
 

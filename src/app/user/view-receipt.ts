@@ -33,22 +33,28 @@ import { Receipt } from "../checkout/receipt";
                   }
 
                   <div class="flex-1 flex justify-between w-full">
-                    <div class="flex flex-col">
-                      <h1>
-                        {{ item.name }}
-                        @if (item.price.buyOneGetOne) {
-                        <b>({{ item.amount * 2 }})</b>
-                        }
-                      </h1>
+                    <div class="flex gap-1 items-center">
+                      <div class="flex flex-col">
+                        <h1>
+                          {{ item.name }}
+                          @if (item.price.buyOneGetOne) {
+                          <b>({{ item.amount * 2 }})</b>
+                          }
+                        </h1>
 
-                      @if (numChoices(item) > 0) {
-                      @let num = numChoices(item);
-                      <p class="font-medium label text-xs">
-                        {{ num }} {{ num == 1 ? 'choice' : 'choices' }}&nbsp;
-                        @if (!hidePrice) {
-                        &bull; <b>{{ '$' }}{{ getChoicesPrice(item) }}</b>
+                        @if (numChoices(item) > 0) {
+                        @let num = numChoices(item);
+                        <p class="font-medium label text-xs">
+                          {{ num }} {{ num == 1 ? 'choice' : 'choices' }}&nbsp;
+                          @if (!hidePrice) {
+                          &bull; <b>{{ '$' }}{{ getChoicesPrice(item) }}</b>
+                          }
+                        </p>
                         }
-                      </p>
+                      </div>
+
+                      @if (item.amount > 1) {
+                      <b class="font-mono">x{{ item.amount }}</b>  
                       }
                     </div>                  
 
@@ -99,6 +105,8 @@ export class OrderItems {
 
   @Input()
   public hidePrice: boolean = false;
+
+
 
   protected numChoices = Item.numChoices;
   protected getChoicesPrice = Item.getChoicesPrice;

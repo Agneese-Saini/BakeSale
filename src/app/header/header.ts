@@ -72,7 +72,7 @@ export class Logo {
     @if (categoryMenu) {
     <div class="dropdown dropdown-bottom dropdown-end join-item">
       <button tabindex="0" role="button" class="btn border-neutral-300 text-xs text-nowrap rounded-r-full">
-        {{ getFilterLabel() }} <fa-icon icon="filter"></fa-icon>
+        <fa-icon icon="filter"></fa-icon>
       </button>
 
       <ul tabindex="0" class="dropdown-content menu bg-base-300 rounded-box z-50 w-65 p-2 shadow-2xl">
@@ -111,20 +111,6 @@ export class SearchBar {
       }
     }
     return selected;
-  }
-
-  protected getFilterLabel() {
-    const categories = this.getSelectedCategories();
-
-    if (categories.length == 1) {
-      return categories[0].name;
-    }
-
-    if (categories.length == this.categories.length) {
-      return 'Filter';
-    }
-
-    return 'Filter' + ' ' + '(' + categories.length + ')';
   }
 
 };
@@ -360,6 +346,19 @@ export class Header {
     const dialogRef = this.addressBook.length > 0
       ? this.dialog.open(AddressBookDialog, dialogConfig)
       : this.dialog.open(AddressDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cdr.detectChanges();
+    });
+  }
+  
+  protected openAddressBookDialog(address?: IAddress, lookup?: string) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = "";
+    dialogConfig.data = { address: address, lookup: lookup };
+    dialogConfig.width = '90%';
+
+    const dialogRef = this.dialog.open(AddressDialog, dialogConfig);
 
     dialogRef.afterClosed().subscribe(() => {
       this.cdr.detectChanges();

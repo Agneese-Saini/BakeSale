@@ -15,7 +15,19 @@ export class CategoryContent {
     protected category: ICategory = Category.DefaultCategory;
     protected parent: ICategory = Category.DefaultCategory;
 
+    protected tags: Map<string, boolean> = new Map();
+
     protected currentPage?: string;
+
+    protected get selectedTags() {
+        let tags: string[] = [];
+        for (let [key, value] of this.tags) {
+            if (value == true) {
+                tags.push(key);
+            }
+        }
+        return tags;
+    }
 
     constructor(
         private router: Router,
@@ -41,6 +53,10 @@ export class CategoryContent {
             if (this.category == Category.DefaultCategory) {
                 this.router.navigate(['/']);
             }
+        });
+
+        this.service.tags$.subscribe(data => {
+            this.tags = data;
         });
     }
 

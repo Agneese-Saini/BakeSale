@@ -51,6 +51,25 @@
 
           <ul tabindex="0"
             class="dropdown-content menu bg-base-200 rounded-box z-1 w-100 p-2 shadow-2xl border border-base-300">
+
+            <div class="flex justify-between items-center p-2">
+              @if (isDelivery) {
+              <h1 class="text-2xl font-extrabold">Address Book</h1>
+
+              <div class="flex gap-2">
+                <button class="btn text-lg p-2 tooltip tooltip-bottom" data-tip="Use Current Location" (click)="openAddressBookDialog()">
+                  <fa-icon icon="location-crosshairs"></fa-icon>
+                </button>
+                <button class="btn btn-primary text-white text-lg p-2 tooltip tooltip-bottom" data-tip="Add an Address" (click)="openAddressBookDialog()">
+                  <fa-icon icon="plus"></fa-icon>
+                </button>
+              </div>
+              }
+              @else {
+              <h1 class="text-2xl font-extrabold">Pickup Locations</h1>
+              }
+            </div>
+
             <address-book [timeslot]="true" />
           </ul>
         </div>

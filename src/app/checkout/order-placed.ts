@@ -23,7 +23,7 @@ import { IOrderHistory } from "../user/order-history";
   <!-- Message -->
   <h2 class="text-2xl font-semibold text-gray-900">Order Placed</h2>
   <p class="text-gray-500 mt-2 mb-6 max-w-sm">
-    Your order has been confirmed and is being prepared.<br/>
+    Your order has been confirmed at BakeSale.<br/>
     Your order id is <b>#{{ order ? order.id : 'Unknown' }}</b>.
   </p>
 

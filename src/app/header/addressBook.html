@@ -1,97 +1,77 @@
 @if (isDelivery) {
-<div class="flex flex-col gap-2">
-  <div class="flex justify-between items-center p-2">
-    <h1 class="text-2xl font-extrabold">Address Book</h1>
-
-    <div class="flex gap-2">
-      <button class="btn btn-info btn-circle text-white text-lg" (click)="openAddressBookDialog()">
-        <fa-icon icon="location-crosshairs"></fa-icon>
-      </button>
-      <button class="btn btn-info btn-circle text-white text-lg" (click)="openAddressBookDialog()">
-        <fa-icon icon="plus"></fa-icon>
-      </button>
+<div class="tabs tabs-border">
+  <input type="radio" name="addressBook" class="tab" aria-label="All" checked />
+  <div class="tab-content border-base-300 bg-base-100 p-2 h-75 overflow-y-auto">
+    @let hasResults = (favouriteAddresses.length + addresses.length) > 0;
+    @if (!hasResults) {
+    <div class="flex flex-col items-center justify-center h-full">
+      <p class="text-gray-500 text-2xl">No Address Found</p>
+      <p class="label">
+        Click on the <button class="btn btn-info btn-circle text-white btn-xs opacity-65"
+          (click)="openAddressBookDialog()"><fa-icon icon="plus"></fa-icon></button> to add an address
+      </p>
+      <p class="label">
+        Or <a class="link">Use Current Location</a>
+      </p>
     </div>
+    }
+    @else {
+    @if (favouriteAddresses.length > 0) {
+    <h1 class="label font-medium">
+      Favourites:
+    </h1>
+    <address-list [list]="favouriteAddresses" [selected]="this.settings.address"
+      (onSelect)="onAddressChange($event)"></address-list>
+    <br />
+    }
+
+    @if (addresses.length > 0) {
+    <h1 class="label font-medium">
+      Saved Addresses:
+    </h1>
+    <address-list [list]="addresses" [selected]="this.settings.address"
+      (onSelect)="onAddressChange($event)"></address-list>
+    }
+    }
   </div>
 
-  <div class="tabs tabs-border">
-    <input type="radio" name="addressBook" class="tab" aria-label="All" checked />
-    <div class="tab-content border-base-300 bg-base-100 p-2 h-75 overflow-y-auto">
-      @let hasResults = (favouriteAddresses.length + addresses.length) > 0;
-      @if (!hasResults) {
-      <div class="flex flex-col items-center justify-center h-full">
-        <p class="text-gray-500 text-2xl">No Address Found</p>
-        <p class="label">
-          Click on the <button class="btn btn-info btn-circle text-white btn-xs opacity-65"
-            (click)="openAddressBookDialog()"><fa-icon icon="plus"></fa-icon></button> to add an address
-        </p>
-        <p class="label">
-          Or <a class="link">Use Current Location</a>
-        </p>
-      </div>
-      }
-      @else {
-      @if (favouriteAddresses.length > 0) {
-      <h1 class="label font-medium">
-        Favourites:
-      </h1>
-      <address-list [list]="favouriteAddresses" [selected]="this.settings.address"
-        (onSelect)="onAddressChange($event)"></address-list>
-      <br />
-      }
-
-      @if (addresses.length > 0) {
-      <h1 class="label font-medium">
-        Saved Addresses:
-      </h1>
-      <address-list [list]="addresses" [selected]="this.settings.address"
-        (onSelect)="onAddressChange($event)"></address-list>
-      }
-      }
-    </div>
-
-    @let hasRecents = false;
-    <input type="radio" name="addressBook" class="tab" aria-label="Recent" [disabled]="!hasRecents" />
-    <div class="tab-content border-base-300 bg-base-100 p-2 h-75 overflow-y-auto">
-    </div>
+  @let hasRecents = false;
+  <input type="radio" name="addressBook" class="tab" aria-label="Recent" [disabled]="!hasRecents" />
+  <div class="tab-content border-base-300 bg-base-100 p-2 h-75 overflow-y-auto">
   </div>
 </div>
 <br />
 }
-@else {
-<div class="flex flex-col gap-2">
-  <div class="flex justify-between items-center p-2">
-    <h1 class="text-2xl font-extrabold">Pickup Locations</h1>
+@else
+{
+<div class="tabs tabs-border">
+  <input type="radio" name="myTabs" class="tab" aria-label="All" checked />
+  <div class="tab-content border-base-300 bg-base-100 p-2 h-75 overflow-y-auto">
+    @let hasResults = (addresses.length) > 0;
+    @if (!hasResults) {
+    <div class="p-4">
+      <p class="text-gray-500 text-2xl">No Address Found</p>
+      <p class="label">
+        Click on the <button class="btn btn-info btn-circle text-white btn-xs opacity-65"
+          (click)="openAddressBookDialog()"><fa-icon icon="plus"></fa-icon></button> to add an address
+      </p>
+      <p class="label">
+        Or <a class="link">Use Current Location</a>
+      </p>
+    </div>
+    }
+    @else {
+    <h1 class="label font-medium">
+      Pickup Locations:
+    </h1>
+    <address-list [list]="addresses" [selected]="this.settings.address" (onSelect)="onAddressChange($event)"
+      [editable]="false"></address-list>
+    }
   </div>
 
-  <div class="tabs tabs-border">
-    <input type="radio" name="myTabs" class="tab" aria-label="All" checked />
-    <div class="tab-content border-base-300 bg-base-100 p-2 h-75 overflow-y-auto">
-      @let hasResults = (addresses.length) > 0;
-      @if (!hasResults) {
-      <div class="p-4">
-        <p class="text-gray-500 text-2xl">No Address Found</p>
-        <p class="label">
-          Click on the <button class="btn btn-info btn-circle text-white btn-xs opacity-65"
-            (click)="openAddressBookDialog()"><fa-icon icon="plus"></fa-icon></button> to add an address
-        </p>
-        <p class="label">
-          Or <a class="link">Use Current Location</a>
-        </p>
-      </div>
-      }
-      @else {
-      <h1 class="label font-medium">
-        Pickup Locations:
-      </h1>
-      <address-list [list]="addresses" [selected]="this.settings.address"
-        (onSelect)="onAddressChange($event)" [editable]="false"></address-list>
-      }
-    </div>
-
-    @let hasRecents = false;
-    <input type="radio" name="myTabs" class="tab" aria-label="Recent" [disabled]="!hasRecents" />
-    <div class="tab-content border-base-300 bg-base-100 p-2 max-h-64 overflow-y-auto">      
-    </div>
+  @let hasRecents = false;
+  <input type="radio" name="myTabs" class="tab" aria-label="Recent" [disabled]="!hasRecents" />
+  <div class="tab-content border-base-300 bg-base-100 p-2 max-h-64 overflow-y-auto">
   </div>
 </div>
 <br />

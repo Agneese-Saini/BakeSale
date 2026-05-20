@@ -71,9 +71,9 @@
             <!-- Card 1 -->
             <div class="service-card fade-up delay-3">
                 <div class="flex gap-2 items-center">
-                    <div class="icon-box">
+                    <button class="link icon-box" [routerLink]="['/shop', { category: 'Cake' }]">
                         <fa-icon class="text-2xl" icon="shop"></fa-icon>
-                    </div>
+                    </button>
                     <a class="font-bold text-gray-900 text-lg mb-2"
                         [routerLink]="['/shop', { category: 'Cake' }]">Explore our Bakery</a>
                 </div>
@@ -84,9 +84,9 @@
             <!-- Card 2 -->
             <div class="service-card fade-up delay-3">
                 <div class="flex gap-2 items-center">
-                    <div class="icon-box">
+                    <button class="link icon-box" routerLink="/create">
                         <fa-icon class="text-2xl" icon="cake-candles"></fa-icon>
-                    </div>
+                    </button>
                     <a class="font-bold text-gray-900 text-lg mb-2" routerLink="/create">Create your Own</a>
                 </div>
                 <p class="text-gray-500 text-sm leading-relaxed">
@@ -96,9 +96,9 @@
             <!-- Card 3 -->
             <div class="service-card fade-up delay-3">
                 <div class="flex gap-2 items-center">
-                    <div class="icon-box">
+                    <button class="link icon-box" [routerLink]="['/subscribe', { type: 'bread' }]">
                         <fa-icon class="text-2xl" icon="bread-slice"></fa-icon>
-                    </div>
+                    </button>
                     <a class="font-bold text-gray-900 text-lg mb-2"
                         [routerLink]="['/subscribe', { type: 'bread' }]">Fresh Bread delivery</a>
                 </div>
@@ -109,9 +109,9 @@
             <!-- Card 4 -->
             <div class="service-card fade-up delay-3">
                 <div class="flex gap-2 items-center">
-                    <div class="icon-box">
+                    <button class="link icon-box" [routerLink]="['/shop', { category: 'Canna Bakery' }]">
                         <fa-icon class="text-2xl" icon="cannabis"></fa-icon>
-                    </div>
+                    </button>
                     <a class="font-bold text-gray-900 text-lg mb-2"
                         [routerLink]="['/shop', { category: 'Canna Bakery' }]">Explore Cannabis Bakery</a>
                 </div>
@@ -122,9 +122,9 @@
             <!-- Card 5 -->
             <div class="service-card fade-up delay-3">
                 <div class="flex gap-2 items-center">
-                    <div class="icon-box">
+                    <button class="link icon-box" routerLink="/">
                         <fa-icon class="text-2xl" icon="car"></fa-icon>
-                    </div>
+                    </button>
                     <a class="font-bold text-gray-900 text-lg mb-2" routerLink="/">Sign up to Deliver</a>
                 </div>
                 <p class="text-gray-500 text-sm leading-relaxed">
@@ -134,9 +134,9 @@
             <!-- Card 6 -->
             <div class="service-card fade-up delay-3">
                 <div class="flex gap-2 items-center">
-                    <div class="icon-box">
+                    <button class="link icon-box" routerLink="/">
                         <fa-icon class="text-2xl" icon="suitcase"></fa-icon>
-                    </div>
+                    </button>
                     <a class="font-bold text-gray-900 text-lg mb-2" routerLink="/">Add your Bakery</a>
                 </div>
                 <p class="text-gray-500 text-sm leading-relaxed">

@@ -39,7 +39,7 @@ export class SideDrawer {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
     dialogConfig.data = undefined;
-    dialogConfig.height = "80%";
+    dialogConfig.height = "75%";
 
     const dialogRef = this.dialog.open(SignUpDialog, dialogConfig);
 
@@ -52,7 +52,7 @@ export class SideDrawer {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = "";
     dialogConfig.data = undefined;
-    dialogConfig.height = "90%";
+    dialogConfig.height = "80%";
 
     const dialogRef = this.dialog.open(SignInDialog, dialogConfig);
 
@@ -63,5 +63,6 @@ export class SideDrawer {
 
   protected logout() {
     this.userService.logout();
+    this.cdr.detectChanges();
   }
 };

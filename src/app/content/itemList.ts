@@ -108,7 +108,7 @@ import { IItem, Item } from './item';
 @else {
 <!-- Category items -->
 @if (category.items != undefined && category.items.length > 0) {
-<items-list [items]="category.items" [category]="category.name" [wrap]="wrap" [itemsPerPage]="itemsPerPage"></items-list>
+<items-list [items]="category.items" [category]="category.name" [wrap]="wrap" [itemsPerPage]="itemsPerPage" [tags]="tags"></items-list>
 <div class="divider m-0"></div>
 }
 }
@@ -117,7 +117,7 @@ import { IItem, Item } from './item';
 <!-- Sub Categories - Recursive -->
 @if (category.subcats != undefined) {
 @for (subcat of category.subcats; track $index) {
-<category-items [category]="subcat" [wrap]="wrap" [itemsPerPage]="itemsPerPage"></category-items>
+<category-items [category]="subcat" [wrap]="wrap" [itemsPerPage]="itemsPerPage" [tags]="tags"></category-items>
 }
 }
 `
@@ -136,6 +136,9 @@ export class CategoryItemsList {
 
   @Input()
   public itemsPerPage: number = CategoryItemsList.ItemsPerPage;
+
+  @Input()
+  public tags?: string[];
 
   @ViewChild('widgetsContent', { read: ElementRef })
   public widgetsContent!: ElementRef<any>;
@@ -198,11 +201,18 @@ export class CategoryItemsList {
 <div class="flex flex-col pt-2">
   <div #widgetsContent (scroll)="onScroll()" [class]="wrap ? 'overflow-none' : 'overflow-x-auto'">
     <div [class]="'flex ' + (wrap ? 'flex-wrap' : 'flex-nowrap')">
-      @for (item of getItems(); track $index) {
+      @let items = getItems();
+      @if (items.length == 0) {
+      <div class="px-2">
+        <i class="label font-mono">No mathcing items found.</i>
+      </div>
+      }
+      @else {
+      @for (item of items; track $index) {
       <div class="flex-shrink-0 ml-2.5 pb-2">
         <item [value]="item"></item>
       </div>
-      }
+
       @if (items != undefined && itemsPerPage > 0 && items.length > itemsPerPage) {
       <div class="flex-shrink-0 ml-2.5">
         <div class="flex flex-col h-full justify-center p-4">
@@ -212,6 +222,8 @@ export class CategoryItemsList {
           </a>
         </div>
       </div>
+      }
+      }
       }
     </div>
   </div>
@@ -232,6 +244,9 @@ export class ItemsList {
   @Input()
   public itemsPerPage: number = 6;
 
+  @Input()
+  public tags?: string[];
+
   @ViewChild('widgetsContent', { read: ElementRef })
   public widgetsContent!: ElementRef<any>;
 
@@ -240,20 +255,40 @@ export class ItemsList {
 
   constructor() { }
 
+  protected match(item: string, filter: string): boolean {
+    const name = item.toLowerCase().trim();
+    filter = filter.toLowerCase().trim();
+    return name.includes(filter);
+  }
+
   protected getItems(): IItem[] {
     let displayItems: IItem[] = [];
     let count = 0;
 
-    if (this.itemsPerPage) {
-      for (let item of this.items) {
+    for (let item of this.items) {
+      if (this.itemsPerPage > 0) {
         if (count++ == this.itemsPerPage)
           break;
-
-        displayItems.push(item);
       }
-    }
-    else {
-      displayItems = this.items;
+
+      if (this.tags && this.tags.length > 0) {
+        const itemName = item.name.toLowerCase().trim();
+        let found = false;
+
+        for (let tag of this.tags) {
+          const tagName = tag.toLowerCase().trim();
+          if (itemName.includes(tagName) == true) {
+            found = true;
+            break;
+          }
+        }
+
+        if (!found) {
+          continue;
+        }
+      }
+
+      displayItems.push(item);
     }
 
     return displayItems;

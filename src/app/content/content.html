@@ -28,35 +28,29 @@
   <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
 
   <div class="drawer-content flex flex-col px-4 items-center">
-    <div class="flex justify-start items-center gap-2 overflow-x-auto w-full p-2">
-      <button class="btn btn-sm btn-circle lg:hidden" (click)="openDialog()">
-        <fa-icon icon="bars"></fa-icon>
-      </button>
-
-      <select class="select select-sm min-w-28">
-        <option selected class="font-bold">All Prices</option>
-        <option>Under $50</option>
-        <option>Under $75</option>
-        <option>Over $100</option>
-      </select>
-
-      <select class="select select-sm min-w-28">
-        <option selected class="font-bold">Show All Categories</option>
-        @for (category of deliverySettings.category.subcats; track $index) {
-        <option [disabled]="!(category.items || category.customizer)">
-          {{ category.name }} {{ (!category.customizer && category.items) ? ('(' + category.items.length + ')') : '' }}
-        </option>
-        }
-      </select>
-
-      <button class="btn btn-sm btn-soft">Reset Filters</button>
+    <div class="flex justify-start items-center gap-2 flex-wrap w-full p-2">
+      <b>Tags:</b>
+      @for (tag of tags | keyvalue; track $index) {
+      @if (tag.value == true) {
+      <button class="btn btn-xs btn-primary rounded-full font-bold" (click)="onSelectTag(tag.key)">{{ tag.key }}</button>
+      } @else {
+      <button class="btn btn-xs btn-soft rounded-full" (click)="onSelectTag(tag.key)">{{ tag.key }}</button>
+      }
+      }
     </div>
-    <br />
+
+    @if (numTags > 0) {
+    <b class="w-full p-2">
+      @let num = numResults(deliverySettings.category);
+      
+      Found {{ num == 1 ? '1 item' : (num + ' items') }} with matching tags.
+    </b>
+    }
 
     <div class="w-full">
       <!-- Page content here -->
       @for (subcat of deliverySettings.category.subcats; track $index) {
-      <category-items [category]="subcat"></category-items>
+      <category-items [category]="subcat" [tags]="selectedTags"></category-items>
       }
     </div>
   </div>

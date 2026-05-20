@@ -12,7 +12,7 @@ import { Subscriptions } from './user/subscriptions';
 import { Home } from './home/home';
 import { PageNotFound } from './app.404';
 import { OrderPlaced } from './checkout/order-placed';
-import { authGuard } from './user/user';
+import { LoginGuard } from './user/user';
 
 export const routes: Routes = [
     {
@@ -34,7 +34,7 @@ export const routes: Routes = [
     {
         path: 'order-placed',
         component: OrderPlaced,
-        canActivate: [authGuard]
+        canActivate: [LoginGuard]
     },
     {
         path: 'create',
@@ -47,22 +47,22 @@ export const routes: Routes = [
     {
         path: 'order-history',
         component: OrderHistory,
-        canActivate: [authGuard]
+        canActivate: [LoginGuard]
     },
     {
         path: 'view-receipt',
         component: ViewReceipt,
-        canActivate: [authGuard]
+        canActivate: [LoginGuard]
     },
     {
         path: 'subscriptions',
         component: Subscriptions,
-        canActivate: [authGuard]
+        canActivate: [LoginGuard]
     },
     {
         path: 'recipe-book',
         component: RecipeBook,
-        canActivate: [authGuard]
+        canActivate: [LoginGuard]
     },
     {
         path: 'item',
