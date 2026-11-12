@@ -552,13 +552,14 @@ export class Checkout {
     const orderId = this.orderService.addOrder(order, this.userService);
     console.log("orderId: " + orderId)
     this.shoppingCart.clear();
-    this.router.navigate(['/order-placed', { id: orderId }]);
+    this.router.navigate(['/order', { id: orderId }]);
 
     this.snackBar.open("Order placed!", "Close", {
       duration: 2500
     });
   }
 }
+
 
 @Component({
   imports: [FormsModule, FontAwesomeModule, KeyValuePipe, MatDialogModule],

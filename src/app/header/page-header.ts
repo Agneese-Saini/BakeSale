@@ -5,9 +5,10 @@ import { Router, RouterModule } from '@angular/router';
 import { SideDrawer } from '../sidedrawer/sidedrawer';
 import { CheckoutDrawer } from '../checkout/checkout-drawer';
 import { IUser, User, UserRole, UserService } from '../user/user';
-import { Logo, NotificationBottomSheet } from './header';
+import { Logo } from './header';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { Cart, CartService } from '../checkout/cart';
+import { NotificationBottomSheet } from './notification';
 
 @Component({
   selector: 'page-header',

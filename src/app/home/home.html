@@ -16,7 +16,8 @@
             </p>
             <div class="flex flex-col gap-4 fade-up delay-3 items-center lg:items-start">
                 <maps-autocomplete class="w-full" size="lg" [minimized]="true" [overflow]="64"
-                    (select)="onAutoCompleteSelect($event)" (resultChange)="onAutoCompleteChange($event)"></maps-autocomplete>
+                    (select)="onAutoCompleteSelect($event)"
+                    (resultChange)="onAutoCompleteChange($event)"></maps-autocomplete>
 
                 <div class="flex gap-2 items-center">
                     <button class="btn btn-hero rounded-full" (click)="onOrderOnline()">
@@ -75,7 +76,7 @@
                         <fa-icon class="text-2xl" icon="shop"></fa-icon>
                     </button>
                     <a class="font-bold text-gray-900 text-lg mb-2"
-                        [routerLink]="['/shop', { category: 'Cake' }]">Explore our Bakery</a>
+                        [routerLink]="['/shop', { category: 'Cake' }]">Open Shop</a>
                 </div>
                 <p class="text-gray-500 text-sm leading-relaxed">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -87,7 +88,7 @@
                     <button class="link icon-box" routerLink="/create">
                         <fa-icon class="text-2xl" icon="cake-candles"></fa-icon>
                     </button>
-                    <a class="font-bold text-gray-900 text-lg mb-2" routerLink="/create">Create your Own</a>
+                    <a class="font-bold text-gray-900 text-lg mb-2" routerLink="/create">Custom Cake</a>
                 </div>
                 <p class="text-gray-500 text-sm leading-relaxed">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -135,12 +136,12 @@
             <div class="service-card fade-up delay-3">
                 <div class="flex gap-2 items-center">
                     <button class="link icon-box" routerLink="/">
-                        <fa-icon class="text-2xl" icon="suitcase"></fa-icon>
+                        <fa-icon class="text-2xl" icon="handshake"></fa-icon>
                     </button>
-                    <a class="font-bold text-gray-900 text-lg mb-2" routerLink="/">Add your Bakery</a>
+                    <a class="font-bold text-gray-900 text-lg mb-2" routerLink="/">Become a Partner</a>
                 </div>
                 <p class="text-gray-500 text-sm leading-relaxed">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    We support local bakeries and small businesses in Winnipeg.
                 </p>
             </div>
         </div>
@@ -156,17 +157,16 @@
             <div class="w-12 h-1 rounded-full mx-auto" style="background:#fc1919"></div>
         </div>
 
-        <div class="mt-[5%] flex w-full place-content-center gap-5 max-md:flex-wrap">
+        <div class="mt-[5%] flex flex-col w-full items-center gap-10 max-md:flex-wrap">
             <div class="flex flex-wrap px-[10%] gap-10 justify-center">
-                @for (partner of PartnersList; track $index) {
+                @for (partner of getPartnerList(); track $index) {
                 <div class="flex max-md:flex-col gap-10 max-md:gap-2 items-center fade-up delay-4">
-                    <div class="w-48 h-26 overflow-hidden">
-                        <img [src]="partner.img" alt="bakery" class="h-full w-full" />
+                    <div class="flex justify-center w-48 h-26 overflow-hidden">
+                        <img [src]="partner.img" alt="bakery" class="h-full" [class.rounded-full]="partner.isUser == true" />
                     </div>
                     <div class="flex flex-col gap-2 max-md:place-items-center max-w-[200px]">
                         <h3 class="text-2xl font-semibold">{{ partner.label }}</h3>
-                        <p class="max-md:text-center">Partner since {{ partner.joinDate | date:'dd/MM/yyyy' }}</p>
-                        <div class="flex gap-2 hidden">
+                        <div class="flex gap-2">
                             <div class="flex gap-0">
                                 @for (star of [1, 2, 3, 4, 5]; track $index) {
                                 @if (partner.rating < star) { <fa-icon [icon]="['far', 'star']"></fa-icon>
@@ -176,12 +176,23 @@
                                     }
                             </div>
 
-                            <i class="label">{{ partner.ratingCount }}+</i>
+                            <i class="label">{{ partner.ratingCount | shortNumber  }}+</i>
                         </div>
+                        <p class="max-md:text-center">Partner since {{ partner.joinDate | date:'dd/MM/yyyy' }}</p>
                     </div>
                 </div>
                 }
             </div>
+
+            @if (TotalPages > 1) {
+            <div class="join">
+                @for (p of totalPages; track p) {
+                <button class="join-item mx-2 rounded-full btn btn-sm" [class.btn-neutral]="p === currentPage" (click)="goToPage(p)">
+                    {{ p }}
+                </button>
+                }                
+            </div>
+            }
         </div>
     </div>
 </section>

@@ -11,7 +11,7 @@ import { Subscribe } from './custom/subscribe';
 import { Subscriptions } from './user/subscriptions';
 import { Home } from './home/home';
 import { PageNotFound } from './app.404';
-import { OrderPlaced } from './checkout/order-placed';
+import { Order } from './checkout/order';
 import { LoginGuard } from './user/user';
 
 export const routes: Routes = [
@@ -32,8 +32,8 @@ export const routes: Routes = [
         component: Checkout
     },
     {
-        path: 'order-placed',
-        component: OrderPlaced,
+        path: 'order',
+        component: Order,
         canActivate: [LoginGuard]
     },
     {

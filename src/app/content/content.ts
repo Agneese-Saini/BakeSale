@@ -128,6 +128,8 @@ export class Content {
     }
 
     this.deliveryService.setDeliverySetting(this.deliverySettings);
+
+    this.categoryService.loadTags(category);
   }
 
   protected onSelectTag(tag: string) {

@@ -1,8 +1,6 @@
-import { Component, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { IItem, Item } from "../content/item";
 import { BehaviorSubject } from "rxjs";
-import { FormsModule } from "@angular/forms";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 export type Cart = Map<string, IItem[]>;
 

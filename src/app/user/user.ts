@@ -6,6 +6,7 @@ import { ISubscription } from '../custom/subscribe';
 import { MatDialog } from '@angular/material/dialog';
 import { CanActivateFn, Router } from '@angular/router';
 import { IAddress, Province } from '../header/addressDialog';
+import { INotification } from '../header/notification';
 
 export enum UserRole {
   Guest = 0,
@@ -24,9 +25,10 @@ export interface IPayMethod {
 
 export interface IUser {
   name: string,
-  userRole: UserRole,
+  userRole: UserRole
   verified?: boolean,
   image?: string,
+  notifications?: INotification[],
   orders?: IOrderHistory[],
   recipeBook?: IRecipe[],
   subscriptions?: ISubscription[],

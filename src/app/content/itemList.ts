@@ -16,7 +16,7 @@ import { IItem, Item } from './item';
 } @else {
 
 <!-- Category name -->
-@if (category.customizer != undefined || (category.items != undefined && category.items.length > 0)) {
+@if (category.customizer == undefined || (category.items != undefined && category.items.length > 0)) {
 <div class="flex w-full justify-between pb-2">
   @if (category.fontSize != undefined) {
   @if (category.fontSize == 3) {
@@ -41,14 +41,13 @@ import { IItem, Item } from './item';
   }
 </div>
 }
-
 <!-- Category customizer -->
-@if (category.customizer != undefined) {
+@else if (category.customizer != undefined) {
 @switch (category.customizer) {
 @case (customizer.Recipe) {
 <div class="card w-full lg:max-w-98 bg-base-300 shadow">
   <div class="card-body">
-    <h2 class="text-2xl font-bold">Create Custom Cake</h2>
+    <h2 class="text-2xl font-bold">{{ category.name }}</h2>
 
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui.</p>
 
@@ -63,7 +62,7 @@ import { IItem, Item } from './item';
 @case (customizer.Subscription) {
 <div class="card w-full lg:max-w-98 bg-base-300 shadow">
   <div class="card-body">
-    <h2 class="text-2xl font-bold">Get Bread daily</h2>
+    <h2 class="text-2xl font-bold">{{ category.name }}</h2>
 
     <div class="flex gap-2">
       <fa-icon icon="car-side"></fa-icon>

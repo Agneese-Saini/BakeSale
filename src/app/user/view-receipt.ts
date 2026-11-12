@@ -78,8 +78,8 @@ import { Receipt } from "../checkout/receipt";
                   }
 
                   @if (!hidePrice) {
-                  <a class="link" [routerLink]="['/item', {category: item.parent, item: item.name}]" target="_blank">
-                    <fa-icon icon="arrow-up-right-from-square"></fa-icon> View Item
+                  <a class="link link-hover" [routerLink]="['/item', {category: item.parent, item: item.name}]" target="_blank">
+                    View Item <fa-icon icon="arrow-up-right-from-square"></fa-icon>
                   </a>
                   }
                 </div>

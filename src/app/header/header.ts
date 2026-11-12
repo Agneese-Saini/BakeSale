@@ -12,6 +12,7 @@ import { IUser, User, UserRole, UserService } from '../user/user';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { AddressDialog, IAddress } from './addressDialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationBottomSheet } from './notification';
 
 
 @Component({
@@ -178,85 +179,6 @@ export class DeliverySwitch {
     }
   }
 };
-
-
-export enum NotifictionType {
-  Suggestion,
-  ThumbsUp,
-  Review,
-  OrderDelivered,
-};
-
-@Component({
-  imports: [FontAwesomeModule],
-  template: `
-<ul class="list bg-base-100 rounded-box shadow-md max-h-92 overflow-y-auto">
-  <li class="p-4 pb-2 text-sm opacity-60 tracking-wide">Notifications</li>
-  
-  <li class="list-row">
-    <div>
-      <img class="size-10 rounded-box" src="https://tatyanaseverydayfood.com/wp-content/uploads/2022/03/The-Best-Dark-Chocolate-Cake-Recipe-3.jpg"/>
-    </div>
-    <div>
-      <a class="link" style="text-decoration: none;">Suggestion: <b>Chcoclate Cake</b></a>
-      <div class="text-xs text-gray-500">We thought you might like this new arrival!</div>
-    </div>
-    <label class="label font-bold">
-      2h
-    </label>
-  </li>
-
-  <li class="list-row">
-    <div>
-      <img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp"/>
-    </div>
-    <div>
-      <a class="link font-bold" style="text-decoration: none;">Shanees</a> gave your profile a Thumbs Up <fa-icon icon="thumbs-up"></fa-icon>!
-    </div>
-    <label class="label font-bold">
-      2h
-    </label>
-  </li>
-
-  <li class="list-row">
-    <div>
-      <img class="size-10 rounded-box" src="https://tatyanaseverydayfood.com/wp-content/uploads/2022/03/The-Best-Dark-Chocolate-Cake-Recipe-3.jpg"/>
-    </div>
-    <div>
-      <a class="link" style="text-decoration: none;"><b>Chcoclate Cake</b>&nbsp;&nbsp;<fa-icon icon="thumbs-up"></fa-icon> 72%</a>
-      <div>3 people reviewed your custom cake.</div>
-    </div>
-    <label class="label font-bold">
-      2h
-    </label>
-  </li>
-
-  <li class="list-row">
-    <div>
-      <fa-icon class="text-xl text-success" icon="car-side"></fa-icon>
-    </div>
-    <div>
-      <div><a class="link font-bold" style="text-decoration: none;">Your Order</a> was delivered.</div>
-      <div class="text-xs text-gray-500">3 Items delivered at 11:00 am.</div>
-      <img class="link size-12 rounded-box" src="https://onfleet.com/blog/content/images/2020/05/deliverypackage.jpg"/>
-    </div>
-    <label class="label font-bold">
-      2h
-    </label>
-  </li>  
-</ul>
-  `,
-})
-export class NotificationBottomSheet {
-  
-  constructor(
-    private bottomSheetRef: MatBottomSheetRef<NotificationBottomSheet>) { }
-
-  openLink(event: MouseEvent): void {
-    this.bottomSheetRef.dismiss();
-    event.preventDefault();
-  }
-}
 
 
 @Component({

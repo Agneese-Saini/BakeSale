@@ -516,7 +516,9 @@ export class AddressBookDialog {
     if (data) {
       this.showTimeslots = data.timeslot;
     }
+  }
 
+  protected ngOnInit() {
     this.deliveryService.deliverySettings$.subscribe(data => {
       this.deliverySettings = data;
       this.cdr.detectChanges();

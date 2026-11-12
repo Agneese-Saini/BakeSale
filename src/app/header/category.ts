@@ -8,7 +8,8 @@ import { IItem } from '../content/item';
 export enum Customizer {
 	Recipe,
 	Subscription,
-	Marketplace
+	Marketplace,
+	Milkshake
 };
 
 export interface ICategory {
@@ -31,32 +32,26 @@ export class CategoryService {
 
 	private categoryList: ICategory[] = [
 		{
-			name: "Cake", icon: "cake-candles", hidden: true, subcats:
+			name: "Cakes", icon: "cake-candles", hidden: true, subcats:
 				[{ name: "Creat Your Own", fontSize: 0, customizer: Customizer.Recipe },
-				{ name: "Cakes", fontSize: 2 },
+				{ name: "Cake", fontSize: 2 },
 				{ name: "Cheesecake", fontSize: 2 },
 				{
 					name: "Custom Cakes", fontSize: 2, pages:
 						["Chocolate", "Fruit", "Trending", "Local"]
 				},
-				{ name: "Cupcakes", fontSize: 2 },
+				{ name: "Cupcake", fontSize: 2 },
 				{ name: "Pound Cake", fontSize: 2 }
 				]
 		},
 		{
-			name: "Pastry", icon: "cheese", hidden: true, subcats:
+			name: "Pastries & Cookies", icon: "cookie", hidden: true, subcats:
 				[{ name: "Flaky Pastry", fontSize: 2 },
 				{ name: "Puff Pastry", fontSize: 2 },
 				{ name: "Mille-feuille", fontSize: 2 },
 				{ name: "Tarts", fontSize: 2 },
 				{ name: "Macarons", fontSize: 2 },
-				]
-		},
-		{
-			name: "Cookies", icon: "cookie", hidden: true, subcats:
-				[{ name: "Drop Cookies", fontSize: 2 },
-				{ name: "Filled Cookies", fontSize: 2 },
-				{ name: "Sandwich Cookies", fontSize: 2 },
+				{ name: "Cookies", fontSize: 2 },
 				{ name: "Protein Cookies", fontSize: 2 },
 				{ name: "Biscotti", fontSize: 2 },
 				{ name: "Brownies", fontSize: 2 }
@@ -78,13 +73,13 @@ export class CategoryService {
 			name: "Desserts", icon: "ice-cream", hidden: true, subcats:
 				[{ name: "Puddings", fontSize: 2 },
 				{ name: "Pies", fontSize: 2 },
-				{ name: "Ice Cream", fontSize: 2 },
-				{ name: "BakeSale Special", fontSize: 2 }
+				{ name: "Sweets", fontSize: 2 },
+				{ name: "Ice Cream", fontSize: 2 }
 				]
 		},
 		{
 			name: "Milkshakes", icon: "blender", hidden: true, subcats:
-				[{ name: "Ice Cream Shakes", fontSize: 2 },
+				[{ name: "Create Your Own", fontSize: 0, customizer: Customizer.Recipe },
 				{ name: "Canna Milkshakes", fontSize: 2 },
 				{ name: "Canna Drinks", fontSize: 2 }
 				]
@@ -95,20 +90,15 @@ export class CategoryService {
 				{ name: "Canna Cookies", fontSize: 2 },
 				{ name: "Canna Brownies", fontSize: 2 },
 				{ name: "Canna Cupcakes", fontSize: 2 },
+				{ name: "Canna Butter", fontSize: 2 },
 				{ name: "Edibles", fontSize: 2 }
-				]
-		},
-		{
-			name: "Canna Butter", icon: "cow", subcats:
-				[{ name: "Unsalted", fontSize: 2 },
-				{ name: "Flavored", fontSize: 2 },
-				{ name: "CBD", fontSize: 2 }
 				]
 		},
 		{
 			name: "Wake'n'Bake", icon: "mug-hot", hidden: true, subcats:
 				[{ name: "Make Your Own", fontSize: 2 },
-				{ name: "Canna Kombucha", fontSize: 2 }
+				{ name: "Canna Kombucha", fontSize: 2 },
+				{ name: "Canna Drinks", fontSize: 2 }
 				]
 		}
 	];
@@ -127,11 +117,11 @@ export class CategoryService {
 
 		this.loadCategories();
 
-		this.loadTags();		
+		this.loadTags();
 	}
 
 	public loadCategories() {
-		let category = Category.findCategory("Cakes", this.categoryList, "Cake");
+		let category = Category.findCategory("Cake", this.categoryList, "Cakes");
 		if (category) {
 			Category.addItem(category, {
 				name: 'Chocolate Cake',
@@ -152,10 +142,7 @@ export class CategoryService {
 				price: { value: 19.99 },
 				amount: 0
 			});
-		}
 
-		category = Category.findCategory("Cakes", this.categoryList, "Cake");
-		if (category) {
 			Category.addItem(category, {
 				name: 'Sprinkle Cake',
 				about: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac eros sit amet lorem facilisis vulputate at non dui. \
@@ -178,7 +165,7 @@ export class CategoryService {
 			});
 		}
 
-		category = Category.findCategory("Custom Cakes", this.categoryList, "Cake");
+		category = Category.findCategory("Custom Cakes", this.categoryList, "Cakes");
 		if (category) {
 			Category.addItem(category, {
 				name: 'Red Velvet',
@@ -304,22 +291,52 @@ export class CategoryService {
 	}
 
 	public loadTags(category?: ICategory) {
+		let tags: any = new Map();
+
 		if (category) {
+			const catName = category.name.trim().toLowerCase();
 			
-		}
-		else {
-			// Default tags
-			this._tags.next(
-				new Map([
+			if (catName == ('Cake').toLowerCase() ||
+				catName == ('Pastry').toLowerCase() ||
+				catName == ('Cookies').toLowerCase()) {
+				tags = new Map([
 					['Chocolate', false],
 					['Vanilla', false],
 					['Butterscotch', false],
 					['Ice cream', false],
 					['Sprinkle', false],
 					['Velvet', false]
-				])
-			);
+				]);
+			}
+			else if (catName == ('Bread').toLowerCase()) {
+				tags = new Map([
+					['Brioche', false],
+					['Sourdough', false],
+					['Pizza', false],
+					['Sandwich', false],
+					['Burger', false]
+				]);
+			}
+			else if (catName == ('Desserts').toLowerCase() ||
+				catName == ('Milkshakes').toLowerCase()) {
+				tags = new Map([
+					['Chocolate', false],
+					['Vanilla', false],
+					['Butterscotch', false],
+					['Velvet', false],
+					['Pistachio', false],
+					['Berry', false]
+				]);
+			}
+			else if (catName == ('Canna Bakery').toLowerCase()) {
+			}
+			else if (catName == ('Canna Butter').toLowerCase()) {
+			}
+			else if (catName == ("Wake'n'Bake").toLowerCase()) {
+			}
 		}
+
+		this._tags.next(tags);
 	}
 
 	public toggleTag(tag: string) {

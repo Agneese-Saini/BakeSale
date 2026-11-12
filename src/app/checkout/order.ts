@@ -6,7 +6,7 @@ import { OrderService } from "./checkout";
 import { IOrderHistory } from "../user/order-history";
 
 @Component({
-  selector: 'order-placed',
+  selector: 'order',
   imports: [FontAwesomeModule, RouterModule, PageHeader],
   template: `
 <page-header></page-header>
@@ -39,7 +39,7 @@ import { IOrderHistory } from "../user/order-history";
 </div>
 `
 })
-export class OrderPlaced {
+export class Order {
 
   protected order?: IOrderHistory;
 
